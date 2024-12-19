@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "update_dep": "npm install",
+    "prestart_localhost": "npm start",
+    "start_localhost": "npm run dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
