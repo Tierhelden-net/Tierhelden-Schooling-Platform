@@ -63,7 +63,7 @@ export const DescriptionForm = ({
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="mt-6 border bg-muted rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Kursbeschreibung
         <Button onClick={toggleEdit} variant="ghost">
