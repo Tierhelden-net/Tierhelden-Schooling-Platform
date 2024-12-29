@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { isTeacher } from "@/lib/teacher";
 import { SearchInput } from "./search-input";
 
+import ThemeToggle from "@/components/ThemeToggle";
+
 export const NavbarRoutes = () => {
   const { userId } = useAuth();
   const pathname = usePathname();
