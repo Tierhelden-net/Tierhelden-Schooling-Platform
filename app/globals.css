@@ -67,7 +67,7 @@ body,
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --input: 217.5 34% 15%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
@@ -78,6 +78,15 @@ body,
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .form-container {
+    @apply mt-6 border bg-muted rounded-md p-4;
+  }
+  .link {
+    @apply flex items-center p-3 w-full bg-orange-100 border-orange-200 border text-orange-400 rounded-md dark:bg-orange-700/0 dark:border-orange-900/50 dark:text-orange-800/50;
   }
 }
 
