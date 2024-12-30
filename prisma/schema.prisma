@@ -138,10 +138,11 @@ model User {
 
 model Quiz {
   quiz_id    Int        @id @default(autoincrement())
+  userId     String
   quiz_name  String
-  quiz_synopsis String
-  max_points Int
-  passing_points Int
+  quiz_synopsis String?
+  max_points Int?
+  passing_points Int?
   questions  Question[]
   quizAttempts  QuizAttempt[]
   userAnswers UserAnswer[]
