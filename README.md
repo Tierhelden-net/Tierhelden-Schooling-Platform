@@ -21,4 +21,4 @@ STRIPE_API_KEY=(aktuell nicht notwendig)
 NEXT_PUBLIC_APP_URL=http://localhost:3000  
 STRIPE_WEBHOOK_SECRET=(aktuell nicht notwendig)
 
-NEXT_PUBLIC_TEACHER_ID=xxx
+NEXT_PUBLIC_TEACHER_ID=[xxx]
