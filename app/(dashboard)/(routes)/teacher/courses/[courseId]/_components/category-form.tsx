@@ -68,7 +68,7 @@ export const CategoryForm = ({
   );
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Kategorie
         <Button onClick={toggleEdit} variant="ghost">

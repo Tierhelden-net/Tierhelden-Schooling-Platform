@@ -10,6 +10,8 @@ import { isTeacher } from "@/lib/teacher";
 
 import { SearchInput } from "./search-input";
 
+import ThemeToggle from "@/components/ThemeToggle";
+
 export const NavbarRoutes = () => {
   const { userId } = useAuth();
   const pathname = usePathname();
@@ -25,6 +27,9 @@ export const NavbarRoutes = () => {
           <SearchInput />
         </div>
       )}
+      <div>
+        <ThemeToggle />
+      </div>
       <div className="flex gap-x-2 ml-auto">
         {isTeacherPage || isCoursePage ? (
           <Link href="/">

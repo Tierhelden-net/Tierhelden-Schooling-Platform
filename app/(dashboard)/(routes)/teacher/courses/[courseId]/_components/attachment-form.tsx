@@ -57,7 +57,7 @@ export const AttachmentForm = ({
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Materialien
         <Button onClick={toggleEdit} variant="ghost">
@@ -73,17 +73,14 @@ export const AttachmentForm = ({
       {!isEditing && (
         <>
           {initialData.attachments.length === 0 && (
-            <p className="text-sm mt-2 text-slate-500 italic">
+            <p className="text-sm mt-2 text-slate-600 italic">
               Keine Materialien hinzugefügt
             </p>
           )}
           {initialData.attachments.length > 0 && (
             <div className="space-y-2">
               {initialData.attachments.map((attachment) => (
-                <div
-                  key={attachment.id}
-                  className="flex items-center p-3 w-full bg-orange-100 border-orange-200 border text-orange-700 rounded-md"
-                >
+                <div key={attachment.id} className="link">
                   <File className="h-4 w-4 mr-2 flex-shrink-0" />
                   <p className="text-xs line-clamp-1">{attachment.name}</p>
                   {deletingId === attachment.id && (
