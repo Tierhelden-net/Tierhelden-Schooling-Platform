@@ -17,6 +17,7 @@ model Course {
   imageUrl    String? @db.Text
   price       Float?
   isPublished Boolean @default(false)
+  course_quizzes Quiz[]
 
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
@@ -120,4 +121,129 @@ model StripeCustomer {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model User {
+  user_id       Int            @id @default(autoincrement())
+  email         String         @unique 
+  name          String        
+  user_role     UserRole   
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userAnswers   UserAnswer[]
+  quizAttempts  QuizAttempt[]
+  
+  @@map("users")
+}
+
+model Quiz {
+  quiz_id    Int        @id @default(autoincrement())
+  quiz_name  String
+  quiz_synopsis String
+  max_points Int
+  passing_points Int
+  questions  Question[]
+  quizAttempts  QuizAttempt[]
+  userAnswers UserAnswer[]
+
+  course_id      String
+  course         Course       @relation(fields: [course_id], references: [id])
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("quiz")
+}
+
+model Question {
+  question_id   Int       @id @default(autoincrement())
+  question_text String
+  question_type QuestionType
+  question_pic  String?
+  answer_selection_type AnswerSelectionType
+  correct_answers Int
+  message_for_correct_answer String?
+  message_for_incorrect_answer String?
+  explanation   String?
+  is_knockout   Boolean
+  points        Int
+  quiz_id       Int
+  quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
+  answers       Answer[]
+  userAnswers   UserAnswer[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([quiz_id])
+  @@map("questions")
+}
+
+model UserAnswer {
+  user_answer_id  Int         @id @default(autoincrement())
+  user_id         Int
+  quiz_attempt_id Int         
+  quiz_id         Int
+  question_id     Int
+  answer_id       Int?
+  selected_order  Int?        
+  answered_at     DateTime    @default(now())
+  
+  user      User       @relation(fields: [user_id], references: [user_id])
+  quiz      Quiz       @relation(fields: [quiz_id], references: [quiz_id])
+  quizAttempt QuizAttempt @relation(fields: [quiz_attempt_id], references: [quiz_attempt_id])
+  question  Question   @relation(fields: [question_id], references: [question_id])
+  answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
+  
+  @@index([quiz_attempt_id])
+  @@map("user_answers")
+}
+
+model Answer {
+  answer_id    Int      @id @default(autoincrement())
+  answer_text  String
+  answer_pic   String?
+  is_correct   Boolean
+  position     Int?
+  question_id  Int
+  userAnswers  UserAnswer[]
+  question     Question @relation(fields: [question_id], references: [question_id])
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([question_id])
+  @@map("answers")
+}
+
+model QuizAttempt {
+  quiz_attempt_id    Int          @id @default(autoincrement())
+  user_id       Int
+  quiz_id       Int
+  total_score   Int
+  passed        Boolean
+  attempt_at    DateTime     @default(now())
+  userAnswers   UserAnswer[]
+  
+  user          User         @relation(fields: [user_id], references: [user_id])
+  quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
+  
+  @@map("quiz_attempts")
+}
+
+enum QuestionType {
+  MULTIPLE
+  ORDER
+}
+
+enum AnswerSelectionType {
+  SINGLE
+  MULTIPLE
+}
+
+enum UserRole {
+  BETREUER
+  BERATERUNDBETREUER
+  BERATER
+  ADMIN
 }
