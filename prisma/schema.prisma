@@ -17,6 +17,7 @@ model Course {
   imageUrl    String? @db.Text
   price       Float?
   isPublished Boolean @default(false)
+  course_quizzes Quiz[]
 
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id])
@@ -143,6 +144,10 @@ model Quiz {
   passing_points Int
   questions  Question[]
   quizAttempts  QuizAttempt[]
+  userAnswers UserAnswer[]
+
+  course_id      String
+  course         Course       @relation(fields: [course_id], references: [id])
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -186,7 +191,7 @@ model UserAnswer {
   
   user      User       @relation(fields: [user_id], references: [user_id])
   quiz      Quiz       @relation(fields: [quiz_id], references: [quiz_id])
-  quizAttempt QuizAttempt @relation(fields: [quiz_attempt_id], references: [attempt_id])
+  quizAttempt QuizAttempt @relation(fields: [quiz_attempt_id], references: [quiz_attempt_id])
   question  Question   @relation(fields: [question_id], references: [question_id])
   answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
   
@@ -212,7 +217,7 @@ model Answer {
 }
 
 model QuizAttempt {
-  attempt_id    Int          @id @default(autoincrement())
+  quiz_attempt_id    Int          @id @default(autoincrement())
   user_id       Int
   quiz_id       Int
   total_score   Int
@@ -227,7 +232,7 @@ model QuizAttempt {
 }
 
 enum QuestionType {
-  MULTIPLECHOICE
+  MULTIPLE
   ORDER
 }
 
