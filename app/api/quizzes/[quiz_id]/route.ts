@@ -5,7 +5,7 @@
 // TODO: Wie wird die Quiz ID in der URL übergeben? String, Int?
 // TODO: Welche Daten sollen aktualisiert werden?
 
-// app/api/quizzes/[quizId]/route.ts
+// app/api/quizzes/[quiz_id]/route.ts
 
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
