@@ -124,7 +124,7 @@ model StripeCustomer {
 }
 
 model User {
-  user_id       Int            @id @default(autoincrement())
+  user_id       String         @id @default(uuid())
   email         String         @unique 
   name          String        
   user_role     UserRole   
