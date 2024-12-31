@@ -182,7 +182,7 @@ model Question {
 
 model UserAnswer {
   user_answer_id  Int         @id @default(autoincrement())
-  user_id         Int
+  user_id         String
   quiz_attempt_id Int         
   quiz_id         Int
   question_id     Int
@@ -219,7 +219,7 @@ model Answer {
 
 model QuizAttempt {
   quiz_attempt_id    Int          @id @default(autoincrement())
-  user_id       Int
+  user_id       String
   quiz_id       Int
   total_score   Int
   passed        Boolean
