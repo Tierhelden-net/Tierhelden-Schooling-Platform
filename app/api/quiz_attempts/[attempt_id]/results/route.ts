@@ -1,0 +1,1 @@
+// GET: Ergebnisse eines Quiz-Versuchs abrufen
