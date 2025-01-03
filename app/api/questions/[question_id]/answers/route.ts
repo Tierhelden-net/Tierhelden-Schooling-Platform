@@ -1,5 +1,5 @@
-// POST: Antwort erstellen - TODO
-// GET: Alle Antworten für eine Frage abrufen - TODO
+// POST: Antwort erstellen
+// GET: Alle Antworten für eine Frage abrufen 
 
 // app/api/questions/[questionId]/answers/route.ts
 
