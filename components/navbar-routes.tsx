@@ -20,6 +20,22 @@ export const NavbarRoutes = () => {
   const isCoursePage = pathname?.includes("/courses");
   const isSearchPage = pathname === "/search";
 
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const fetchIsAdmin = async () => {
+      const result = await isTeacher(userId);
+      setIsAdmin(result);
+    };
+
+    fetchIsAdmin();
+  }, [userId]);
+
+  if (isAdmin === null) {
+    // noch am Laden...
+    return <p>Wird geprüft...</p>;
+  }
+
   const [isUserTeacher, setIsUserTeacher] = useState<boolean | null>(null); // Status des Lehrers
   const [isLoading, setIsLoading] = useState(true); // Ladezustand
 
