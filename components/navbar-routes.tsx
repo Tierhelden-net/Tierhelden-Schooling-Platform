@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { isTeacher } from "@/lib/teacher";
+import React, { useState, useEffect } from "react";
 
 import { SearchInput } from "./search-input";
 
@@ -19,6 +20,22 @@ export const NavbarRoutes = () => {
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.includes("/courses");
   const isSearchPage = pathname === "/search";
+
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const fetchIsAdmin = async () => {
+      const result = await isTeacher(userId);
+      setIsAdmin(result);
+    };
+
+    fetchIsAdmin();
+  }, [userId]);
+
+  if (isAdmin === null) {
+    // noch am Laden...
+    return <p>Wird geprüft...</p>;
+  }
 
   return (
     <>
@@ -38,7 +55,7 @@ export const NavbarRoutes = () => {
               Zurück
             </Button>
           </Link>
-        ) : isTeacher(userId) ? (
+        ) : isAdmin ? (
           <Link href="/teacher/courses">
             <Button size="sm" variant="ghost">
               Admin-Bereich
@@ -50,3 +67,5 @@ export const NavbarRoutes = () => {
     </>
   );
 };
+
+////////
