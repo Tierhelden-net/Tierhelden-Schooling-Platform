@@ -125,9 +125,9 @@ model StripeCustomer {
 
 model User {
   user_id       String         @id @default(uuid())
-  email         String         @unique 
-  name          String        
-  user_role     UserRole   
+  email         String?         @unique 
+  name          String?        
+  user_role     UserRole?   
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   userAnswers   UserAnswer[]

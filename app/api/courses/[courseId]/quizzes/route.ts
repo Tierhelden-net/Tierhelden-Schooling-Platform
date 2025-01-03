@@ -1,5 +1,6 @@
 // POST: Create a new quiz for a course
 // GET: Get ALL quizzes for a course 
+
 // Offene Frage: Sollten hier tatsächlich ALLE Quizzes für einen Kurs abgerufen werden?
 // Genügt es nach der course_id zu filtern oder brauchen wir weitere Filter?
 // Ist es egal, wie course_id benannt ist? Wenn nein, muss es
