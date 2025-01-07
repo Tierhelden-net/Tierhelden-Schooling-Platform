@@ -1,34 +1,23 @@
 /* export const isTeacher = (userId?: string | null) => {
   return process.env.NEXT_PUBLIC_TEACHER_ID.includes(userId);
-}; */
+} */
 
-import { db } from "@/lib/db";
-import { UserRole, User } from "@prisma/client";
+// Import des Prisma-Clients, der in der Datei prismaClient.ts definiert ist
+import prisma from './prismaClient';
 
-export const isTeacher = async (userId?: string | null) => {
+// Funktion, die prüft, ob ein Benutzer ein teacher/admin ist
+// async, da die Funktion auf die Datenbankabfrage warten muss
+export const isTeacher = async (userId) => {
   try {
-    if (!userId) {
-      return false;
-    }
-
-    const user = await db.user.findUnique({
-      // Find the unique user by userId
-      where: {
-        user_id: userId,
-      },
-    });
-
-    // Check if the user is a teacher/admin
-    if (!user || user.user_role !== UserRole.ADMIN) {
-      // Return false if the user is not a teacher/admin
-      return false;
-    }
-
-    // Return true if the user is a teacher/admin
-    return !!(user.user_role === UserRole.ADMIN);
+    // Nutze $quereRaw von Prisma, um eine SQL-Abfrage auszuführen
+    // das Ergebnis ist ein Array von Objekten, welches als result gespeichert wird
+    // Beispiel: [{ is_teacher: true }]
+    const result = await prisma.$queryRaw`SELECT public.is_teacher(${userId}) AS is_teacher`;
+    // Gib den Wert des is_teacher Feldes des ersten Objekts zurück
+    return result[0]?.is_teacher;
   } catch (error) {
-    // Catch any errors
-    console.log("[CHECK_IS_TEACHER_ERROR]", error);
+    console.error('Fehler beim Aufrufen der is_teacher Funktion:', error);
     return false;
   }
 };
+

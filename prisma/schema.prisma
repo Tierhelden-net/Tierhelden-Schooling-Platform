@@ -248,3 +248,8 @@ enum UserRole {
   BERATER
   ADMIN
 }
+
+model is_teacher {
+  user_id @id 
+  is_teacher boolean
+}
