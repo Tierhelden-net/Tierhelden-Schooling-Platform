@@ -2,22 +2,23 @@
   return process.env.NEXT_PUBLIC_TEACHER_ID.includes(userId);
 } */
 
-// Import des Prisma-Clients, der in der Datei prismaClient.ts definiert ist
-import prisma from './prismaClient';
+import { supabase } from "@/lib/supabaseClient";
 
-// Funktion, die prüft, ob ein Benutzer ein teacher/admin ist
-// async, da die Funktion auf die Datenbankabfrage warten muss
-export const isTeacher = async (userId) => {
+export const isTeacher = async (userId: string): Promise<boolean> => {
   try {
-    // Nutze $quereRaw von Prisma, um eine SQL-Abfrage auszuführen
-    // das Ergebnis ist ein Array von Objekten, welches als result gespeichert wird
-    // Beispiel: [{ is_teacher: true }]
-    const result = await prisma.$queryRaw`SELECT public.is_teacher(${userId}) AS is_teacher`;
-    // Gib den Wert des is_teacher Feldes des ersten Objekts zurück
-    return result[0]?.is_teacher;
+    const { data, error } = await supabase.rpc("is_teacher", { p_user_id: userId });
+
+    if (error) {
+      console.error("Supabase RPC Error:", error);
+      throw error;
+    }
+
+    console.log("Supabase RPC Result:", data); // Debugging
+    return Boolean(data); // Rückgabe als boolean
   } catch (error) {
-    console.error('Fehler beim Aufrufen der is_teacher Funktion:', error);
+    console.error("Error in isTeacher function:", error);
     return false;
   }
 };
+
 
