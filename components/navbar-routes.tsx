@@ -4,18 +4,11 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-// Entferne den alten isTeacher Import
-// import { isTeacher } from "@/lib/teacher";
-
+import { isTeacher } from "@/lib/teacher";
 import { SearchInput } from "./search-input";
-
-// import ThemeToggle from "@/components/ThemeToggle";
-
-// Importiere die neue isTeacher Funktion
-import { useEffect, useState } from "react";
-import { isTeacher as checkIfTeacher } from "@/lib/teacher";
 
 export const NavbarRoutes = () => {
   const { userId } = useAuth();
@@ -25,66 +18,66 @@ export const NavbarRoutes = () => {
   const isCoursePage = pathname?.includes("/courses");
   const isSearchPage = pathname === "/search";
 
-  const [isTeacher, setIsTeacher] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isUserTeacher, setIsUserTeacher] = useState<boolean | null>(null); // Status des Lehrers
+  const [isLoading, setIsLoading] = useState(true); // Ladezustand
 
   useEffect(() => {
     const fetchTeacherStatus = async () => {
-      if (!userId) {
-        setIsTeacher(false);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const teacherStatus = await checkIfTeacher(userId);
-        setIsTeacher(teacherStatus);
-      } catch (err) {
-        console.error("Fehler beim Überprüfen des Lehrerstatus:", err);
-        setError("Ein Fehler ist aufgetreten.");
-      } finally {
-        setLoading(false);
+      if (userId) {
+        console.log("Fetching teacher status for userId:", userId);
+        setIsLoading(true);
+        try {
+          const teacherStatus = await isTeacher(userId);
+          console.log("Teacher status fetched:", teacherStatus);
+          setIsUserTeacher(teacherStatus);
+        } catch (error) {
+          console.error("Error fetching teacher status:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        console.log("No userId available.");
+        setIsUserTeacher(false);
+        setIsLoading(false);
       }
     };
 
     fetchTeacherStatus();
   }, [userId]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-between">
-        {/* Hier kannst du einen ansprechenden Ladeindikator einfügen */}
-        <p>Lade...</p>
-      </div>
-    );
+  if (!userId) {
+    console.log("User not logged in or userId not available.");
+    return null;
   }
 
-  return (
-    <>
-      {isSearchPage && (
-        <div className="hidden md:block">
-          <SearchInput />
-        </div>
-      )}
-      <div className="flex gap-x-2 ml-auto">
-        {isTeacherPage || isCoursePage ? (
-          <Link href="/">
-            <Button size="sm" variant="ghost">
-              <LogOut className="h-4 w-4 mr-2" />
-              Zurück
-            </Button>
-          </Link>
-        ) : isTeacher ? (
-          <Link href="/teacher/courses">
-            <Button size="sm" variant="ghost">
-              Admin-Bereich
-            </Button>
-          </Link>
-        ) : null}
-        <UserButton afterSignOutUrl="/" />
+  if (isLoading) {
+    return <div>Laden...</div>;
+  }
+
+return (
+  <>
+    {isSearchPage && (
+      <div className="hidden md:block">
+        <SearchInput />
       </div>
-      {error && <p className="text-red-500">Fehler: {error}</p>}
-    </>
-  );
+    )}
+    <div className="flex gap-x-2 ml-auto">
+      {isTeacherPage || isCoursePage ? (
+        <Link href="/">
+          <Button size="sm" variant="ghost">
+            <LogOut className="h-4 w-4 mr-2" />
+            Zurück
+          </Button>
+        </Link>
+      ) : isUserTeacher === true ? (
+        <Link href="/teacher/courses">
+          <Button size="sm" variant="ghost">
+            Admin-Bereich
+          </Button>
+        </Link>
+      ) : null}
+      <UserButton afterSignOutUrl="/" />
+    </div>
+  </>
+);
 };
