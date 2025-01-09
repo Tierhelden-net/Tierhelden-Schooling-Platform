@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { isTeacher } from "@/lib/teacher";
 import { SearchInput } from "./search-input";
 
-import ThemeToggle from "@/components/ThemeToggle";
-
 export const NavbarRoutes = () => {
   const { userId } = useAuth();
   const pathname = usePathname();
@@ -19,22 +17,6 @@ export const NavbarRoutes = () => {
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.includes("/courses");
   const isSearchPage = pathname === "/search";
-
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const fetchIsAdmin = async () => {
-      const result = await isTeacher(userId);
-      setIsAdmin(result);
-    };
-
-    fetchIsAdmin();
-  }, [userId]);
-
-  if (isAdmin === null) {
-    // noch am Laden...
-    return <p>Wird geprüft...</p>;
-  }
 
   const [isUserTeacher, setIsUserTeacher] = useState<boolean | null>(null); // Status des Lehrers
   const [isLoading, setIsLoading] = useState(true); // Ladezustand
@@ -99,5 +81,6 @@ return (
   </>
 );
 };
+
 
 ////////
