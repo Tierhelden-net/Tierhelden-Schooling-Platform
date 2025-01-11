@@ -172,7 +172,7 @@ export const NavbarRoutes = () => {
       try {
         // Verwende fetch, um eine Anfrage an den Server zu senden
         // Nutze await, da wir auf die Antwort des Servers warten müssen
-        const response = await fetch(`/api/isTeacher`, {
+        const response = await fetch(`/api/users/isTeacher`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
