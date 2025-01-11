@@ -1,3 +1,4 @@
+
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
@@ -125,22 +126,22 @@ model StripeCustomer {
 
 model User {
   user_id       String         @id @default(uuid())
-  email         String?         @unique 
+  email         String?        @unique 
   name          String?        
-  user_role     UserRole?   
+  user_role     UserRole? 
+
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  
   userAnswers   UserAnswer[]
   quizAttempts  QuizAttempt[]
-  
-  @@map("users")
 }
 
 model Quiz {
   quiz_id    Int        @id @default(autoincrement())
-  userId     String
-  quiz_name  String
+  quiz_name  String?
   quiz_synopsis String?
+  quit_category QuizCategory?
   max_points Int?
   passing_points Int?
   questions  Question[]
@@ -150,34 +151,37 @@ model Quiz {
   course_id      String
   course         Course       @relation(fields: [course_id], references: [id])
 
+  createdBy  String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-
-  @@map("quiz")
 }
 
 model Question {
-  question_id   Int       @id @default(autoincrement())
-  question_text String
-  question_type QuestionType
-  question_pic  String?
-  answer_selection_type AnswerSelectionType
-  correct_answers Int
-  message_for_correct_answer String?
-  message_for_incorrect_answer String?
-  explanation   String?
-  is_knockout   Boolean
-  points        Int
+  question_id                   Int       @id @default(autoincrement())
+  question_title                String?
+  question_text                 String?
+  question_type                 QuestionType?
+  question_pic                  String?
+  question_video                String?
+  answer_selection_type         AnswerSelectionType?
+  correct_answers               Int?
+  message_for_correct_answer    String?
+  message_for_incorrect_answer  String?
+  explanation                   String?
+  is_knockout                   Boolean?
+  points                        Int
+
   quiz_id       Int
   quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
+
   answers       Answer[]
   userAnswers   UserAnswer[]
 
+  createdBy     String 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([quiz_id])
-  @@map("questions")
 }
 
 model UserAnswer {
@@ -202,19 +206,21 @@ model UserAnswer {
 
 model Answer {
   answer_id    Int      @id @default(autoincrement())
-  answer_text  String
+  answer_text  String?
   answer_pic   String?
+  answer_video String?
   is_correct   Boolean
   position     Int?
+
   question_id  Int
-  userAnswers  UserAnswer[]
   question     Question @relation(fields: [question_id], references: [question_id])
+
+  userAnswers  UserAnswer[]
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   @@index([question_id])
-  @@map("answers")
 }
 
 model QuizAttempt {
@@ -249,7 +255,6 @@ enum UserRole {
   ADMIN
 }
 
-model is_teacher {
-  user_id @id 
-  is_teacher boolean
+enum QuizCategory {
+  EXAM
 }
