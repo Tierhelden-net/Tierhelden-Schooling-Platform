@@ -1,4 +1,3 @@
-
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
@@ -11,21 +10,21 @@ generator client {
 }
 
 model Course {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
-  title       String  @db.Text
-  description String? @db.Text
-  imageUrl    String? @db.Text
+  title       String    @db.Text
+  description String?   @db.Text
+  imageUrl    String?   @db.Text
   price       Float?
-  isPublished Boolean @default(false)
-  course_quizzes Quiz[]
+  isPublished Boolean   @default(false)
 
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  category   Category?  @relation(fields: [categoryId], references: [id])
 
   chapters    Chapter[]
   attachments Attachment[]
   purchases   Purchase[]
+  quizzes     CourseQuiz[]    @relation("CourseToCourseQuiz")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -138,22 +137,34 @@ model User {
 }
 
 model Quiz {
-  quiz_id    Int        @id @default(autoincrement())
-  quiz_name  String?
-  quiz_synopsis String?
-  quit_category QuizCategory?
-  max_points Int?
-  passing_points Int?
-  questions  Question[]
-  quizAttempts  QuizAttempt[]
-  userAnswers UserAnswer[]
+  quiz_id         Int        @id @default(autoincrement())
+  quiz_name       String?
+  quiz_synopsis   String?
+  quit_category   QuizCategory?
+  max_points      Int?
+  passing_points  Int?
 
-  course_id      String
-  course         Course       @relation(fields: [course_id], references: [id])
+  questions       Question[]
+  quizAttempts    QuizAttempt[]
+  userAnswers     UserAnswer[]
+  courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
 
   createdBy  String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+}
+
+model CourseQuiz {
+  id        Int    @id @default(autoincrement())
+  quiz_id   Int
+  course_id String
+
+  quiz      Quiz   @relation("QuizToCourseQuiz", fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
+  course    Course @relation("CourseToCourseQuiz", fields: [course_id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([quiz_id, course_id])
 }
 
 model Question {
