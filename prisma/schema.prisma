@@ -1,3 +1,4 @@
+
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
@@ -17,9 +18,10 @@ model Course {
   imageUrl    String? @db.Text
   price       Float?
   isPublished Boolean @default(false)
+  course_quizzes Quiz[]
 
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
 
   chapters    Chapter[]
   attachments Attachment[]
@@ -120,4 +122,139 @@ model StripeCustomer {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model User {
+  user_id       String         @id @default(uuid())
+  email         String?        @unique 
+  name          String?        
+  user_role     UserRole? 
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  userAnswers   UserAnswer[]
+  quizAttempts  QuizAttempt[]
+}
+
+model Quiz {
+  quiz_id    Int        @id @default(autoincrement())
+  quiz_name  String?
+  quiz_synopsis String?
+  quit_category QuizCategory?
+  max_points Int?
+  passing_points Int?
+  questions  Question[]
+  quizAttempts  QuizAttempt[]
+  userAnswers UserAnswer[]
+
+  course_id      String
+  course         Course       @relation(fields: [course_id], references: [id])
+
+  createdBy  String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Question {
+  question_id                   Int       @id @default(autoincrement())
+  question_title                String?
+  question_text                 String?
+  question_type                 QuestionType?
+  question_pic                  String?
+  question_video                String?
+  answer_selection_type         AnswerSelectionType?
+  correct_answers               Int?
+  message_for_correct_answer    String?
+  message_for_incorrect_answer  String?
+  explanation                   String?
+  is_knockout                   Boolean?
+  points                        Int
+
+  quiz_id       Int
+  quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
+
+  answers       Answer[]
+  userAnswers   UserAnswer[]
+
+  createdBy     String 
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([quiz_id])
+}
+
+model UserAnswer {
+  user_answer_id  Int         @id @default(autoincrement())
+  user_id         String
+  quiz_attempt_id Int         
+  quiz_id         Int
+  question_id     Int
+  answer_id       Int?
+  selected_order  Int?        
+  answered_at     DateTime    @default(now())
+  
+  user      User       @relation(fields: [user_id], references: [user_id])
+  quiz      Quiz       @relation(fields: [quiz_id], references: [quiz_id])
+  quizAttempt QuizAttempt @relation(fields: [quiz_attempt_id], references: [quiz_attempt_id])
+  question  Question   @relation(fields: [question_id], references: [question_id])
+  answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
+  
+  @@index([quiz_attempt_id])
+  @@map("user_answers")
+}
+
+model Answer {
+  answer_id    Int      @id @default(autoincrement())
+  answer_text  String?
+  answer_pic   String?
+  answer_video String?
+  is_correct   Boolean
+  position     Int?
+
+  question_id  Int
+  question     Question @relation(fields: [question_id], references: [question_id])
+
+  userAnswers  UserAnswer[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([question_id])
+}
+
+model QuizAttempt {
+  quiz_attempt_id    Int          @id @default(autoincrement())
+  user_id       String
+  quiz_id       Int
+  total_score   Int
+  passed        Boolean
+  attempt_at    DateTime     @default(now())
+  userAnswers   UserAnswer[]
+  
+  user          User         @relation(fields: [user_id], references: [user_id])
+  quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
+  
+  @@map("quiz_attempts")
+}
+
+enum QuestionType {
+  MULTIPLE
+  ORDER
+}
+
+enum AnswerSelectionType {
+  SINGLE
+  MULTIPLE
+}
+
+enum UserRole {
+  BETREUER
+  BERATERUNDBETREUER
+  BERATER
+  ADMIN
+}
+
+enum QuizCategory {
+  EXAM
 }

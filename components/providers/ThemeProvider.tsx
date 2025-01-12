@@ -10,7 +10,7 @@ const ThemeContext = createContext({
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // Check for saved theme in localStorage or system preference
   const [isDarkMode, setIsDarkMode] = useState(
-    !!(window.localStorage.getItem("theme") === "dark") ||
+    window.localStorage.getItem("isDarkMode") ||
       window.matchMedia("(prefers-color-scheme: dark)").matches
   );
 
@@ -26,6 +26,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isDarkMode]);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
+
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
       {children}
