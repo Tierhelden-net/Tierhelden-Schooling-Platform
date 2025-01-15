@@ -8,37 +8,35 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter } from "@prisma/client";
+import { Question } from "@prisma/client";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Editor } from "@/components/editor";
-import { Preview } from "@/components/preview";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
-interface QuestionAccessFormProps {
-  initialData: Chapter;
-  courseId: string;
-  chapterId: string;
+interface PointsFormProps {
+  initialData: Question;
+  quizId: number;
+  questionId: string;
 }
 
 const formSchema = z.object({
-  isFree: z.boolean().default(false),
+  points: z.coerce.number(),
 });
 
-export const QuestionAccessForm = ({
+export const PointsForm = ({
   initialData,
-  courseId,
-  chapterId,
-}: QuestionAccessFormProps) => {
+  quizId,
+  questionId,
+}: PointsFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -48,19 +46,21 @@ export const QuestionAccessForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      isFree: !!initialData.isFree,
+      points: initialData?.points || undefined,
     },
   });
+
+  //Todo: max_points of question get counted with each added question
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}`,
         values
       );
-      toast.success("Chapter updated");
+      toast.success("Question points updated");
       toggleEdit();
       router.refresh();
     } catch {
@@ -71,14 +71,14 @@ export const QuestionAccessForm = ({
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
-        Chapter access
+        Punkte für diese Frage
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit access
+              Punkte bearbeiten
             </>
           )}
         </Button>
@@ -87,14 +87,12 @@ export const QuestionAccessForm = ({
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.isFree && "text-slate-500 italic"
+            !initialData.points && "text-slate-500 italic"
           )}
         >
-          {initialData.isFree ? (
-            <>This chapter is free for preview.</>
-          ) : (
-            <>This chapter is not free.</>
-          )}
+          {initialData.points
+            ? `${initialData.points} Punkte`
+            : "Keine Punkte."}
         </p>
       )}
       {isEditing && (
@@ -105,27 +103,26 @@ export const QuestionAccessForm = ({
           >
             <FormField
               control={form.control}
-              name="isFree"
+              name="points"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem>
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
+                    <Input
+                      type="number"
+                      step="1"
+                      disabled={isSubmitting}
+                      placeholder="Set some points for that question..."
+                      {...field}
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormDescription>
-                      Check this box if you want to make this chapter free for
-                      preview
-                    </FormDescription>
-                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
+
             <div className="flex items-center gap-x-2">
               <Button disabled={!isValid || isSubmitting} type="submit">
-                Save
+                Speichern
               </Button>
             </div>
           </form>

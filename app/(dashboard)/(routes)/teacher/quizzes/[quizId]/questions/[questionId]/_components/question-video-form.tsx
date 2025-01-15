@@ -15,8 +15,8 @@ import { FileUpload } from "@/components/file-upload";
 
 interface QuestionVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
-  courseId: string;
-  chapterId: string;
+  quizId: number;
+  questionId: string;
 }
 
 const formSchema = z.object({
@@ -25,8 +25,8 @@ const formSchema = z.object({
 
 export const QuestionVideoForm = ({
   initialData,
-  courseId,
-  chapterId,
+  questionId,
+  quizId,
 }: QuestionVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -37,10 +37,10 @@ export const QuestionVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}`,
         values
       );
-      toast.success("Chapter updated");
+      toast.success("Question updated");
       toggleEdit();
       router.refresh();
     } catch {
@@ -51,7 +51,7 @@ export const QuestionVideoForm = ({
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
-        Chapter video
+        Question video
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && !initialData.videoUrl && (
@@ -89,7 +89,7 @@ export const QuestionVideoForm = ({
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-            Upload this chapter&apos;s video
+            Upload this question&apos;s video
           </div>
         </div>
       )}

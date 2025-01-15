@@ -4,15 +4,16 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
+import { Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Question } from "@prisma/client";
+import { Answer, Question } from "@prisma/client";
 
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -21,38 +22,49 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
+import { Checkbox } from "@/components/ui/checkbox";
+import { AnswersList } from "./answers-list";
 
-interface QuestionDescriptionFormProps {
-  initialData: Question;
+interface AnswerFormProps {
+  initialData: Question & { answers: Answer[] };
   quizId: number;
   questionId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1),
+  answer_text: z.string().min(1),
+  is_correct: z.boolean(),
+  answer_pic: z.string(),
 });
 
-export const QuestionDescriptionForm = ({
+export const AnswerForm = ({
   initialData,
   quizId,
   questionId,
-}: QuestionDescriptionFormProps) => {
+}: AnswerFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleCreating = () => {
+    setIsCreating((current) => !current);
+  };
 
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.question_text || "",
+      answer_text: "",
+      is_correct: false,
+      answer_pic: "",
     },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onEdit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
         `/api/quizzes/${quizId}/questions/${questionId}`,
@@ -66,35 +78,53 @@ export const QuestionDescriptionForm = ({
     }
   };
 
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await axios.post(
+        `/api/quizzes/${quizId}/questions/${questionId}`,
+        values
+      );
+      toast.success("Answer updated");
+      toggleCreating();
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
-        Quiz description
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing ? (
+        Answers
+        <Button onClick={toggleCreating} variant="ghost">
+          {isCreating ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit description
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Antwort erstellen
             </>
           )}
         </Button>
       </div>
-      {!isEditing && (
+      {!isCreating && (
         <div
           className={cn(
             "text-sm mt-2",
-            !initialData.question_text && "text-slate-500 italic"
+            !initialData.answers.length && "text-slate-500 italic"
           )}
         >
-          {!initialData.question_text && "No description"}
-          {initialData.question_text && (
-            <Preview value={initialData.question_text} />
-          )}
+          {!initialData.answers.length && "No Answers"}
+          {/* 
+          <AnswersList
+            onEdit={onEdit}
+            onReorder={onReorder}
+            items={initialData.questions || []}
+          />
+          */}
         </div>
       )}
-      {isEditing && (
+      {isCreating && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -102,13 +132,21 @@ export const QuestionDescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name="description"
+              name="isFree"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
-                    <Editor {...field} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <div className="space-y-1 leading-none">
+                    <FormDescription>
+                      Check this box if you want to make this chapter free for
+                      preview
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

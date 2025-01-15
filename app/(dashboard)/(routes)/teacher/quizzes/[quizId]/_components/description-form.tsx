@@ -53,7 +53,7 @@ export const DescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${quizId}`, values);
+      await axios.patch(`/api/quizzes/${quizId}`, values);
       toast.success("Quiz updated");
       toggleEdit();
       router.refresh();
