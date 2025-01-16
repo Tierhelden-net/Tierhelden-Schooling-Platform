@@ -110,45 +110,43 @@ const QuestionIdPage = async ({
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={LayoutDashboard} />
-                <h2 className="text-xl">Customize your question</h2>
-              </div>
-              <QuestionTitleForm
-                initialData={question}
-                quizId={params.quizId}
-                questionId={params.questionId}
-              />
-              <QuestionDescriptionForm
-                initialData={question}
-                quizId={params.quizId}
-                questionId={params.questionId}
-              />
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={LayoutDashboard} />
+              <h2 className="text-xl">Customize your question</h2>
             </div>
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={Video} />
-                <h2 className="text-xl">Add a video</h2>
-              </div>
-              <QuestionVideoForm
-                initialData={question}
-                questionId={params.questionId}
-                quizId={params.quizId}
-              />
+            <QuestionTitleForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
+            <QuestionDescriptionForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={Video} />
+              <h2 className="text-xl">Add a video</h2>
             </div>
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={ListChecks} />
-                <h2 className="text-xl">Answers</h2>
-              </div>
-              <AnswerForm
-                initialData={question}
-                questionId={params.questionId}
-                quizId={params.quizId}
-              />
+            <QuestionVideoForm
+              initialData={question}
+              questionId={params.questionId}
+              quizId={params.quizId}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={ListChecks} />
+              <h2 className="text-xl">Answers</h2>
             </div>
+            <AnswerForm
+              initialData={question}
+              questionId={params.questionId}
+              quizId={params.quizId}
+            />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
@@ -162,7 +160,7 @@ const QuestionIdPage = async ({
             />
           </div>
 
-          <div>
+          <div className="md:col-span-2">
             <div className="flex items-center gap-x-2">
               <IconBadge icon={MessageSquare} />
               <h2 className="text-xl">Add message for answers</h2>
