@@ -4,10 +4,10 @@ import { UserButton, useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { isTeacher } from "@/lib/teacher";
-
 import { SearchInput } from "./search-input";
 
 import ThemeToggle from "@/components/ThemeToggle";
