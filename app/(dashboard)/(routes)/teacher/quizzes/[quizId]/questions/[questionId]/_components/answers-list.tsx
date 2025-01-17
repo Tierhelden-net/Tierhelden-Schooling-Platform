@@ -8,7 +8,7 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Grip, Pencil } from "lucide-react";
+import { Check, Grip, Pencil, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -21,9 +21,9 @@ interface AnswersListProps {
 
 export const AnswersList = ({
   items,
-  //onReorder,
   onEdit,
-}: AnswersListProps) => {
+}: //onReorder,
+AnswersListProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [answers, setAnswers] = useState(items);
 
@@ -66,22 +66,22 @@ export const AnswersList = ({
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="questions">
+    <DragDropContext //onDragEnd={onDragEnd}
+    >
+      <Droppable droppableId="answers">
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {questions.map((question, index) => (
+            {answers.map((answer, index) => (
               <Draggable
-                key={question.question_id}
-                draggableId={question.question_id.toString()}
+                key={answer.answer_id}
+                draggableId={answer.answer_id.toString()}
                 index={index}
               >
                 {(provided) => (
                   <div
                     className={cn(
                       "flex items-center gap-x-2 bg-input border-input border text-accent-foreground rounded-md mb-4 text-sm",
-                      question.isPublished &&
-                        "bg-muted border-input text-orange-700"
+                      answer.is_correct && "border-input text-green-700"
                     )}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -89,26 +89,19 @@ export const AnswersList = ({
                     <div
                       className={cn(
                         "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
-                        question.isPublished &&
-                          "border-r-orange-700 hover:bg-orange-700/30"
+                        answer.is_correct &&
+                          "border-r-green-700 hover:bg-green-700/30"
                       )}
                       {...provided.dragHandleProps}
                     >
                       <Grip className="h-5 w-5" />
                     </div>
-                    {question.question_text}
+                    {answer.answer_text}
                     <div className="ml-auto pr-2 flex items-center gap-x-2">
-                      {question.is_knockout && <Badge>Knockout</Badge>}
-                      <Badge
-                        className={cn(
-                          "bg-slate-500",
-                          question.isPublished && "bg-primary"
-                        )}
-                      >
-                        {question.isPublished ? "Veröffentlicht" : "Entwurf"}
-                      </Badge>
+                      {answer.is_correct ? <Check></Check> : <X></X>}
+
                       <Pencil
-                        onClick={() => onEdit(question.question_id.toString())}
+                        onClick={() => onEdit(answer.answer_id.toString())}
                         className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
                       />
                     </div>

@@ -24,6 +24,7 @@ import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnswersList } from "./answers-list";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AnswerFormProps {
   initialData: Question & { answers: Answer[] };
@@ -42,11 +43,8 @@ export const AnswerForm = ({
   quizId,
   questionId,
 }: AnswerFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-
-  const toggleEdit = () => setIsEditing((current) => !current);
   const toggleCreating = () => {
     setIsCreating((current) => !current);
   };
@@ -64,18 +62,8 @@ export const AnswerForm = ({
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onEdit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
-        values
-      );
-      toast.success("Question updated");
-      toggleEdit();
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong");
-    }
+  const onEdit = (id: string) => {
+    toggleCreating();
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -84,7 +72,7 @@ export const AnswerForm = ({
         `/api/quizzes/${quizId}/questions/${questionId}`,
         values
       );
-      toast.success("Answer updated");
+      toast.success("Answer created");
       toggleCreating();
       router.refresh();
     } catch {
@@ -115,13 +103,13 @@ export const AnswerForm = ({
           )}
         >
           {!initialData.answers.length && "No Answers"}
-          {/* 
-          <AnswersList
-            onEdit={onEdit}
-            onReorder={onReorder}
-            items={initialData.questions || []}
-          />
-          */}
+          {
+            <AnswersList
+              //onReorder={onReorder}
+              items={initialData.answers || []}
+              onEdit={onEdit}
+            />
+          }
         </div>
       )}
       {isCreating && (
@@ -132,7 +120,22 @@ export const AnswerForm = ({
           >
             <FormField
               control={form.control}
-              name="isFree"
+              name="answer_text"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      disabled={isSubmitting}
+                      placeholder="e.g. 'the answer is...'"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="is_correct"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
@@ -142,10 +145,7 @@ export const AnswerForm = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormDescription>
-                      Check this box if you want to make this chapter free for
-                      preview
-                    </FormDescription>
+                    <FormDescription>answer is correct?</FormDescription>
                   </div>
                 </FormItem>
               )}

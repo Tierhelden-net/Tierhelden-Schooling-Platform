@@ -55,7 +55,22 @@ const QuestionIdPage = async ({
     isPublished: true,
     videoUrl: "",
     question_pic: "",
-    answers: [],
+    answers: [
+      {
+        answer_id: 1,
+        answer_text: "yes",
+        answer_pic: "",
+        is_correct: true,
+        position: null,
+      },
+      {
+        answer_id: 2,
+        answer_text: "no",
+        answer_pic: "",
+        is_correct: false,
+        position: null,
+      },
+    ],
   };
 
   if (!question) {

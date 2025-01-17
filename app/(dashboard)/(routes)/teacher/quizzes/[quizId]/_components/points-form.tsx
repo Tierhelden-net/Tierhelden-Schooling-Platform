@@ -13,6 +13,7 @@ import { Quiz } from "@prisma/client";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,6 +35,7 @@ const formSchema = z.object({
 
 export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [passingPoints, setPassingPoints] = useState(0);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -99,20 +101,27 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
               name="passing_points"
               render={({ field }) => (
                 <FormItem>
+                  <FormDescription>
+                    Wieviele Punkte braucht es zum Bestehen?
+                  </FormDescription>
                   <FormControl>
                     <Input
-                      type="number"
-                      step="1"
-                      max={initialData.max_points}
+                      type="range"
+                      step="0.5"
+                      min="0"
+                      max={initialData.max_points || 0}
+                      value={passingPoints}
+                      onChangeCapture={(e) => setPassingPoints(e.target.value)}
                       disabled={isSubmitting}
-                      placeholder="Set a minimum amount of points to pass the quiz."
                       {...field}
                     />
                   </FormControl>
                   <FormLabel
                     htmlFor="passing_points"
                     className={cn("ml-2 text-slate-400")}
-                  >{`Gesamt: ${initialData.max_points}`}</FormLabel>
+                  >{`${
+                    passingPoints + " / " + initialData.max_points
+                  }`}</FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
