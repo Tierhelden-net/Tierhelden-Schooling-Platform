@@ -27,24 +27,26 @@ export async function POST(request: NextRequest, { params }: { params: { quiz_id
         );
     }
     
-    const quizId = parseInt(params.quiz_id, 10);
+    const quiz_id = parseInt(params.quiz_id, 10);
 
     // Extrahiere den JSON-Body der Anfrage
     const body = await request.json();
     
     // Extrahiere quiz_name aus dem Body
-    const { questionTitle } = body;
+    const { question_title } = body;
 
     const newQuestion = await db.question.create({
       data: {
-        quiz_id: quizId,
+        quiz_id: quiz_id,
         createdBy: userId,
-        question_title: questionTitle,
+        question_title: question_title,
       },
     });
 
     return NextResponse.json(
-      { message: "Quiz created successfully", quiz: newQuestion },
+      { message: "Quiz created successfully", 
+        question_title: newQuestion.question_title,
+        question: newQuestion },
       { status: 201 }
     );
   } catch (error) {

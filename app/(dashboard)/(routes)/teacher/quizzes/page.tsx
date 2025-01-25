@@ -24,6 +24,10 @@ const QuizzesPage = async () => {
   */
 
   const quizzes = await db.quiz.findMany({
+    include: {
+      questions: {
+      },
+    },
   });
 
   /* const quizzes = [

@@ -29,7 +29,7 @@ interface QuestionsFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  question_title: z.string().min(1),
 });
 
 export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
@@ -45,7 +45,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      question_title: "",
     },
   });
 
@@ -53,7 +53,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/quizzes/${quizId}/questions`, values);
+      await axios.post(`/api/quizzes/${quizId}/questions/create`, values);
       toast.success("Question created");
       toggleCreating();
       router.refresh();
@@ -110,7 +110,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="question_title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
