@@ -139,7 +139,8 @@ model User {
 
 model Quiz {
   quiz_id    Int        @id @default(autoincrement())
-  quiz_name  String?
+  userId     String
+  quiz_name  String
   quiz_synopsis String?
   quit_category QuizCategory?
   max_points Int?
@@ -151,7 +152,6 @@ model Quiz {
   course_id      String
   course         Course       @relation(fields: [course_id], references: [id])
 
-  createdBy  String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -201,7 +201,6 @@ model UserAnswer {
   answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
   
   @@index([quiz_attempt_id])
-  @@map("user_answers")
 }
 
 model Answer {
@@ -216,7 +215,7 @@ model Answer {
   question     Question @relation(fields: [question_id], references: [question_id])
 
   userAnswers  UserAnswer[]
-
+  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -234,8 +233,6 @@ model QuizAttempt {
   
   user          User         @relation(fields: [user_id], references: [user_id])
   quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
-  
-  @@map("quiz_attempts")
 }
 
 enum QuestionType {

@@ -39,9 +39,9 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.post("/api/courses", values);
-      router.push(`/teacher/courses/${response.data.id}`);
-      toast.success("Course created");
+      const response = await axios.post("/api/quiz", values);
+      router.push(`/teacher/quizzes/${response.data.id}`);
+      toast.success("Quiz created");
     } catch {
       toast.error("Something went wrong");
     }
@@ -50,7 +50,7 @@ const CreatePage = () => {
   return (
     <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
       <div>
-        <h1 className="text-2xl">Gib deinem Kurs einen Namen</h1>
+        <h1 className="text-2xl">Gib deinem Quiz einen Namen</h1>
         <p className="text-sm text-slate-600">
           Keine Sorge, du kannst ihn später noch ändern.
         </p>
@@ -73,7 +73,7 @@ const CreatePage = () => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Link href="/teacher/courses">
+              <Link href="/teacher/quizzes">
                 <Button type="button" variant="ghost">
                   Abbrechen
                 </Button>
