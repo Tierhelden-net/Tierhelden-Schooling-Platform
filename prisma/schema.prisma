@@ -149,7 +149,6 @@ model Quiz {
   userAnswers     UserAnswer[]
   courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
 
-  createdBy  String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -212,7 +211,6 @@ model UserAnswer {
   answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
   
   @@index([quiz_attempt_id])
-  @@map("user_answers")
 }
 
 model Answer {
@@ -227,7 +225,7 @@ model Answer {
   question     Question @relation(fields: [question_id], references: [question_id])
 
   userAnswers  UserAnswer[]
-
+  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -245,8 +243,6 @@ model QuizAttempt {
   
   user          User         @relation(fields: [user_id], references: [user_id])
   quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
-  
-  @@map("quiz_attempts")
 }
 
 enum QuestionType {
