@@ -33,13 +33,19 @@ export async function POST(request: NextRequest) {
         createdBy: userId,
         quiz_name: quizName,
       },
+      include: {
+        questions: true, // Einschließen der Fragen, auch wenn leer
+      },
     });
 
     return NextResponse.json(
       { 
         message: "Quiz created successfully", 
         quiz_id: newQuiz.quiz_id, 
-        quiz: newQuiz 
+        quiz: {
+            ...newQuiz,
+            questions: newQuiz.questions || [], // Sicherstellen, dass `questions` vorhanden ist
+          },
     },
       { status: 201 }
     );

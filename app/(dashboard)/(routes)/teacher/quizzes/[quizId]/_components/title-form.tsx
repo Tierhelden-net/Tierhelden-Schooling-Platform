@@ -21,13 +21,13 @@ import { Button } from "@/components/ui/button";
 
 interface TitleFormProps {
   initialData: {
-    title: string;
+    quiz_name: string;
   };
   quizId: number;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
+  quiz_name: z.string().min(1, {
     message: "Title is required",
   }),
 });
@@ -72,7 +72,7 @@ export const TitleForm = ({ initialData, quizId }: TitleFormProps) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && <p className="text-sm mt-2">{initialData.quiz_name}</p>}
       {isEditing && (
         <Form {...form}>
           <form
@@ -81,7 +81,7 @@ export const TitleForm = ({ initialData, quizId }: TitleFormProps) => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="quiz_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

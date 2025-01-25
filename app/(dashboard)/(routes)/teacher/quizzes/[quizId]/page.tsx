@@ -25,26 +25,18 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
     return redirect("/");
   }
 
-  /*
+  
   const quiz = await db.quiz.findUnique({
     where: {
-      id: params.quiz_id,
+      quiz_id: parseInt(params.quizId),
     },
     include: {
-      chapters: {
-        orderBy: {
-          position: "asc",
-        },
-      },
-      attachments: {
-        orderBy: {
-          createdAt: "desc",
-        },
+      questions: {
       },
     },
   });
-  */
-  const quiz = {
+  
+  /*const quiz = {
     quiz_id: 3,
     quiz_name: "Test-Quiz",
     title: "Test Quiz", //we need that!
@@ -63,7 +55,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
         is_knockout: true,
       },
     ],
-  };
+  };*/
 
   /*
   const categories = await db.category.findMany({
@@ -105,9 +97,13 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
+  const assigned_to_course = false;
+
+  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden, 
+  // wir haben dieses Feld nur noch nicht in der Datenbank
   return (
     <>
-      {!quiz.assigned_to_course && (
+      {!assigned_to_course && (
         <Banner label="Dieses Quiz ist nirgends veröffentlicht! Deine Mitarbeiter können dieses Quiz nicht finden." />
       )}
       <div className="p-6">
@@ -121,7 +117,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
           <Actions
             disabled={!isComplete}
             quizId={params.quizId}
-            assigned_to_course={quiz.assigned_to_course}
+            assigned_to_course={assigned_to_course}
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
