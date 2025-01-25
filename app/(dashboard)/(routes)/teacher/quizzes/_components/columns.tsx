@@ -44,7 +44,9 @@ export const columns: ColumnDef<Quiz>[] = [
       );
     },
     cell: ({ row }) => {
-      const questions = parseFloat(row.getValue("questions") || "0");
+      // TODO: Wir haben noch kein Questions Feld in der Datenbank, deswegen wird hier ein Dummy-Wert verwendet
+      // const questions = parseFloat(row.getValue("questions") || "0");
+      const questions = 0;
 
       return <div>{questions}</div>;
     },
@@ -63,8 +65,14 @@ export const columns: ColumnDef<Quiz>[] = [
       );
     },
     cell: ({ row }) => {
-      const updatedAt =
-        row.getValue("updatedAt").toLocaleDateString("de-DE") || false;
+      // updatedAt ist ein String, deswegen wird hier ein Datum-Objekt erstellt
+      const updatedAtString = row.getValue("updatedAt") as string;
+      // Wenn updatedAtString nicht existiert, wird "Ungültiges Datum" zurückgegeben
+      const updatedAt = updatedAtString
+        ? new Date(updatedAtString).toLocaleDateString("de-DE")
+        : "Ungültiges Datum";
+      /*const updatedAt =
+        row.getValue("updatedAt").toLocaleDateString("de-DE") || false;*/
 
       return <div>{updatedAt}</div>;
     },
@@ -72,7 +80,7 @@ export const columns: ColumnDef<Quiz>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id } = row.original;
+      const { quiz_id } = row.original;
 
       return (
         <DropdownMenu>
@@ -83,7 +91,7 @@ export const columns: ColumnDef<Quiz>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/teacher/quizzes/${id}`}>
+            <Link href={`/teacher/quizzes/${quiz_id}`}>
               <DropdownMenuItem>
                 <Pencil className="h-4 w-4 mr-2" />
                 Bearbeiten

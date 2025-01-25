@@ -23,7 +23,10 @@ const QuizzesPage = async () => {
   });
   */
 
-  const quizzes = [
+  const quizzes = await db.quiz.findMany({
+  });
+
+  /* const quizzes = [
     {
       quiz_id: 3,
       quiz_name: "Test-Quiz",
@@ -33,7 +36,7 @@ const QuizzesPage = async () => {
       max_points: 1,
       passing_points: 1,
     },
-  ];
+  ]; */
 
   return (
     <div className="p-6">
