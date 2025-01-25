@@ -40,10 +40,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
     }
 
     // quizTitle aus dem Request Body extrahieren
-    const { quizSynopsis } = await request.json();
+    const { quiz_synopsis } = await request.json();
 
     // Überprüfen, ob quizTitle vorhanden ist
-    if (!quizSynopsis) {
+    if (!quiz_synopsis) {
       return NextResponse.json(
         { error: "quizTitle is required" },
         { status: 400 }
@@ -66,11 +66,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
     // Aktualisierung des quiz_title
     const updatedQuiz = await db.quiz.update({
       where: { quiz_id: quizId },
-      data: { quiz_synopsis: quizSynopsis },
+      data: { quiz_synopsis: quiz_synopsis },
     });
 
     return NextResponse.json(
-      { message: "Quiz title updated successfully", quiz: updatedQuiz },
+      { message: "Quiz title updated successfully", 
+        quiz_synopsis : updatedQuiz.quiz_synopsis,
+        quiz: updatedQuiz },
       { status: 200 }
     );
     // falls wir eine leere Antwort zurückgeben wollen, können wir auch einfach NextResponse.ok() verwenden

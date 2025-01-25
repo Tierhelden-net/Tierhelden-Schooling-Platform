@@ -27,7 +27,7 @@ interface DescriptionFormProps {
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
+  quiz_synopsis: z.string().min(1, {
     message: "Description is required",
   }),
 });
@@ -45,7 +45,7 @@ export const DescriptionForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.quiz_synopsis || "",
+      quiz_synopsis: initialData?.quiz_synopsis || "",
     },
   });
 
@@ -53,7 +53,7 @@ export const DescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/quizzes/${quizId}`, values);
+      await axios.patch(`/api/quizzes/${quizId}/actions/updateSynopsis`, values);
       toast.success("Quiz updated");
       toggleEdit();
       router.refresh();
@@ -95,7 +95,7 @@ export const DescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name="description"
+              name="quiz_synopsis"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

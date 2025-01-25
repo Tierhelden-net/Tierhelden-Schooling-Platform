@@ -40,10 +40,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
     }
 
     // quizTitle aus dem Request Body extrahieren
-    const { quizTitle } = await request.json();
+    const { quiz_name } = await request.json();
 
     // Überprüfen, ob quizTitle vorhanden ist
-    if (!quizTitle) {
+    if (!quiz_name) {
       return NextResponse.json(
         { error: "quizTitle is required" },
         { status: 400 }
@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
     // Aktualisierung des quiz_title
     const updatedQuiz = await db.quiz.update({
       where: { quiz_id: quizId },
-      data: { quiz_name: quizTitle },
+      data: { quiz_name: quiz_name },
     });
 
     return NextResponse.json(
