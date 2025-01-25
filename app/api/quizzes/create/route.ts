@@ -19,6 +19,14 @@ export async function POST(request: NextRequest) {
     // Extrahiere quiz_name aus dem Body
     const { quizName } = body;
 
+// Validierung des quizName
+    if (!quizName || typeof quizName !== "string") {
+        return NextResponse.json(
+        { error: "Invalid quiz name" },
+        { status: 400 }
+    );
+  }
+
     // Neues Quiz erstellen (ohne course_id)
     const newQuiz = await db.quiz.create({
       data: {
@@ -28,7 +36,11 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "Quiz created successfully", quiz: newQuiz },
+      { 
+        message: "Quiz created successfully", 
+        quiz_id: newQuiz.quiz_id, 
+        quiz: newQuiz 
+    },
       { status: 201 }
     );
   } catch (error) {
