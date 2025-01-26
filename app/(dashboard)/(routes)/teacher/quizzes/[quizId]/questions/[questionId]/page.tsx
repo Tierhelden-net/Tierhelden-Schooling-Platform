@@ -35,7 +35,6 @@ const QuestionIdPage = async ({
     return redirect("/");
   }
 
-  
   const question = await db.question.findUnique({
     where: {
       question_id: parseInt(params.questionId),
@@ -44,7 +43,7 @@ const QuestionIdPage = async ({
       answers: true,
     },
   });
-  
+
   /*const question = {
     question_id: "3",
     title: "testfrage",
@@ -87,7 +86,8 @@ const QuestionIdPage = async ({
 
   const completionText = `(${completedFields}/${totalFields})`;
 
-  const isComplete = requiredFields.every(Boolean);
+  const isComplete =
+    requiredFields.every(Boolean) || question.isPublished === true; //da default von isPublished "true"
 
   return (
     <>
@@ -95,6 +95,12 @@ const QuestionIdPage = async ({
         <Banner
           variant="warning"
           label="Diese Frage ist nicht veröffentlicht und wird im Quiz nicht angezeigt."
+        />
+      )}
+      {!!(!isComplete && question.isPublished) && (
+        <Banner
+          variant="warning"
+          label="Diese Frage ist nicht vollständig und wird im Quiz aber angezeigt."
         />
       )}
       <div className="p-6">

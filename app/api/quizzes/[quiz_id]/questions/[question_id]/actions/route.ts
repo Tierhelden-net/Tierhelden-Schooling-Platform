@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db"; 
+import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 
-export async function PATCH(request: NextRequest, { params }: { params: { quiz_id: string, question_id: string } }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { quiz_id: string; question_id: string } }
+) {
   try {
     const { userId } = auth();
 
@@ -26,23 +29,15 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
       );
     }
 
-    // quizTitle aus dem Request Body extrahieren
-    const { question_title } = await request.json();
+    // question data aus dem Request Body extrahieren
+    const { ...values } = await request.json();
 
-    // Überprüfen, ob quizTitle vorhanden ist
-    if (!question_title) {
-      return NextResponse.json(
-        { error: "question Title is required" },
-        { status: 400 }
-      );
-    }
-
-    // Überprüfen, ob das Quiz existiert 
+    // Überprüfen, ob die Frage existiert
     const existingQuestion = await db.question.findUnique({
       where: { question_id: question_id },
     });
 
-    // Falls das Quiz nicht existiert, wird eine Fehlermeldung zurückgegeben
+    // Falls die Frage nicht existiert, wird eine Fehlermeldung zurückgegeben
     if (!existingQuestion) {
       return NextResponse.json(
         { error: "Question not found" },
@@ -50,20 +45,39 @@ export async function PATCH(request: NextRequest, { params }: { params: { quiz_i
       );
     }
 
-    // Aktualisierung des quiz_title
+    //Falls Punkte geändert werden:
+    if (values.points) {
+      //berechne Punkteänderung im Quiz
+      const newPoints = values.points - (existingQuestion.points || 0);
+
+      const quiz = await db.quiz.findUnique({
+        where: { quiz_id: quiz_id },
+      });
+
+      await db.quiz.update({
+        where: {
+          quiz_id: quiz_id,
+        },
+        data: { max_points: (quiz?.max_points || 0) + newPoints },
+      });
+    }
+
+    // Aktualisierung der Daten
     const updatedQuestion = await db.question.update({
-      where: { question_id: question_id },
-      data: { question_title: question_title },
+      where: { question_id: question_id, quiz_id: quiz_id },
+      data: { ...values },
     });
 
     return NextResponse.json(
-      { message: "Question title updated successfully", 
-        question: updatedQuestion },
+      {
+        message: "Question text updated successfully",
+        question: updatedQuestion,
+      },
       { status: 200 }
     );
     // falls wir eine leere Antwort zurückgeben wollen, können wir auch einfach NextResponse.ok() verwenden
   } catch (error) {
-    console.error("Error updating question title:", error);
+    console.error("Error updating question:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

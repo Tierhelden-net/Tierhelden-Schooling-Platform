@@ -1,32 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db'; // Importiere die Prisma-Instanz
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db"; // Importiere die Prisma-Instanz
 import { auth } from "@clerk/nextjs";
 
-export async function POST(request: NextRequest, context: { params: { quiz_id: string; question_id: string } }) {
+export async function POST(
+  request: NextRequest,
+  context: { params: { quiz_id: string; question_id: string } }
+) {
   try {
     // userId aus Clerk-Authentifizierung
     const { userId } = auth();
 
     // Falls der Benutzer nicht angemeldet ist, wird eine Fehlermeldung zurückgegeben
     if (!userId) {
-          return NextResponse.json(
-            { error: "UserId is required" },
-            { status: 400 }
-          );
+      return NextResponse.json(
+        { error: "UserId is required" },
+        { status: 400 }
+      );
     }
-    
+
     // Datenbankabfrage des Benutzers
     const user = await db.user.findUnique({
-        where: { user_id: userId },
-        select: { user_role: true },
-        });
-    
+      where: { user_id: userId },
+      select: { user_role: true },
+    });
+
     // Falls der User kein Admin ist, wird eine Fehlermeldung zurückgegeben
     if (!user || user.user_role !== "ADMIN") {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: 403 }
-        );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     // Extrahiere die quiz_id und question_id aus den Parametern
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest, context: { params: { quiz_id: s
     const { answerText, isCorrect } = body;
 
     // Validierung der Eingabedaten
-    if (!answerText || typeof isCorrect !== 'boolean') {
+    if (!answerText || typeof isCorrect !== "boolean") {
       return NextResponse.json(
         { error: 'Invalid input. "text" and "isCorrect" are required.' },
         { status: 400 }
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest, context: { params: { quiz_id: s
     // Überprüfen, ob die Frage existiert und zum Quiz gehört
     if (!question || question.quiz_id !== quizId) {
       return NextResponse.json(
-        { error: 'Quiz or question not found.' },
+        { error: "Quiz or question not found." },
         { status: 404 }
       );
     }
@@ -68,23 +68,23 @@ export async function POST(request: NextRequest, context: { params: { quiz_id: s
     // Antwort erstellen
     const answer = await db.answer.create({
       data: {
-        createdBy: userId,
+        //createdBy: userId,
         question_id: questionId,
         answer_text: answerText,
         is_correct: isCorrect,
-        quiz_id: quizId,
+        //quiz_id: quizId,
       },
     });
 
     // Erfolgreiche Antwort zurückgeben
     return NextResponse.json(
-      { message: 'Answer created successfully.', answer },
+      { message: "Answer created successfully.", answer },
       { status: 201 }
     );
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred.' },
+      { error: "An unexpected error occurred." },
       { status: 500 }
     );
   }

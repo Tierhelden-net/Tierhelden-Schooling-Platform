@@ -35,7 +35,7 @@ interface AnswerFormProps {
 const formSchema = z.object({
   answer_text: z.string().min(1),
   is_correct: z.boolean(),
-  answer_pic: z.string(),
+  //answer_pic: z.string(),
 });
 
 export const AnswerForm = ({
@@ -56,7 +56,7 @@ export const AnswerForm = ({
     defaultValues: {
       answer_text: "",
       is_correct: false,
-      answer_pic: "",
+      //answer_pic: "",
     },
   });
 
@@ -69,7 +69,7 @@ export const AnswerForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/answers/create`,
         values
       );
       toast.success("Answer created");
