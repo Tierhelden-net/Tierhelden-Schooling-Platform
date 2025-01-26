@@ -94,7 +94,7 @@ export const QuestionsList = ({
                     >
                       <Grip className="h-5 w-5" />
                     </div>
-                    {question.question_text}
+                    {question.question_title}
                     <div className="ml-auto pr-2 flex items-center gap-x-2">
                       {question.is_knockout && <Badge>Knockout</Badge>}
                       <Badge

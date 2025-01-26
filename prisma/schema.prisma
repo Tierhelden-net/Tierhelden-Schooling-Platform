@@ -183,6 +183,7 @@ model Question {
   explanation                   String?
   is_knockout                   Boolean?
   points                        Int? 
+  isPublished                   Boolean? @default(true)
 
   quiz_id       Int
   quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
