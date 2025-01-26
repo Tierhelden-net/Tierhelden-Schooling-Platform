@@ -144,7 +144,7 @@ model Quiz {
   max_points      Int?
   passing_points  Int?
   question_number Int?
-  random_questions Boolean? @default(false)
+  random_questions Boolean @default(false)
 
   questions       Question[]
   quizAttempts    QuizAttempt[]
@@ -182,7 +182,7 @@ model Question {
   message_for_incorrect_answer  String?
   explanation                   String?
   is_knockout                   Boolean?
-  points                        Int
+  points                        Int? 
 
   quiz_id       Int
   quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
