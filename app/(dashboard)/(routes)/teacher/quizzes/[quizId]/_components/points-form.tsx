@@ -29,7 +29,6 @@ interface PointsFormProps {
 }
 
 const formSchema = z.object({
-  max_points: z.coerce.number(),
   passing_points: z.coerce.number(),
 });
 
@@ -48,13 +47,15 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
     },
   });
 
-  //Todo: max_points get counted with added questions and their points
-
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
-      await axios.patch(`/api/quizzes/${quizId}`, values);
+      await axios.patch(
+        `/api/quizzes/${quizId}/actions/computePassingPoints`,
+        values
+      );
       toast.success("Quiz updated");
       toggleEdit();
       router.refresh();
@@ -106,14 +107,19 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
                   </FormDescription>
                   <FormControl>
                     <Input
+                      className="accent-orange-400"
                       type="range"
                       step="0.5"
                       min="0"
-                      max={initialData.max_points || 0}
-                      value={passingPoints}
-                      onChangeCapture={(e) => setPassingPoints(e.target.value)}
+                      max={initialData.max_points ?? 0}
+                      value={field.value ?? 0} // Der Wert aus field, Fallback auf 0 falls undefined
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        field.onChange(e); // Wert an die Form-Bibliothek übergeben
+                        setPassingPoints(value); // Aktualisiere auch den lokalen Zustand
+                        console.log(passingPoints);
+                      }}
                       disabled={isSubmitting}
-                      {...field}
                     />
                   </FormControl>
                   <FormLabel
@@ -128,7 +134,7 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
             />
 
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button disabled={isSubmitting} type="submit">
                 Speichern
               </Button>
             </div>
