@@ -143,12 +143,15 @@ model Quiz {
   quit_category   QuizCategory?
   max_points      Int?
   passing_points  Int?
+  question_number Int?
+  random_questions Boolean? @default(false)
 
   questions       Question[]
   quizAttempts    QuizAttempt[]
   userAnswers     UserAnswer[]
   courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
 
+  createdBy  String? 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }

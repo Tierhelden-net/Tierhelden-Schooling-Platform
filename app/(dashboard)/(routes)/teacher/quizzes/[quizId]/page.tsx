@@ -97,6 +97,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
+  // vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
   const assigned_to_course = false;
 
   // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden, 
