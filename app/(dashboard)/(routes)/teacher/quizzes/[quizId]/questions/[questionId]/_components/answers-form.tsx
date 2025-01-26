@@ -28,7 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface AnswerFormProps {
   initialData: Question & { answers: Answer[] };
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 

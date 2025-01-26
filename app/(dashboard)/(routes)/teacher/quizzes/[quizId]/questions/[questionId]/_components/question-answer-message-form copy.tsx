@@ -25,7 +25,7 @@ interface QuestionAnswerMessageFormProps {
     message_for_correct_answer: string;
     message_for_incorrect_answer: string;
   };
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 

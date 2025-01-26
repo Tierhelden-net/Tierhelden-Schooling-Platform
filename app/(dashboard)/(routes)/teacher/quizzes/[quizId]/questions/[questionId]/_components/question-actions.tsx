@@ -11,7 +11,7 @@ import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 interface QuestionActionsProps {
   disabled: boolean;
-  quizId: number;
+  quizId: string;
   questionsId: string;
   isPublished: boolean;
 }

@@ -27,7 +27,7 @@ import { QuestionAnswerMessageForm } from "./_components/question-answer-message
 const QuestionIdPage = async ({
   params,
 }: {
-  params: { quizId: number; questionId: string };
+  params: { quizId: string; questionId: string };
 }) => {
   const { userId } = auth();
 
@@ -35,18 +35,17 @@ const QuestionIdPage = async ({
     return redirect("/");
   }
 
-  /*
-  const chapter = await db.chapter.findUnique({
+  
+  const question = await db.question.findUnique({
     where: {
-      id: params.chapterId,
-      courseId: params.courseId,
+      question_id: parseInt(params.questionId),
     },
     include: {
-      muxData: true,
+      answers: true,
     },
   });
-  */
-  const question = {
+  
+  /*const question = {
     question_id: "3",
     title: "testfrage",
     question_text: "Frage 1",
@@ -71,14 +70,14 @@ const QuestionIdPage = async ({
         position: null,
       },
     ],
-  };
+  };*/
 
   if (!question) {
     return redirect("/");
   }
 
   const requiredFields = [
-    question.title,
+    question.question_title,
     question.question_text,
     question.answers,
   ];

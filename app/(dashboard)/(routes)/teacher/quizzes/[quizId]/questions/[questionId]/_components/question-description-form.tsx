@@ -24,7 +24,7 @@ import { Preview } from "@/components/preview";
 
 interface QuestionDescriptionFormProps {
   initialData: Question;
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 

@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 
 interface PointsFormProps {
   initialData: Question;
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 

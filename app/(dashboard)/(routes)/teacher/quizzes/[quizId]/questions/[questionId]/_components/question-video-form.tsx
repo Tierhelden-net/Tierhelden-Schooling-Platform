@@ -15,7 +15,7 @@ import { FileUpload } from "@/components/file-upload";
 
 interface QuestionVideoFormProps {
   initialData: Chapter & { muxData?: MuxData | null };
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 
