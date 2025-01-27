@@ -23,6 +23,7 @@ import { QuestionActions } from "./_components/question-actions";
 import { Description } from "@radix-ui/react-dialog";
 import { PointsForm } from "./_components/points-form";
 import { QuestionAnswerMessageForm } from "./_components/question-answer-message-form copy";
+import { QuestionKnockoutForm } from "./_components/question-knockout-form";
 
 const QuestionIdPage = async ({
   params,
@@ -145,11 +146,16 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
               questionId={params.questionId}
             />
+            <QuestionKnockoutForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Video} />
-              <h2 className="text-xl">Add a video</h2>
+              <h2 className="text-xl">Add visuals</h2>
             </div>
             <QuestionVideoForm
               initialData={question}
