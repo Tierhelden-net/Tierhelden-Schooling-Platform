@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil, PlusCircle } from "lucide-react";
+import { Loader2, Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -66,8 +66,12 @@ export const AnswerForm = ({
     toggleCreating();
   };
 
+  //TODO: sort the answers in the database before rendering
+  initialData.answers.sort((a, b) => a.position - b.position);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setIsUpdating(true);
       await axios.post(
         `/api/quizzes/${quizId}/questions/${questionId}/answers/create`,
         values
@@ -77,11 +81,36 @@ export const AnswerForm = ({
       router.refresh();
     } catch {
       toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const onReorder = async (updateData: { id: number; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      await axios.put(
+        `/api/quizzes/${quizId}/questions/${questionId}/answers/reorder`,
+        {
+          list: updateData,
+        }
+      );
+      toast.success("Answers reordered");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="relative form-container">
+      {isUpdating && (
+        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center">
+          <Loader2 className="animate-spin h-6 w-6 text-orange-700" />
+        </div>
+      )}
       <div className="font-medium flex items-center justify-between">
         Answers
         <Button onClick={toggleCreating} variant="ghost">
@@ -103,13 +132,11 @@ export const AnswerForm = ({
           )}
         >
           {!initialData.answers.length && "No Answers"}
-          {
-            <AnswersList
-              //onReorder={onReorder}
-              items={initialData.answers || []}
-              onEdit={onEdit}
-            />
-          }
+          <AnswersList
+            onEdit={onEdit}
+            onReorder={onReorder}
+            items={initialData.answers || []}
+          />
         </div>
       )}
       {isCreating && (
@@ -147,6 +174,7 @@ export const AnswerForm = ({
                   <div className="space-y-1 leading-none">
                     <FormDescription>answer is correct?</FormDescription>
                   </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />

@@ -45,11 +45,11 @@ export const QuestionsList = ({
     const startIndex = Math.min(result.source.index, result.destination.index);
     const endIndex = Math.max(result.source.index, result.destination.index);
 
-    const updatedChapters = items.slice(startIndex, endIndex + 1);
+    const updatedQuestions = items.slice(startIndex, endIndex + 1);
 
     setQuestions(items);
 
-    const bulkUpdateData = updatedChapters.map((question) => ({
+    const bulkUpdateData = updatedQuestions.map((question) => ({
       id: question.question_id,
       position: items.findIndex(
         (item) => item.question_id === question.question_id
