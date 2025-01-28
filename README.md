@@ -11,10 +11,11 @@ npm install
 Generate prisma schema on your local environment.
 
 ```bash
-prisma generate
+npm run postinstall
 ```
 
 Syncronize the remote database with your local database.
+
 ```bash
 npx prisma migrate dev
 ```
@@ -24,17 +25,18 @@ npx prisma migrate dev
 update the schema in /prisma/schema.prisma
 
 Generate the schema
+
 ```bash
 prisma generate
 ```
 
 Syncronize the remote database with your local database.
+
 ```bash
 npx prisma migrate dev
 ```
 
 Upload the changes to GitHub
-
 
 ##Add a .env file
 
