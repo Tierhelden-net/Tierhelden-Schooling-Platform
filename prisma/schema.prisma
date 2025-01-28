@@ -128,6 +128,10 @@ model User {
   email         String?        @unique 
   name          String?        
   user_role     UserRole? 
+  last_signed_in   DateTime?
+  last_chapter_completed  DateTime?
+  last_live_training    DateTime?
+  last_online_training  DateTime?
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -147,6 +151,7 @@ model Quiz {
   random_questions Boolean @default(false)
 
   questions       Question[]
+  answers         Answer[]
   quizAttempts    QuizAttempt[]
   userAnswers     UserAnswer[]
   courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
@@ -182,8 +187,10 @@ model Question {
   message_for_incorrect_answer  String?
   explanation                   String?
   is_knockout                   Boolean?
-  points                        Int? 
+  points                        Float ? 
   isPublished                   Boolean? @default(true)
+  position                      Int?
+  random_answers                Boolean? @default(false)
 
   quiz_id       Int
   quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
@@ -224,12 +231,16 @@ model Answer {
   answer_video String?
   is_correct   Boolean
   position     Int?
+  
+  quiz_id  Int?
+  quiz     Quiz? @relation(fields: [quiz_id], references: [quiz_id])
 
   question_id  Int
   question     Question @relation(fields: [question_id], references: [question_id])
 
   userAnswers  UserAnswer[]
   
+  createdBy    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
