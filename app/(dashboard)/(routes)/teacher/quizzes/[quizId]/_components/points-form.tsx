@@ -115,10 +115,8 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
                       max={initialData.max_points ?? 0}
                       value={[field.value ?? 0]} // Der Wert aus field, Fallback auf 0 falls undefined
                       onValueChange={(v) => {
-                        const value = Number(v);
                         field.onChange(v); // Wert an die Form-Bibliothek übergeben
-                        setPassingPoints(value); // Aktualisiere auch den lokalen Zustand
-                        console.log(passingPoints);
+                        setPassingPoints(Number(v)); // Aktualisiere auch den lokalen Zustand
                       }}
                       disabled={isSubmitting}
                     >
@@ -128,7 +126,7 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
                       <SliderThumb
                         className="block h-5 w-5 rounded-[10px] bg-accent-foreground shadow-[0_0_10px] shadow-accent-foreground
                          hover:bg-orange-400"
-                        aria-label="x"
+                        aria-label="passingPoints"
                       />
                     </Slider>
                   </FormControl>
