@@ -9,6 +9,12 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Quiz } from "@prisma/client";
+import {
+  Slider,
+  SliderRange,
+  SliderThumb,
+  SliderTrack,
+} from "@radix-ui/react-slider";
 
 import {
   Form,
@@ -103,21 +109,28 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
                     Wieviele Punkte braucht es zum Bestehen?
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      className="accent-orange-400"
-                      type="range"
-                      step="0.5"
-                      min="0"
+                    <Slider
+                      className="relative flex h-5 w-auto touch-none select-none items-center"
+                      step={0.5}
                       max={initialData.max_points ?? 0}
-                      value={field.value ?? 0} // Der Wert aus field, Fallback auf 0 falls undefined
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        field.onChange(e); // Wert an die Form-Bibliothek übergeben
+                      value={[field.value ?? 0]} // Der Wert aus field, Fallback auf 0 falls undefined
+                      onValueChange={(v) => {
+                        const value = Number(v);
+                        field.onChange(v); // Wert an die Form-Bibliothek übergeben
                         setPassingPoints(value); // Aktualisiere auch den lokalen Zustand
                         console.log(passingPoints);
                       }}
                       disabled={isSubmitting}
-                    />
+                    >
+                      <SliderTrack className="relative h-[5px] grow rounded-full bg-input">
+                        <SliderRange className="absolute h-full rounded-full bg-orange-400" />
+                      </SliderTrack>
+                      <SliderThumb
+                        className="block h-5 w-5 rounded-[10px] bg-accent-foreground shadow-[0_0_10px] shadow-accent-foreground
+                         hover:bg-orange-400"
+                        aria-label="x"
+                      />
+                    </Slider>
                   </FormControl>
                   <FormLabel
                     htmlFor="passing_points"
