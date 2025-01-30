@@ -52,10 +52,7 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     try {
-      await axios.patch(
-        `/api/quizzes/${quizId}/actions/computePassingPoints`,
-        values
-      );
+      await axios.patch(`/api/quizzes/${quizId}/actions/`, values);
       toast.success("Quiz updated");
       toggleEdit();
       router.refresh();
