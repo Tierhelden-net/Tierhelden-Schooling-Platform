@@ -7,6 +7,7 @@ import {
   List,
   Trophy,
   BookOpenCheck,
+  Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -37,14 +38,19 @@ const teacherRoutes = [
     href: "/teacher/courses",
   },
   {
-    icon: BarChart,
-    label: "Analytics",
-    href: "/teacher/analytics",
-  },
-  {
     icon: BookOpenCheck,
     label: "Quizzes",
     href: "/teacher/quizzes",
+  },
+  {
+    icon: Users,
+    label: "Users",
+    href: "/teacher/users",
+  },
+  {
+    icon: BarChart,
+    label: "Analytics",
+    href: "/teacher/analytics",
   },
 ];
 
