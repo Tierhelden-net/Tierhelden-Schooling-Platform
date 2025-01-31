@@ -24,6 +24,7 @@ import { Description } from "@radix-ui/react-dialog";
 import { PointsForm } from "./_components/points-form";
 import { QuestionAnswerMessageForm } from "./_components/question-answer-message-form copy";
 import { QuestionKnockoutForm } from "./_components/question-knockout-form";
+import { RandomAForm } from "./_components/randoma-form";
 
 const QuestionIdPage = async ({
   params,
@@ -142,6 +143,11 @@ const QuestionIdPage = async ({
               questionId={params.questionId}
             />
             <QuestionDescriptionForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
+            <RandomAForm
               initialData={question}
               quizId={params.quizId}
               questionId={params.questionId}

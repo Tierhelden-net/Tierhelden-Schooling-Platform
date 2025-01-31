@@ -17,6 +17,7 @@ import { CategoryForm } from "./_components/category-form";
 import { PointsForm } from "./_components/points-form";
 import { QuestionsForm } from "./_components/questions-form";
 import { Actions } from "./_components/actions";
+import { RandomQForm } from "./_components/randomq-form";
 
 const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const { userId } = auth();
@@ -25,17 +26,15 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
     return redirect("/");
   }
 
-  
   const quiz = await db.quiz.findUnique({
     where: {
       quiz_id: parseInt(params.quizId),
     },
     include: {
-      questions: {
-      },
+      questions: {},
     },
   });
-  
+
   /*const quiz = {
     quiz_id: 3,
     quiz_name: "Test-Quiz",
@@ -100,7 +99,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   // vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
   const assigned_to_course = false;
 
-  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden, 
+  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden,
   // wir haben dieses Feld nur noch nicht in der Datenbank
   return (
     <>
@@ -127,7 +126,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
               <IconBadge icon={LayoutDashboard} />
               <h2 className="text-xl">Quiz anpassen</h2>
             </div>
-            <TitleForm initialData={quiz} quizId={quiz.quiz_id} />
+            <TitleForm initialData={quiz.quiz_name} quizId={quiz.quiz_id} />
             <DescriptionForm initialData={quiz} quizId={quiz.quiz_id} />
             <CategoryForm
               initialData={quiz}
@@ -137,6 +136,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
                 value: category.id,
               }))}
             />
+            <RandomQForm initialData={quiz} quizId={quiz.quiz_id} />
           </div>
           <div className="space-y-6">
             <div>
