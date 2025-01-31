@@ -2,7 +2,7 @@
 
 import { Quiz } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 export const columns: ColumnDef<Quiz>[] = [
   {
@@ -82,6 +87,23 @@ export const columns: ColumnDef<Quiz>[] = [
     cell: ({ row }) => {
       const { quiz_id } = row.original;
 
+      //TODO: refresh/reload/unmount after delete ??
+      /*
+      const [isLoading, setIsLoading] = useState(false);
+
+      const onDelete = async () => {
+        try {
+          setIsLoading(true);
+          await axios.delete(`/api/quizzes/${quiz_id}/actions/delete`);
+
+          toast.success("Quiz deleted");
+        } catch {
+          toast.error("Something went wrong");
+        } finally {
+          setIsLoading(false);
+        }
+      };*/
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -97,6 +119,14 @@ export const columns: ColumnDef<Quiz>[] = [
                 Bearbeiten
               </DropdownMenuItem>
             </Link>
+            {/*
+            <ConfirmModal onConfirm={onDelete}>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Trash className="h-4 w-4 mr-2" />
+                löschen
+              </DropdownMenuItem>
+            </ConfirmModal>
+            */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

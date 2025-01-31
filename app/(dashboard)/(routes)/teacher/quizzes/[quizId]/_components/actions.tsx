@@ -51,14 +51,10 @@ export const Actions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      /*
-      await axios.delete(`/api/courses/${courseId}`);
+      await axios.delete(`/api/quizzes/${quizId}/actions/delete`);
 
-      toast.success("Course deleted");
+      toast.success("Quiz deleted");
       router.refresh();
-      router.push(`/teacher/courses`);
-      */
-      toast.success("Quiz deleted (not really, fuctionality missing)");
       router.push(`/teacher/quizzes`);
     } catch {
       toast.error("Something went wrong");

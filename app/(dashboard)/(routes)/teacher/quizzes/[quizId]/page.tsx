@@ -35,35 +35,6 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
     },
   });
 
-  /*const quiz = {
-    quiz_id: 3,
-    quiz_name: "Test-Quiz",
-    title: "Test Quiz", //we need that!
-    createdAt: new Date("2024-12-29 22:59:12"),
-    updatedAt: new Date("2024-12-29 22:59:13"),
-    quiz_synopsis: "Dies ist lediglich ein Test. ",
-    max_points: 1,
-    passing_points: 0,
-    assigned_to_course: false,
-    course_id: "",
-    questions: [
-      {
-        question_id: "3",
-        question_text: "Frage 1",
-        question_type: "",
-        is_knockout: true,
-      },
-    ],
-  };*/
-
-  /*
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-  */
-
   const categories = [
     {
       id: "1",
@@ -86,7 +57,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const requiredFields = [
     quiz.quiz_name,
     quiz.quiz_synopsis,
-    //quiz.questions.some((question) => question.isPublished),
+    quiz.questions.some((question) => question.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -96,7 +67,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
-  // vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
+  //TODO: vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
   const assigned_to_course = false;
 
   // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden,
