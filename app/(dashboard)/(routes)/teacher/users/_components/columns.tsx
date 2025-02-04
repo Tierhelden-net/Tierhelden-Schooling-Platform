@@ -45,7 +45,7 @@ export const columns: ColumnDef<User>[] = [
     },
 
     cell: ({ row }) => {
-      const date = row.getValue("last_chapter_completed");
+      const date = new Date(row.getValue("last_chapter_completed"));
       if (date) {
         const formatted = date.toLocaleDateString("de-DE");
 

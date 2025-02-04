@@ -97,7 +97,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
               <IconBadge icon={LayoutDashboard} />
               <h2 className="text-xl">Quiz anpassen</h2>
             </div>
-            <TitleForm initialData={quiz.quiz_name} quizId={quiz.quiz_id} />
+            <TitleForm quiz_name={quiz.quiz_name ?? ""} quizId={quiz.quiz_id} />
             <DescriptionForm initialData={quiz} quizId={quiz.quiz_id} />
             <CategoryForm
               initialData={quiz}

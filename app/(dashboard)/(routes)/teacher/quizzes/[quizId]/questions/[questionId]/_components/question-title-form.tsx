@@ -20,9 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 interface QuestionTitleFormProps {
-  initialData: {
-    question_title: string;
-  };
+  question_title: string;
   quizId: string;
   questionId: string;
 }
@@ -32,7 +30,7 @@ const formSchema = z.object({
 });
 
 export const QuestionTitleForm = ({
-  initialData,
+  question_title,
   quizId,
   questionId,
 }: QuestionTitleFormProps) => {
@@ -44,7 +42,7 @@ export const QuestionTitleForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { question_title: question_title },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -78,9 +76,7 @@ export const QuestionTitleForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && (
-        <p className="text-sm mt-2">{initialData.question_title}</p>
-      )}
+      {!isEditing && <p className="text-sm mt-2">{question_title}</p>}
       {isEditing && (
         <Form {...form}>
           <form

@@ -20,9 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 interface TitleFormProps {
-  initialData: {
-    quiz_name: string;
-  };
+  quiz_name: string;
   quizId: number;
 }
 
@@ -32,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-export const TitleForm = ({ initialData, quizId }: TitleFormProps) => {
+export const TitleForm = ({ quiz_name, quizId }: TitleFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -41,7 +39,7 @@ export const TitleForm = ({ initialData, quizId }: TitleFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { quiz_name: quiz_name },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -72,7 +70,7 @@ export const TitleForm = ({ initialData, quizId }: TitleFormProps) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.quiz_name}</p>}
+      {!isEditing && <p className="text-sm mt-2">{quiz_name}</p>}
       {isEditing && (
         <Form {...form}>
           <form

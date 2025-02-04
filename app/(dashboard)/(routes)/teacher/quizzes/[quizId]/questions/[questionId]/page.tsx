@@ -46,33 +46,6 @@ const QuestionIdPage = async ({
     },
   });
 
-  /*const question = {
-    question_id: "3",
-    title: "testfrage",
-    question_text: "Frage 1",
-    question_type: "",
-    is_knockout: true,
-    isPublished: true,
-    videoUrl: "",
-    question_pic: "",
-    answers: [
-      {
-        answer_id: 1,
-        answer_text: "yes",
-        answer_pic: "",
-        is_correct: true,
-        position: null,
-      },
-      {
-        answer_id: 2,
-        answer_text: "no",
-        answer_pic: "",
-        is_correct: false,
-        position: null,
-      },
-    ],
-  };*/
-
   if (!question) {
     return redirect("/");
   }
@@ -126,7 +99,7 @@ const QuestionIdPage = async ({
                 disabled={!isComplete}
                 quizId={params.quizId}
                 questionsId={params.questionId}
-                isPublished={question.isPublished}
+                isPublished={question.isPublished ?? false}
               />
             </div>
           </div>
@@ -138,7 +111,7 @@ const QuestionIdPage = async ({
               <h2 className="text-xl">Customize your question</h2>
             </div>
             <QuestionTitleForm
-              initialData={question}
+              question_title={question.question_title ?? ""}
               quizId={params.quizId}
               questionId={params.questionId}
             />
@@ -148,7 +121,7 @@ const QuestionIdPage = async ({
               questionId={params.questionId}
             />
             <RandomAForm
-              initialData={question}
+              random_answers={question.random_answers ?? false}
               quizId={params.quizId}
               questionId={params.questionId}
             />

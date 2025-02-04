@@ -22,9 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface RandomAFormProps {
-  initialData: {
-    random_answers: boolean;
-  };
+  random_answers: boolean;
   quizId: string;
   questionId: string;
 }
@@ -34,14 +32,12 @@ const formSchema = z.object({
 });
 
 export const RandomAForm = ({
-  initialData,
+  random_answers,
   quizId,
   questionId,
 }: RandomAFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [randomAnswers, setRandomAnswers] = useState(
-    initialData.random_answers
-  );
+  const [randomAnswers, setRandomAnswers] = useState(random_answers);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -50,7 +46,7 @@ export const RandomAForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      random_answers: initialData?.random_answers || false,
+      random_answers: random_answers || false,
     },
   });
 
@@ -88,7 +84,7 @@ export const RandomAForm = ({
       {!isEditing && (
         <p className="text-sm mt-2 text-slate-500 italic">
           put answers in random order:
-          {initialData.random_answers ? (
+          {random_answers ? (
             <Check className="inline" />
           ) : (
             <X className="inline" />

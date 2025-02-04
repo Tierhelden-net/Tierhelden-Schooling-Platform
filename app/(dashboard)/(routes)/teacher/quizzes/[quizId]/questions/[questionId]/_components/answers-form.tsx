@@ -67,7 +67,7 @@ export const AnswerForm = ({
   };
 
   //TODO: sort the answers in the database before rendering
-  initialData.answers.sort((a, b) => a.position - b.position);
+  //initialData.answers.sort((a, b) => a.position - b.position);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {

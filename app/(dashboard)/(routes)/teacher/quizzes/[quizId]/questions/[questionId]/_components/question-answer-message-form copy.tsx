@@ -19,12 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Question } from "@prisma/client";
 
 interface QuestionAnswerMessageFormProps {
-  initialData: {
-    message_for_correct_answer: string;
-    message_for_incorrect_answer: string;
-  };
+  initialData: Question;
   quizId: string;
   questionId: string;
 }
@@ -49,7 +47,11 @@ export const QuestionAnswerMessageForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      message_for_correct_answer: initialData.message_for_correct_answer || "",
+      message_for_incorrect_answer:
+        initialData.message_for_incorrect_answer || "",
+    },
   });
 
   const { isSubmitting, isValid } = form.formState;

@@ -7,7 +7,7 @@ import { ImageIcon, Pencil, PlusCircle, Video } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter, MuxData } from "@prisma/client";
+import { MuxData, Question } from "@prisma/client";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { Switch, SwitchThumb } from "@radix-ui/react-switch";
 import { cn } from "@/lib/utils";
 
 interface QuestionVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null } & { imageUrl: string };
+  initialData: Question & { muxData?: MuxData | null };
   quizId: string;
   questionId: string;
 }
@@ -60,13 +60,13 @@ export const QuestionVideoForm = ({
         Question video or picture
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
-          {!isEditing && !initialData.videoUrl && (
+          {!isEditing && !initialData.question_video && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add a visual
             </>
           )}
-          {!isEditing && initialData.videoUrl && (
+          {!isEditing && initialData.question_video && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
               Edit visual
@@ -76,7 +76,7 @@ export const QuestionVideoForm = ({
       </div>
       {!isEditing &&
         addVideo &&
-        (!initialData.videoUrl ? (
+        (initialData.question_video ? (
           <div className="flex items-center justify-center h-60 bg-input rounded-md">
             <Video className="h-10 w-10 text-slate-500" />
           </div>
@@ -87,7 +87,7 @@ export const QuestionVideoForm = ({
         ))}
       {!isEditing &&
         !addVideo &&
-        (!initialData.imageUrl ? (
+        (initialData.question_pic ? (
           <div className="flex items-center justify-center h-60 bg-input rounded-md">
             <ImageIcon className="h-10 w-10 text-slate-500" />
           </div>
@@ -97,7 +97,7 @@ export const QuestionVideoForm = ({
               alt="Upload"
               fill
               className="object-cover rounded-md"
-              src={initialData.imageUrl}
+              src={initialData.question_pic ?? ""}
             />
           </div>
         ))}
@@ -146,7 +146,7 @@ export const QuestionVideoForm = ({
               </div>
             </div>
           )}
-          {initialData.videoUrl && !isEditing && (
+          {initialData.question_video && !isEditing && (
             <div className="text-xs text-muted-foreground mt-2">
               Videos can take a few minutes to process. Refresh the page if
               video does not appear.
@@ -159,7 +159,7 @@ export const QuestionVideoForm = ({
                 endpoint="courseImage"
                 onChange={(url) => {
                   if (url) {
-                    onSubmit({ imageUrl: url });
+                    onSubmit({ videoUrl: url });
                   }
                 }}
               />

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 
 import { Actions } from "./_components/actions";
 
-const UserIdPage = async ({ params }: { params: { userId: string } }) => {
+const UserIdPage = async ({ params }: { params: { someUserId: string } }) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -14,7 +14,7 @@ const UserIdPage = async ({ params }: { params: { userId: string } }) => {
 
   const user = await db.user.findUnique({
     where: {
-      user_id: params.userId,
+      user_id: params.someUserId,
     },
   });
 
@@ -31,7 +31,7 @@ const UserIdPage = async ({ params }: { params: { userId: string } }) => {
             dabei seit {user.createdAt.toLocaleDateString("de-DE")}
           </span>
         </div>
-        <Actions userId={params.someUserId} user_role={user.user_role} />
+        <Actions userId={params.someUserId} user_role={user.user_role ?? ""} />
       </div>
     </div>
   );
