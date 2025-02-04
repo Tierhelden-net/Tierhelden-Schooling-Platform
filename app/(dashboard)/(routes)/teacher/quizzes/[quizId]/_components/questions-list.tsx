@@ -36,7 +36,16 @@ export const QuestionsList = ({
   }, [items]);
 
   const onDragEnd = (result: DropResult) => {
+    // If user tries to drop in an unknown destination
     if (!result.destination) return;
+
+    // if the user drags and drops back in the same position
+    if (
+      result.destination.droppableId === result.source.droppableId &&
+      result.destination.index === result.source.index
+    ) {
+      return;
+    }
 
     const items = Array.from(questions);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -47,7 +56,7 @@ export const QuestionsList = ({
 
     const updatedQuestions = items.slice(startIndex, endIndex + 1);
 
-    setQuestions(items);
+    //setQuestions(items);
 
     const bulkUpdateData = updatedQuestions.map((question) => ({
       id: question.question_id,

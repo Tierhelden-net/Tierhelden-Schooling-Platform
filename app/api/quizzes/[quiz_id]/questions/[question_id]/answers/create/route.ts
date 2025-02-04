@@ -65,14 +65,27 @@ export async function POST(
       );
     }
 
+    //find last answer
+    const lastAnswer = await db.answer.findFirst({
+      where: {
+        quiz_id: quizId,
+      },
+      orderBy: {
+        position: "desc",
+      },
+    });
+
+    const newPosition = lastAnswer?.position ? lastAnswer.position + 1 : 1;
+
     // Antwort erstellen
     const answer = await db.answer.create({
       data: {
-        //createdBy: userId,
+        createdBy: userId,
         question_id: questionId,
         answer_text: answerText,
         is_correct: isCorrect,
-        //quiz_id: quizId,
+        quiz_id: quizId,
+        position: newPosition,
       },
     });
 

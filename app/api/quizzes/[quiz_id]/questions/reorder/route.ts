@@ -25,6 +25,16 @@ export async function PUT(
       );
     }
 
+      // Quiz abrufen
+      const quiz = await db.quiz.findUnique({
+        where: { quiz_id: quizId },
+      });
+  
+      // Falls das Quiz nicht gefunden wird, wird eine Fehlermeldung zurückgegeben
+      if (!quiz) {
+        return NextResponse.json({ error: "Quiz not found." }, { status: 404 });
+      }
+
     const { list } = await req.json();
 
     for (let item of list) {
