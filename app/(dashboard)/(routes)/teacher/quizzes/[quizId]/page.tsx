@@ -17,6 +17,7 @@ import { CategoryForm } from "./_components/category-form";
 import { PointsForm } from "./_components/points-form";
 import { QuestionsForm } from "./_components/questions-form";
 import { Actions } from "./_components/actions";
+import { RandomQForm } from "./_components/randomq-form";
 
 const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const { userId } = auth();
@@ -25,53 +26,14 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
     return redirect("/");
   }
 
-  /*
   const quiz = await db.quiz.findUnique({
     where: {
-      id: params.quiz_id,
+      quiz_id: parseInt(params.quizId),
     },
     include: {
-      chapters: {
-        orderBy: {
-          position: "asc",
-        },
-      },
-      attachments: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
+      questions: {},
     },
   });
-  */
-  const quiz = {
-    quiz_id: 3,
-    quiz_name: "Test-Quiz",
-    title: "Test Quiz", //we need that!
-    createdAt: new Date("2024-12-29 22:59:12"),
-    updatedAt: new Date("2024-12-29 22:59:13"),
-    quiz_synopsis: "Dies ist lediglich ein Test. ",
-    max_points: 1,
-    passing_points: 0,
-    assigned_to_course: false,
-    course_id: "",
-    questions: [
-      {
-        question_id: "3",
-        question_text: "Frage 1",
-        question_type: "",
-        is_knockout: true,
-      },
-    ],
-  };
-
-  /*
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-  */
 
   const categories = [
     {
@@ -95,7 +57,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const requiredFields = [
     quiz.quiz_name,
     quiz.quiz_synopsis,
-    //quiz.questions.some((question) => question.isPublished),
+    quiz.questions.some((question) => question.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -105,9 +67,14 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
+  //TODO: vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
+  const assigned_to_course = false;
+
+  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden,
+  // wir haben dieses Feld nur noch nicht in der Datenbank
   return (
     <>
-      {!quiz.assigned_to_course && (
+      {!assigned_to_course && (
         <Banner label="Dieses Quiz ist nirgends veröffentlicht! Deine Mitarbeiter können dieses Quiz nicht finden." />
       )}
       <div className="p-6">
@@ -121,7 +88,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
           <Actions
             disabled={!isComplete}
             quizId={params.quizId}
-            assigned_to_course={quiz.assigned_to_course}
+            assigned_to_course={assigned_to_course}
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
@@ -130,7 +97,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
               <IconBadge icon={LayoutDashboard} />
               <h2 className="text-xl">Quiz anpassen</h2>
             </div>
-            <TitleForm initialData={quiz} quizId={quiz.quiz_id} />
+            <TitleForm initialData={quiz.quiz_name} quizId={quiz.quiz_id} />
             <DescriptionForm initialData={quiz} quizId={quiz.quiz_id} />
             <CategoryForm
               initialData={quiz}
@@ -140,6 +107,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
                 value: category.id,
               }))}
             />
+            <RandomQForm initialData={quiz} quizId={quiz.quiz_id} />
           </div>
           <div className="space-y-6">
             <div>

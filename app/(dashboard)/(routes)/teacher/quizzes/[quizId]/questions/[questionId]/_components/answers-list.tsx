@@ -15,15 +15,11 @@ import { Badge } from "@/components/ui/badge";
 
 interface AnswersListProps {
   items: Answer[];
-  //onReorder: (updateData: { id: number; position: number }[]) => void;
+  onReorder: (updateData: { id: number; position: number }[]) => void;
   onEdit: (id: string) => void;
 }
 
-export const AnswersList = ({
-  items,
-  onEdit,
-}: //onReorder,
-AnswersListProps) => {
+export const AnswersList = ({ items, onReorder, onEdit }: AnswersListProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [answers, setAnswers] = useState(items);
 
@@ -35,39 +31,35 @@ AnswersListProps) => {
     setAnswers(items);
   }, [items]);
 
-  /*
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
+    console.log(answers);
 
-    const items = Array.from(questions);
+    const items = Array.from(answers);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
     const startIndex = Math.min(result.source.index, result.destination.index);
     const endIndex = Math.max(result.source.index, result.destination.index);
 
-    const updatedChapters = items.slice(startIndex, endIndex + 1);
+    const updatedAnswers = items.slice(startIndex, endIndex + 1);
 
-    setQuestions(items);
+    setAnswers(items);
 
-    const bulkUpdateData = updatedChapters.map((question) => ({
-      id: question.question_id,
-      position: items.findIndex(
-        (item) => item.question_id === question.question_id
-      ),
+    const bulkUpdateData = updatedAnswers.map((answer) => ({
+      id: answer.answer_id,
+      position: items.findIndex((item) => item.answer_id === answer.answer_id),
     }));
 
     onReorder(bulkUpdateData);
   };
-  */
 
   if (!isMounted) {
     return null;
   }
 
   return (
-    <DragDropContext //onDragEnd={onDragEnd}
-    >
+    <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="answers">
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>

@@ -23,11 +23,13 @@ import { QuestionActions } from "./_components/question-actions";
 import { Description } from "@radix-ui/react-dialog";
 import { PointsForm } from "./_components/points-form";
 import { QuestionAnswerMessageForm } from "./_components/question-answer-message-form copy";
+import { QuestionKnockoutForm } from "./_components/question-knockout-form";
+import { RandomAForm } from "./_components/randoma-form";
 
 const QuestionIdPage = async ({
   params,
 }: {
-  params: { quizId: number; questionId: string };
+  params: { quizId: string; questionId: string };
 }) => {
   const { userId } = auth();
 
@@ -35,18 +37,16 @@ const QuestionIdPage = async ({
     return redirect("/");
   }
 
-  /*
-  const chapter = await db.chapter.findUnique({
+  const question = await db.question.findUnique({
     where: {
-      id: params.chapterId,
-      courseId: params.courseId,
+      question_id: parseInt(params.questionId),
     },
     include: {
-      muxData: true,
+      answers: true,
     },
   });
-  */
-  const question = {
+
+  /*const question = {
     question_id: "3",
     title: "testfrage",
     question_text: "Frage 1",
@@ -71,14 +71,14 @@ const QuestionIdPage = async ({
         position: null,
       },
     ],
-  };
+  };*/
 
   if (!question) {
     return redirect("/");
   }
 
   const requiredFields = [
-    question.title,
+    question.question_title,
     question.question_text,
     question.answers,
   ];
@@ -88,7 +88,8 @@ const QuestionIdPage = async ({
 
   const completionText = `(${completedFields}/${totalFields})`;
 
-  const isComplete = requiredFields.every(Boolean);
+  const isComplete =
+    requiredFields.every(Boolean) || question.isPublished === true; //da default von isPublished "true"
 
   return (
     <>
@@ -96,6 +97,12 @@ const QuestionIdPage = async ({
         <Banner
           variant="warning"
           label="Diese Frage ist nicht veröffentlicht und wird im Quiz nicht angezeigt."
+        />
+      )}
+      {!!(!isComplete && question.isPublished) && (
+        <Banner
+          variant="warning"
+          label="Diese Frage ist nicht vollständig und wird im Quiz aber angezeigt."
         />
       )}
       <div className="p-6">
@@ -140,11 +147,21 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
               questionId={params.questionId}
             />
+            <RandomAForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
+            <QuestionKnockoutForm
+              initialData={question}
+              quizId={params.quizId}
+              questionId={params.questionId}
+            />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Video} />
-              <h2 className="text-xl">Add a video</h2>
+              <h2 className="text-xl">Add visuals</h2>
             </div>
             <QuestionVideoForm
               initialData={question}

@@ -19,9 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { quiz } from "@/components/quiz";
 
 const formSchema = z.object({
-  title: z.string().min(1, {
+  quizName: z.string().min(1, {
     message: "Title is required",
   }),
 });
@@ -31,7 +32,7 @@ const CreatePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      quizName: "",
     },
   });
 
@@ -39,8 +40,8 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.post("/api/quiz", values);
-      router.push(`/teacher/quizzes/${response.data.id}`);
+      const response = await axios.post("/api/quizzes/create", values);
+      router.push(`/teacher/quizzes/${response.data.quiz_id}`);
       toast.success("Quiz created");
     } catch {
       toast.error("Something went wrong");
@@ -61,7 +62,7 @@ const CreatePage = () => {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="quizName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Titel</FormLabel>

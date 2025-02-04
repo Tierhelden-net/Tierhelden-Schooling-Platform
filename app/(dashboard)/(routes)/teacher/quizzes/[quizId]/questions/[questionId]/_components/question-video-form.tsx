@@ -3,7 +3,7 @@
 import * as z from "zod";
 import axios from "axios";
 import MuxPlayer from "@mux/mux-player-react";
-import { Pencil, PlusCircle, Video } from "lucide-react";
+import { ImageIcon, Pencil, PlusCircle, Video } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -12,10 +12,12 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
+import { Switch, SwitchThumb } from "@radix-ui/react-switch";
+import { cn } from "@/lib/utils";
 
 interface QuestionVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null };
-  quizId: number;
+  initialData: Chapter & { muxData?: MuxData | null } & { imageUrl: string };
+  quizId: string;
   questionId: string;
 }
 
@@ -28,16 +30,20 @@ export const QuestionVideoForm = ({
   questionId,
   quizId,
 }: QuestionVideoFormProps) => {
+  //TODO: entnehme der Datenbank, ob Video oder Bild hinterlegt ist und setze entsprechend addVideo true/false
   const [isEditing, setIsEditing] = useState(false);
+  const [addVideo, setAddVideo] = useState(true);
 
   const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleAddVideo = () => setAddVideo((current) => !current);
 
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    //TODO: entscheide, ob Video oder Bild und lösche entsprechend das andere. Nur 1 sollte existieren.
     try {
       await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
         values
       );
       toast.success("Question updated");
@@ -51,24 +57,25 @@ export const QuestionVideoForm = ({
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
-        Question video
+        Question video or picture
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && !initialData.videoUrl && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add a video
+              Add a visual
             </>
           )}
           {!isEditing && initialData.videoUrl && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit video
+              Edit visual
             </>
           )}
         </Button>
       </div>
       {!isEditing &&
+        addVideo &&
         (!initialData.videoUrl ? (
           <div className="flex items-center justify-center h-60 bg-input rounded-md">
             <Video className="h-10 w-10 text-slate-500" />
@@ -78,25 +85,89 @@ export const QuestionVideoForm = ({
             <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
           </div>
         ))}
+      {!isEditing &&
+        !addVideo &&
+        (!initialData.imageUrl ? (
+          <div className="flex items-center justify-center h-60 bg-input rounded-md">
+            <ImageIcon className="h-10 w-10 text-slate-500" />
+          </div>
+        ) : (
+          <div className="relative aspect-video mt-2">
+            <Image
+              alt="Upload"
+              fill
+              className="object-cover rounded-md"
+              src={initialData.imageUrl}
+            />
+          </div>
+        ))}
       {isEditing && (
         <div>
-          <FileUpload
-            endpoint="chapterVideo"
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ videoUrl: url });
-              }
-            }}
-          />
-          <div className="text-xs text-muted-foreground mt-4">
-            Upload this question&apos;s video
+          <div className="flex justify-center">
+            <p
+              className={cn(
+                "text-sm mt-2 ",
+                !addVideo && "font-bold underline",
+                addVideo && "text-slate-500"
+              )}
+            >
+              Bild
+            </p>
+            <Switch
+              className="relative mx-3 h-[25px] w-[42px] cursor-default rounded-full bg-foreground shadow-[0_2px_10px] shadow-foreground outline-none focus:shadow-[0_0_0_2px] focus:shadow-foreground data-[state=checked]:bg-foreground"
+              id="random_questions"
+              checked={addVideo}
+              onCheckedChange={setAddVideo}
+            >
+              <SwitchThumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-orange-300 shadow-[0_2px_2px] shadow-black transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch>
+            <p
+              className={cn(
+                "text-sm mt-2",
+                addVideo && "underline font-bold",
+                !addVideo && "text-slate-500"
+              )}
+            >
+              Video
+            </p>
           </div>
-        </div>
-      )}
-      {initialData.videoUrl && !isEditing && (
-        <div className="text-xs text-muted-foreground mt-2">
-          Videos can take a few minutes to process. Refresh the page if video
-          does not appear.
+          {addVideo && (
+            <div>
+              <FileUpload
+                endpoint="chapterVideo"
+                onChange={(url) => {
+                  if (url) {
+                    onSubmit({ videoUrl: url });
+                  }
+                }}
+              />
+              <div className="text-xs text-muted-foreground mt-4">
+                Upload this question&apos;s video
+              </div>
+            </div>
+          )}
+          {initialData.videoUrl && !isEditing && (
+            <div className="text-xs text-muted-foreground mt-2">
+              Videos can take a few minutes to process. Refresh the page if
+              video does not appear.
+            </div>
+          )}
+
+          {!addVideo && (
+            <div>
+              <FileUpload
+                endpoint="courseImage"
+                onChange={(url) => {
+                  if (url) {
+                    onSubmit({ imageUrl: url });
+                  }
+                }}
+              />
+              <div className="text-xs text-muted-foreground mt-4">
+                16:9 auflösung empfohlen
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

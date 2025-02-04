@@ -11,7 +11,7 @@ import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 interface QuestionActionsProps {
   disabled: boolean;
-  quizId: number;
+  quizId: string;
   questionsId: string;
   isPublished: boolean;
 }
@@ -31,12 +31,12 @@ export const QuestionActions = ({
 
       if (isPublished) {
         await axios.patch(
-          `/api/quizzes/${quizId}/questions/${questionsId}/unpublish`
+          `/api/quizzes/${quizId}/questions/${questionsId}/actions/unpublish`
         );
         toast.success("Frage nicht mehr veröffentlicht");
       } else {
         await axios.patch(
-          `/api/quizzes/${quizId}/questions/${questionsId}/publish`
+          `/api/quizzes/${quizId}/questions/${questionsId}/actions/publish`
         );
         toast.success("Frage veröffentlicht");
       }
@@ -53,7 +53,9 @@ export const QuestionActions = ({
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/quizzes/${quizId}/questiions/${questionsId}`);
+      await axios.delete(
+        `/api/quizzes/${quizId}/questions/${questionsId}/actions/delete`
+      );
 
       toast.success("Frage gelöscht");
       router.refresh();

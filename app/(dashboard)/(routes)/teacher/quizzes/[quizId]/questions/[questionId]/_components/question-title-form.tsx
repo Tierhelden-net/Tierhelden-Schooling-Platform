@@ -21,14 +21,14 @@ import { Button } from "@/components/ui/button";
 
 interface QuestionTitleFormProps {
   initialData: {
-    title: string;
+    question_title: string;
   };
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  question_title: z.string().min(1),
 });
 
 export const QuestionTitleForm = ({
@@ -52,7 +52,7 @@ export const QuestionTitleForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
         values
       );
       toast.success("Question updated");
@@ -78,7 +78,9 @@ export const QuestionTitleForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && (
+        <p className="text-sm mt-2">{initialData.question_title}</p>
+      )}
       {isEditing && (
         <Form {...form}>
           <form
@@ -87,7 +89,7 @@ export const QuestionTitleForm = ({
           >
             <FormField
               control={form.control}
-              name="title"
+              name="question_title"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

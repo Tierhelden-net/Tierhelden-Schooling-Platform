@@ -25,7 +25,7 @@ interface QuestionAnswerMessageFormProps {
     message_for_correct_answer: string;
     message_for_incorrect_answer: string;
   };
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 
@@ -39,9 +39,11 @@ export const QuestionAnswerMessageForm = ({
   quizId,
   questionId,
 }: QuestionAnswerMessageFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing1, setIsEditing1] = useState(false);
+  const [isEditing2, setIsEditing2] = useState(false);
 
-  const toggleEdit = () => setIsEditing((current) => !current);
+  const toggleEdit1 = () => setIsEditing1((current) => !current);
+  const toggleEdit2 = () => setIsEditing2((current) => !current);
 
   const router = useRouter();
 
@@ -52,14 +54,27 @@ export const QuestionAnswerMessageForm = ({
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit1 = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
         values
       );
       toast.success("Question updated");
-      toggleEdit();
+      toggleEdit1();
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+  const onSubmit2 = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await axios.patch(
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
+        values
+      );
+      toast.success("Question updated");
+      toggleEdit2();
       router.refresh();
     } catch {
       toast.error("Something went wrong");
@@ -70,8 +85,8 @@ export const QuestionAnswerMessageForm = ({
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Message for correct answer
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing ? (
+        <Button onClick={toggleEdit1} variant="ghost">
+          {isEditing1 ? (
             <>Cancel</>
           ) : (
             <>
@@ -81,7 +96,7 @@ export const QuestionAnswerMessageForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && (
+      {!isEditing1 && (
         <p
           className={cn(
             "text-sm mt-2",
@@ -93,10 +108,10 @@ export const QuestionAnswerMessageForm = ({
             : "Kein Text."}
         </p>
       )}
-      {isEditing && (
+      {isEditing1 && (
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit1)}
             className="space-y-4 mt-4"
           >
             <FormField
@@ -127,8 +142,8 @@ export const QuestionAnswerMessageForm = ({
 
       <div className="font-medium flex items-center justify-between">
         Message for incorrect answer
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing ? (
+        <Button onClick={toggleEdit2} variant="ghost">
+          {isEditing2 ? (
             <>Cancel</>
           ) : (
             <>
@@ -138,7 +153,7 @@ export const QuestionAnswerMessageForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && (
+      {!isEditing2 && (
         <p
           className={cn(
             "text-sm mt-2",
@@ -150,10 +165,10 @@ export const QuestionAnswerMessageForm = ({
             : "Kein Text."}
         </p>
       )}
-      {isEditing && (
+      {isEditing2 && (
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit2)}
             className="space-y-4 mt-4"
           >
             <FormField

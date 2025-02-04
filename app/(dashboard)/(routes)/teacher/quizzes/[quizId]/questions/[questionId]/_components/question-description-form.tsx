@@ -24,12 +24,12 @@ import { Preview } from "@/components/preview";
 
 interface QuestionDescriptionFormProps {
   initialData: Question;
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1),
+  question_text: z.string().min(1),
 });
 
 export const QuestionDescriptionForm = ({
@@ -46,7 +46,7 @@ export const QuestionDescriptionForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.question_text || "",
+      question_text: initialData?.question_text || "",
     },
   });
 
@@ -55,7 +55,7 @@ export const QuestionDescriptionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
         values
       );
       toast.success("Question updated");
@@ -69,7 +69,7 @@ export const QuestionDescriptionForm = ({
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
-        Quiz description
+        Question description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -102,7 +102,7 @@ export const QuestionDescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name="description"
+              name="question_text"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

@@ -1,6 +1,46 @@
-TIERHELDEN-APP
+#TIERHELDEN-APP
 
-für die Benutzung der App werden API-Keys benötigt.
+##Installation
+
+Use the package manager [npm] to install the dependencies.
+
+```bash
+npm install
+```
+
+Generate prisma schema on your local environment.
+
+```bash
+npm run postinstall
+```
+
+Syncronize the remote database with your local database.
+
+```bash
+npx prisma migrate dev
+```
+
+##Update database
+
+update the schema in /prisma/schema.prisma
+
+Generate the schema
+
+```bash
+prisma generate
+```
+
+Syncronize the remote database with your local database.
+
+```bash
+npx prisma migrate dev
+```
+
+Upload the changes to GitHub
+
+##Add a .env file
+
+Für die lokale Nutzung der App werden API-Keys benötigt.
 Dafür eine .env datei anlegen und folgende Variablen eintragen:
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=xxx  

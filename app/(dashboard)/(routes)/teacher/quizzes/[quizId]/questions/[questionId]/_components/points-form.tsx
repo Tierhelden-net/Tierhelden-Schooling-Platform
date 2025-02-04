@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 
 interface PointsFormProps {
   initialData: Question;
-  quizId: number;
+  quizId: string;
   questionId: string;
 }
 
@@ -57,7 +57,7 @@ export const PointsForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/quizzes/${quizId}/questions/${questionId}`,
+        `/api/quizzes/${quizId}/questions/${questionId}/actions`,
         values
       );
       toast.success("Question points updated");

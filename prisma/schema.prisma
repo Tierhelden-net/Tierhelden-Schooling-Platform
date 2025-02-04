@@ -124,16 +124,24 @@ model StripeCustomer {
 }
 
 model User {
-  user_id       String         @id @default(uuid())
+  user_id       String         @id 
   email         String?        @unique 
   name          String?        
   user_role     UserRole? 
+  last_signed_in   DateTime?
+  last_chapter_completed  DateTime?
+  last_live_training    DateTime?
+  last_online_training  DateTime?
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   
   userAnswers   UserAnswer[]
   quizAttempts  QuizAttempt[]
+
+  liveTrainingAsTeacher   LiveTraining[]          @relation("TeacherRelation")
+  liveTrainingAsCoTeacher LiveTraining[]          @relation("CoTeacherRelation")
+  liveTrainingSignUp    LiveTrainingSignUp[] 
 }
 
 model Quiz {
@@ -141,14 +149,18 @@ model Quiz {
   quiz_name       String?
   quiz_synopsis   String?
   quit_category   QuizCategory?
-  max_points      Int?
-  passing_points  Int?
+  max_points      Int? @default(0)
+  passing_points  Int? @default(0)
+  question_number Int? //amount asked questions 
+  random_questions Boolean @default(false)
 
   questions       Question[]
+  answers         Answer[]
   quizAttempts    QuizAttempt[]
   userAnswers     UserAnswer[]
   courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
 
+  createdBy  String? 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -178,8 +190,11 @@ model Question {
   message_for_correct_answer    String?
   message_for_incorrect_answer  String?
   explanation                   String?
-  is_knockout                   Boolean?
-  points                        Int
+  is_knockout                   Boolean? @default(false)
+  points                        Float? @default(0) 
+  isPublished                   Boolean? @default(true)
+  position                      Int?
+  random_answers                Boolean? @default(false)
 
   quiz_id       Int
   quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
@@ -220,12 +235,16 @@ model Answer {
   answer_video String?
   is_correct   Boolean
   position     Int?
+  
+  quiz_id  Int?
+  quiz     Quiz? @relation(fields: [quiz_id], references: [quiz_id])
 
   question_id  Int
   question     Question @relation(fields: [question_id], references: [question_id])
 
   userAnswers  UserAnswer[]
   
+  createdBy    String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -243,6 +262,38 @@ model QuizAttempt {
   
   user          User         @relation(fields: [user_id], references: [user_id])
   quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
+}
+
+model LiveTraining {
+  id        Int         @id @default(autoincrement())
+  date      DateTime
+  location  String?
+  online    Boolean     @default(true)
+  link      String? 
+  picture   String?
+  is_published    Boolean @default(false)
+  publishing_time DateTime? 
+  
+  teacher_id   String?
+  coteacher_id String?
+
+  teacher      User?    @relation("TeacherRelation", fields: [teacher_id], references: [user_id])
+  coteacher    User?    @relation("CoTeacherRelation", fields: [coteacher_id], references: [user_id])
+
+  SignUp    LiveTrainingSignUp[]
+}
+
+model LiveTrainingSignUp {
+  liveTraining_id Int
+  user_id  String
+
+  signed_up   Boolean   @default(true)
+  showed_up   Boolean? 
+
+  liveTraining   LiveTraining @relation(fields: [liveTraining_id], references: [id])
+  user           User         @relation(fields: [user_id], references: [user_id])
+
+  @@id([liveTraining_id, user_id])
 }
 
 enum QuestionType {
