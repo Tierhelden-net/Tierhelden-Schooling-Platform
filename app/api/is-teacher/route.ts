@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isTeacher } from "@/lib/teacher";
 
-// http://localhost:3000/api/is-teacher -- API is working 
+// http://localhost:3000/api/is-teacher -- API is working
 /* export async function GET() {
   return NextResponse.json({ message: "API is working! Use POST to send data." });
 } */
@@ -18,6 +18,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ isTeacher: teacherStatus });
   } catch (error) {
     console.error("API Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -28,7 +28,7 @@ interface CategoryFormProps {
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  quit_category: z.string().min(1),
 });
 
 export const CategoryForm = ({
@@ -45,7 +45,7 @@ export const CategoryForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || "",
+      quit_category: initialData?.quit_category || "",
     },
   });
 
@@ -63,7 +63,7 @@ export const CategoryForm = ({
   };
 
   const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
+    (option) => option.value === initialData.quit_category
   );
 
   return (
@@ -85,7 +85,7 @@ export const CategoryForm = ({
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.categoryId && "text-slate-500 italic"
+            !initialData.quit_category && "text-slate-500 italic"
           )}
         >
           {selectedOption?.label || "No category"}
@@ -99,7 +99,7 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="quit_category"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
