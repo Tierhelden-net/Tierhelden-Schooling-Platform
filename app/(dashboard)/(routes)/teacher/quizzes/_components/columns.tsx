@@ -49,11 +49,11 @@ export const columns: ColumnDef<Quiz>[] = [
       );
     },
     cell: ({ row }) => {
-      // TODO: Wir haben noch kein Questions Feld in der Datenbank, deswegen wird hier ein Dummy-Wert verwendet
-      // const questions = parseFloat(row.getValue("questions") || "0");
-      const questions = 0;
+      const questions: Object[] = row.getValue("questions");
 
-      return <div>{questions}</div>;
+      const questionsLength = questions.length;
+
+      return <div>{questionsLength}</div>;
     },
   },
   {
