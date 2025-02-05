@@ -31,7 +31,11 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
       quiz_id: parseInt(params.quizId),
     },
     include: {
-      questions: {},
+      questions: {
+        orderBy: {
+          position: "asc",
+        },
+      },
     },
   });
 

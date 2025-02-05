@@ -8,18 +8,25 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Check, Grip, Pencil, X } from "lucide-react";
+import { Check, Grip, Pencil, Trash, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 interface AnswersListProps {
   items: Answer[];
   onReorder: (updateData: { id: number; position: number }[]) => void;
   onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-export const AnswersList = ({ items, onReorder, onEdit }: AnswersListProps) => {
+export const AnswersList = ({
+  items,
+  onReorder,
+  onEdit,
+  onDelete,
+}: AnswersListProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [answers, setAnswers] = useState(items);
 
@@ -32,8 +39,16 @@ export const AnswersList = ({ items, onReorder, onEdit }: AnswersListProps) => {
   }, [items]);
 
   const onDragEnd = (result: DropResult) => {
+    // If user tries to drop in an unknown destination
     if (!result.destination) return;
-    console.log(answers);
+
+    // if the user drags and drops back in the same position
+    if (
+      result.destination.droppableId === result.source.droppableId &&
+      result.destination.index === result.source.index
+    ) {
+      return;
+    }
 
     const items = Array.from(answers);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -44,7 +59,7 @@ export const AnswersList = ({ items, onReorder, onEdit }: AnswersListProps) => {
 
     const updatedAnswers = items.slice(startIndex, endIndex + 1);
 
-    setAnswers(items);
+    //setAnswers(items);
 
     const bulkUpdateData = updatedAnswers.map((answer) => ({
       id: answer.answer_id,
@@ -96,6 +111,11 @@ export const AnswersList = ({ items, onReorder, onEdit }: AnswersListProps) => {
                         onClick={() => onEdit(answer.answer_id.toString())}
                         className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
                       />
+                      <ConfirmModal
+                        onConfirm={() => onDelete(answer.answer_id.toString())}
+                      >
+                        <Trash className="w-4 h-4 cursor-pointer hover:opacity-75 transition" />
+                      </ConfirmModal>
                     </div>
                   </div>
                 )}

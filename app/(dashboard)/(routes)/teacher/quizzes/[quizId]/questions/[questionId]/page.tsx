@@ -42,7 +42,11 @@ const QuestionIdPage = async ({
       question_id: parseInt(params.questionId),
     },
     include: {
-      answers: true,
+      answers: {
+        orderBy: {
+          position: "asc",
+        },
+      },
     },
   });
 
