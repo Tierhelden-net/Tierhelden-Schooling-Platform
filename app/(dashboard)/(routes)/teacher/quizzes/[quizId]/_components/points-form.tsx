@@ -90,8 +90,12 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
           )}
         >
           {initialData.passing_points
-            ? `zum Bestehen erforderliche Punkte: ${initialData.passing_points} / ${initialData.max_points}`
-            : `Quiz wird bestanden. (Punkte zum Bestehen: 0 /  ${initialData.max_points} )`}
+            ? `zum Bestehen erforderliche Punkte: ${
+                initialData.passing_points
+              } / ${initialData.max_points ?? 0}`
+            : `Quiz wird bestanden. (Punkte zum Bestehen: 0 /  ${
+                initialData.max_points ?? 0
+              } )`}
         </p>
       )}
       {isEditing && (
@@ -134,7 +138,7 @@ export const PointsForm = ({ initialData, quizId }: PointsFormProps) => {
                     htmlFor="passing_points"
                     className={cn("ml-2 text-slate-400")}
                   >{`${
-                    passingPoints + " / " + initialData.max_points
+                    passingPoints + " / " + (initialData.max_points ?? 0)
                   }`}</FormLabel>
                   <FormMessage />
                 </FormItem>
