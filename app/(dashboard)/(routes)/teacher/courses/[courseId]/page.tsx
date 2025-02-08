@@ -5,6 +5,7 @@ import {
   File,
   LayoutDashboard,
   ListChecks,
+  ListChecksIcon,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -19,6 +20,7 @@ import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
 import { Actions } from "./_components/actions";
+import { QuizForm } from "./_components/quiz-form";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -43,12 +45,19 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
           createdAt: "desc",
         },
       },
+      quizzes: true,
     },
   });
 
   const categories = await db.category.findMany({
     orderBy: {
       name: "asc",
+    },
+  });
+
+  const quizzes = await db.quiz.findMany({
+    orderBy: {
+      quiz_name: "asc",
     },
   });
 
@@ -60,7 +69,6 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.title,
     course.description,
     course.imageUrl,
-    course.price,
     course.categoryId,
     course.chapters.some((chapter) => chapter.isPublished),
   ];
@@ -119,10 +127,17 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             </div>
             <div>
               <div className="flex items-center gap-x-2">
-                <IconBadge icon={CircleDollarSign} />
-                <h2 className="text-xl">Preis</h2>
+                <IconBadge icon={ListChecks} />
+                <h2 className="text-xl">Quiz</h2>
               </div>
-              <PriceForm initialData={course} courseId={course.id} />
+              <QuizForm
+                initialData={course}
+                courseId={course.id}
+                options={quizzes.map((quiz) => ({
+                  label: quiz.quiz_name ?? "",
+                  value: quiz.quiz_id.toString(),
+                }))}
+              />
             </div>
             <div>
               <div className="flex items-center gap-x-2">
@@ -130,6 +145,13 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 <h2 className="text-xl">Materialien</h2>
               </div>
               <AttachmentForm initialData={course} courseId={course.id} />
+            </div>
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={CircleDollarSign} />
+                <h2 className="text-xl">Preis</h2>
+              </div>
+              <PriceForm initialData={course} courseId={course.id} />
             </div>
           </div>
         </div>

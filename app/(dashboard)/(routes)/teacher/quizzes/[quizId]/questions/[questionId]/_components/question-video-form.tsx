@@ -76,7 +76,7 @@ export const QuestionVideoForm = ({
       </div>
       {!isEditing &&
         addVideo &&
-        (initialData.question_video ? (
+        (!initialData.question_video ? (
           <div className="flex items-center justify-center h-60 bg-input rounded-md">
             <Video className="h-10 w-10 text-slate-500" />
           </div>
@@ -87,7 +87,7 @@ export const QuestionVideoForm = ({
         ))}
       {!isEditing &&
         !addVideo &&
-        (initialData.question_pic ? (
+        (!initialData.question_pic ? (
           <div className="flex items-center justify-center h-60 bg-input rounded-md">
             <ImageIcon className="h-10 w-10 text-slate-500" />
           </div>

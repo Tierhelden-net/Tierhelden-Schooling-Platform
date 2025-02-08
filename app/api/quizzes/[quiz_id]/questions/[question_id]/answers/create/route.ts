@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 
 export async function POST(
   request: NextRequest,
-  context: { params: { quiz_id: string; question_id: string } }
+  { params }: { params: { quiz_id: string; question_id: string } }
 ) {
   try {
     // userId aus Clerk-Authentifizierung
@@ -29,18 +29,16 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    // Extrahiere die quiz_id und question_id aus den Parametern
-    const { quiz_id: rawQuizId, question_id: rawQuestionId } = context.params;
-    // Parse die quiz_id und question_id als Integer
-    const quizId = parseInt(rawQuizId, 10);
-    const questionId = parseInt(rawQuestionId, 10);
+    // quiz_id aus den Parametern als Integer extrahieren (wird als String übergeben)
+    const quizId = parseInt(params.quiz_id);
+    const questionId = parseInt(params.question_id);
 
     // Parse den Request-Body als JSON
     const body = await request.json();
-    const { answerText, isCorrect } = body;
+    const { answer_text, is_correct } = body;
 
     // Validierung der Eingabedaten
-    if (!answerText || typeof isCorrect !== "boolean") {
+    if (!answer_text || typeof is_correct !== "boolean") {
       return NextResponse.json(
         { error: 'Invalid input. "text" and "isCorrect" are required.' },
         { status: 400 }
@@ -65,14 +63,27 @@ export async function POST(
       );
     }
 
+    //find last answer
+    const lastAnswer = await db.answer.findFirst({
+      where: {
+        quiz_id: quizId,
+      },
+      orderBy: {
+        position: "desc",
+      },
+    });
+
+    const newPosition = lastAnswer?.position ? lastAnswer.position + 1 : 1;
+
     // Antwort erstellen
     const answer = await db.answer.create({
       data: {
-        //createdBy: userId,
+        createdBy: userId,
         question_id: questionId,
-        answer_text: answerText,
-        is_correct: isCorrect,
-        //quiz_id: quizId,
+        answer_text: answer_text,
+        is_correct: is_correct,
+        quiz_id: quizId,
+        position: newPosition,
       },
     });
 

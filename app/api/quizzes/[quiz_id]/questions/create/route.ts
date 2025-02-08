@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 
-export async function POST(request: NextRequest, { params }: { params: { quiz_id: string } }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { quiz_id: string } }
+) {
   try {
     const { userId } = auth();
 
@@ -15,38 +18,50 @@ export async function POST(request: NextRequest, { params }: { params: { quiz_id
 
     // Datenbankabfrage des Benutzers
     const user = await db.user.findUnique({
-        where: { user_id: userId },
-        select: { user_role: true },
-        });
+      where: { user_id: userId },
+      select: { user_role: true },
+    });
 
     // Falls der User kein Admin ist, wird eine Fehlermeldung zurückgegeben
     if (!user || user.user_role !== "ADMIN") {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: 403 }
-        );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
-    
+
     const quiz_id = parseInt(params.quiz_id, 10);
 
     // Extrahiere den JSON-Body der Anfrage
     const body = await request.json();
-    
+
     // Extrahiere quiz_name aus dem Body
     const { question_title } = body;
+
+    //find last question
+    const lastQuestion = await db.question.findFirst({
+      where: {
+        quiz_id: quiz_id,
+      },
+      orderBy: {
+        position: "desc",
+      },
+    });
+
+    const newPosition = lastQuestion?.position ? lastQuestion.position + 1 : 0;
 
     const newQuestion = await db.question.create({
       data: {
         quiz_id: quiz_id,
         createdBy: userId,
         question_title: question_title,
+        position: newPosition,
       },
     });
 
     return NextResponse.json(
-      { message: "Quiz created successfully", 
+      {
+        message: "Quiz created successfully",
         question_title: newQuestion.question_title,
-        question: newQuestion },
+        question: newQuestion,
+      },
       { status: 201 }
     );
   } catch (error) {

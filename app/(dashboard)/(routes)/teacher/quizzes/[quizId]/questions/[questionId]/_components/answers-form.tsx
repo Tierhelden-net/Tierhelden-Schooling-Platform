@@ -32,10 +32,18 @@ interface AnswerFormProps {
   questionId: string;
 }
 
-const formSchema = z.object({
+//form Schema for creating a new answer
+const createFormSchema = z.object({
+  answer_text: z.string().min(1),
+  is_correct: z.boolean(),
+});
+//form Schema for editing/updating an existing answer
+const editFormSchema = z.object({
   answer_text: z.string().min(1),
   is_correct: z.boolean(),
   //answer_pic: z.string(),
+  //answer_video: z.string(),
+  answer_id: z.number(),
 });
 
 export const AnswerForm = ({
@@ -44,32 +52,50 @@ export const AnswerForm = ({
   questionId,
 }: AnswerFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const router = useRouter();
+
   const toggleCreating = () => {
     setIsCreating((current) => !current);
   };
 
-  const router = useRouter();
+  //form for creating a new answer
+  const createForm = useForm<z.infer<typeof createFormSchema>>({
+    resolver: zodResolver(createFormSchema),
+    defaultValues: {
+      answer_text: "",
+      is_correct: false,
+    },
+  });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  //form for editing/updating an existing answer
+  const editForm = useForm<z.infer<typeof editFormSchema>>({
+    resolver: zodResolver(editFormSchema),
     defaultValues: {
       answer_text: "",
       is_correct: false,
       //answer_pic: "",
+      //answer_video: "",
+      answer_id: 0,
     },
   });
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting, isValid } = createForm.formState;
 
   const onEdit = (id: string) => {
+    setIsEditing(true);
+    const currentAnswer = initialData.answers.find(
+      (a) => a.answer_id.toString() === id
+    );
+    editForm.setValue("answer_id", parseInt(id));
+    editForm.setValue("answer_text", currentAnswer?.answer_text ?? "");
+    editForm.setValue("is_correct", currentAnswer?.is_correct ?? false);
     toggleCreating();
   };
 
-  //TODO: sort the answers in the database before rendering
-  //initialData.answers.sort((a, b) => a.position - b.position);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onCreateSubmit = async (values: z.infer<typeof createFormSchema>) => {
     try {
       setIsUpdating(true);
       await axios.post(
@@ -83,6 +109,24 @@ export const AnswerForm = ({
       toast.error("Something went wrong");
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const onEditSubmit = async (values: z.infer<typeof createFormSchema>) => {
+    try {
+      setIsUpdating(true);
+      await axios.patch(
+        `/api/quizzes/${quizId}/questions/${questionId}/answers/`,
+        values
+      );
+      toast.success("Answer updated");
+      toggleCreating();
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+      setIsEditing(false);
     }
   };
 
@@ -104,6 +148,23 @@ export const AnswerForm = ({
     }
   };
 
+  const onDelete = async (answerId: string) => {
+    try {
+      setIsUpdating(true);
+
+      await axios.delete(
+        `/api/quizzes/${quizId}/questions/${questionId}/answers/${answerId}`
+      );
+
+      toast.success("Antwort gelöscht");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="relative form-container">
       {isUpdating && (
@@ -113,7 +174,13 @@ export const AnswerForm = ({
       )}
       <div className="font-medium flex items-center justify-between">
         Answers
-        <Button onClick={toggleCreating} variant="ghost">
+        <Button
+          onClick={() => {
+            toggleCreating();
+            setIsEditing(false);
+          }}
+          variant="ghost"
+        >
           {isCreating ? (
             <>Cancel</>
           ) : (
@@ -135,21 +202,23 @@ export const AnswerForm = ({
           <AnswersList
             onEdit={onEdit}
             onReorder={onReorder}
+            onDelete={onDelete}
             items={initialData.answers || []}
           />
         </div>
       )}
-      {isCreating && (
-        <Form {...form}>
+      {isCreating && !isEditing && (
+        <Form {...createForm}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={createForm.handleSubmit(onCreateSubmit)}
             className="space-y-4 mt-4"
           >
             <FormField
-              control={form.control}
+              control={createForm.control}
               name="answer_text"
               render={({ field }) => (
                 <FormItem>
+                  <FormMessage>Create an answer</FormMessage>
                   <FormControl>
                     <Textarea
                       disabled={isSubmitting}
@@ -161,7 +230,54 @@ export const AnswerForm = ({
               )}
             />
             <FormField
-              control={form.control}
+              control={createForm.control}
+              name="is_correct"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormDescription>answer is correct?</FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <div className="flex items-center gap-x-2">
+              <Button disabled={!isValid || isSubmitting} type="submit">
+                Save
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
+      {isCreating && isEditing && (
+        <Form {...editForm}>
+          <form
+            onSubmit={editForm.handleSubmit(onEditSubmit)}
+            className="space-y-4 mt-4"
+          >
+            <FormField
+              control={editForm.control}
+              name="answer_text"
+              render={({ field }) => (
+                <FormItem>
+                  <FormMessage>Edit the answer</FormMessage>
+                  <FormControl>
+                    <Textarea
+                      disabled={editForm.formState.isSubmitting}
+                      placeholder="e.g. 'the answer is...'"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={editForm.control}
               name="is_correct"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -179,7 +295,12 @@ export const AnswerForm = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                disabled={
+                  !editForm.formState.isValid || editForm.formState.isSubmitting
+                }
+                type="submit"
+              >
                 Save
               </Button>
             </div>
