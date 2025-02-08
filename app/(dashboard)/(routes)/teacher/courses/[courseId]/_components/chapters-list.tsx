@@ -36,7 +36,16 @@ export const ChaptersList = ({
   }, [items]);
 
   const onDragEnd = (result: DropResult) => {
+    // If user tries to drop in an unknown destination
     if (!result.destination) return;
+
+    // if the user drags and drops back in the same position
+    if (
+      result.destination.droppableId === result.source.droppableId &&
+      result.destination.index === result.source.index
+    ) {
+      return;
+    }
 
     const items = Array.from(chapters);
     const [reorderedItem] = items.splice(result.source.index, 1);
