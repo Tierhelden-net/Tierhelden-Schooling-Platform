@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import {
   CircleDollarSign,
   File,
+  GraduationCap,
   LayoutDashboard,
   ListChecks,
-  ListChecksIcon,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -127,7 +127,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             </div>
             <div>
               <div className="flex items-center gap-x-2">
-                <IconBadge icon={ListChecks} />
+                <IconBadge icon={GraduationCap} />
                 <h2 className="text-xl">Quiz</h2>
               </div>
               <QuizForm

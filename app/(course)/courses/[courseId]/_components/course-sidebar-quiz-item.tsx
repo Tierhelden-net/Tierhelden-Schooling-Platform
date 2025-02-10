@@ -1,11 +1,11 @@
 "use client";
 
-import { CheckCircle, Lock, PlayCircle } from "lucide-react";
+import { CheckCircle, GraduationCap, Lock } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-interface CourseSidebarItemProps {
+interface CourseSidebarQuizItemProps {
   label: string;
   id: string;
   isCompleted: boolean;
@@ -13,21 +13,21 @@ interface CourseSidebarItemProps {
   isLocked: boolean;
 }
 
-export const CourseSidebarItem = ({
+export const CourseSidebarQuizItem = ({
   label,
   id,
   isCompleted,
   courseId,
   isLocked,
-}: CourseSidebarItemProps) => {
+}: CourseSidebarQuizItemProps) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
+  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : GraduationCap;
   const isActive = pathname?.includes(id);
 
   const onClick = () => {
-    router.push(`/courses/${courseId}/chapters/${id}`);
+    router.push(`/courses/${courseId}/quiz/${1}`);
   };
 
   return (
@@ -41,14 +41,14 @@ export const CourseSidebarItem = ({
           "text-active bg-slate-500/20 hover:bg-slate-200/20 hover:text-active",
         isCompleted && "text-emerald-700 hover:text-emerald-700",
         isCompleted && isActive && "bg-emerald-200/20",
-        isLocked && "hover:text-disabled hover:bg-transparent text-disabled"
+        isLocked && "text-disabled hover:text-disabled hover:bg-transparent "
       )}
     >
       <div className="flex items-center gap-x-2 py-4">
         <Icon
           size={22}
           className={cn(
-            "text-slate-500",
+            "text-inactive",
             isActive && "text-active",
             isCompleted && "text-emerald-700",
             isLocked && "text-disabled"
