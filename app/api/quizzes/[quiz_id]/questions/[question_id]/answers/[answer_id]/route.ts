@@ -51,6 +51,20 @@ export async function DELETE(
       );
     }
 
+    //changed is_correct?
+    if (answer.is_correct) {
+      const correctAnswers = answer.question.correct_answers ?? 1;
+      //correct answers in question
+      await db.question.update({
+        where: {
+          question_id: questionId,
+        },
+        data: {
+          correct_answers: correctAnswers - 1,
+        },
+      });
+    }
+
     const deletedAnswer = await db.answer.delete({
       where: {
         answer_id: answerId,

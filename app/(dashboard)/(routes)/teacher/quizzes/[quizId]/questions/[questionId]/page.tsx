@@ -76,6 +76,12 @@ const QuestionIdPage = async ({
           label="Diese Frage ist nicht veröffentlicht und wird im Quiz nicht angezeigt."
         />
       )}
+      {question.correct_answers === 0 && (
+        <Banner
+          variant="warning"
+          label="Deine Frage braucht mindestens 1 richtige Antwort."
+        />
+      )}
       {!!(!isComplete && question.isPublished) && (
         <Banner
           variant="warning"

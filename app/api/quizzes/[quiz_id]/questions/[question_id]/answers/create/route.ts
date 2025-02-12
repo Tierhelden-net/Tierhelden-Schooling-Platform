@@ -87,6 +87,19 @@ export async function POST(
       },
     });
 
+    //correct answers in question
+    if (is_correct) {
+      await db.question.update({
+        where: {
+          question_id: questionId,
+        },
+        data: {
+          correct_answers: question.correct_answers
+            ? question.correct_answers + 1
+            : 1,
+        },
+      });
+    }
     // Erfolgreiche Antwort zurückgeben
     return NextResponse.json(
       { message: "Answer created successfully.", answer },

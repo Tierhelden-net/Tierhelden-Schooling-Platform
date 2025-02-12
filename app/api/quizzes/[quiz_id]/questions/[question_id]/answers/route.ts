@@ -18,7 +18,7 @@ export async function PATCH(
     const quizId = parseInt(params.quiz_id);
     const questionId = parseInt(params.question_id);
 
-    // Datenbankabfrage der Frage
+    // Datenbankabfrage der Answer
     const answer = await db.answer.findUnique({
       where: {
         answer_id: values.answer_id,
@@ -39,6 +39,27 @@ export async function PATCH(
         { error: "Quiz or question or answer not found." },
         { status: 404 }
       );
+    }
+
+    //changed is_correct?
+    if (answer.is_correct != values.is_correct) {
+      let correctAnswers = answer.question.correct_answers ?? 0;
+
+      if (values.is_correct === true) {
+        correctAnswers += 1;
+      } else if (values.is_correct === false) {
+        correctAnswers -= 1;
+      }
+
+      //correct answers in question
+      await db.question.update({
+        where: {
+          question_id: questionId,
+        },
+        data: {
+          correct_answers: correctAnswers,
+        },
+      });
     }
 
     const updatesAnswer = await db.answer.update({

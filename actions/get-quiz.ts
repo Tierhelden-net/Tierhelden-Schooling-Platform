@@ -40,10 +40,16 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
           where: {
             quiz_id: quiz_id,
           },
+          orderBy: {
+            position: "asc",
+          },
           include: {
             answers: {
               where: {
                 quiz_id: quiz_id,
+              },
+              orderBy: {
+                position: "asc",
               },
             },
           },

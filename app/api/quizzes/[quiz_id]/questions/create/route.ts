@@ -53,6 +53,7 @@ export async function POST(
         createdBy: userId,
         question_title: question_title,
         position: newPosition,
+        correct_answers: 0,
       },
     });
 
