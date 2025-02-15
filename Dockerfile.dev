@@ -1,0 +1,35 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install OS packages including Python, build tools, and OpenSSL (for Prisma)
+RUN apk add --no-cache bash git sudo python3 make g++ openssl netcat-openbsd && \
+    ln -sf python3 /usr/bin/python
+
+# Allow the node user to run chown without a password
+RUN echo "node ALL=(ALL) NOPASSWD: /bin/chown" >> /etc/sudoers
+
+# Create node_modules directory.
+RUN mkdir -p /app/node_modules && chown -R node:node /app;
+
+# Copy package files.
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+COPY .env.local .env
+
+# Install dependencies.
+RUN npm install
+
+# Generate prisma schema.
+RUN npm run postinstall
+
+# Copy entrypoint script and set its permissions.
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Expose the Next.js dev port.
+EXPOSE 3000
+
+# Set the entrypoint and start Next.js in dev mode.
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["npm", "run", "dev"]
