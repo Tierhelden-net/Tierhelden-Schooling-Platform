@@ -1,40 +1,48 @@
 {
-    "name": "Next.js Dev Container",
-	"dockerComposeFile": [
-	  "../docker-compose.yml"
-	],
-	"service": "app",
-	"workspaceFolder": "/app",
-    "postStartCommand": "sudo chown -R node:node /app/node_modules",
-    "postCreateCommand": "npm install",
-	"forwardPorts": [3000],
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "mikestead.dotenv",
-                "donjayamanne.git-extension-pack",
-                "GitHub.copilot",
-                "Tyriar.sort-lines",
-                "bennycode.sort-everything",
-                "PascalReitermann93.vscode-yaml-sort",
-                "Vue.volar",
-                "ms-azuretools.vscode-docker",
-                "yzhang.markdown-all-in-one",
-                "ms-vscode.js-debug-nightly",
-                "ecmel.vscode-html-css",
-                "Prisma.prisma",
-                "AbianS.prisma-generate-uml"
-            ]
-        },
-		"settings": {
-			"editor.tabSize": 4,
-			"editor.insertSpaces": true,
-			"terminal.integrated.shell.linux": "/bin/bash",
-			"workbench.editor.enablePreview": false,
-			"workbench.editorLargeFileConfirmation": "50 MB",
-			"telemetry.telemetryLevel": "off",
-			"gitlens.telemetry.enabled": false
-		}
+  "name": "Next.js Dev Container",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "app",
+  "workspaceFolder": "/app",
+  "postStartCommand": "sudo chown -R node:node /app/node_modules",
+  "postCreateCommand": "npm install",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mikestead.dotenv",
+        "donjayamanne.git-extension-pack",
+        "GitHub.copilot",
+        "Tyriar.sort-lines",
+        "bennycode.sort-everything",
+        "PascalReitermann93.vscode-yaml-sort",
+        "Vue.volar",
+        "ms-azuretools.vscode-docker",
+        "yzhang.markdown-all-in-one",
+        "ms-vscode.js-debug-nightly",
+        "ecmel.vscode-html-css",
+        "Prisma.prisma",
+        "AbianS.prisma-generate-uml",
+        "aaron-bond.better-comments",
+        "wayou.vscode-todo-highlight",
+        "rodrigovallades.es7-react-js-snippets",
+        "mhutchie.git-graph",
+        "ms-vsliveshare.vsliveshare",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "bruceyuhb.hsl-preview",
+        "ms-vscode.vscode-typescript-next",
+        "dbaeumer.vscode-eslint"
+      ]
     },
-    "remoteUser": "node"
-  }
+    "settings": {
+      "editor.tabSize": 4,
+      "editor.insertSpaces": true,
+      "terminal.integrated.shell.linux": "/bin/bash",
+      "workbench.editor.enablePreview": false,
+      "workbench.editorLargeFileConfirmation": "50 MB",
+      "telemetry.telemetryLevel": "off",
+      "gitlens.telemetry.enabled": false
+    }
+  },
+  "remoteUser": "node"
+}
