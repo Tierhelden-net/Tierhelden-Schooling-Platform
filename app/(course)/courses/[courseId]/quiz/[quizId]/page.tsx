@@ -8,9 +8,8 @@ import React from "react";
 import { getQuiz } from "@/actions/get-quiz";
 import { Banner } from "@/components/banner";
 import { Separator } from "@/components/ui/separator";
-import { Preview } from "@/components/preview";
 import { QuizComponent } from "./_components/quiz";
-import { Button } from "@/components/ui/button";
+import { StartQuizButtonComponent } from "./_components/start-quiz-button";
 
 const QuizIdPage = async ({
   params,
@@ -54,11 +53,13 @@ const QuizIdPage = async ({
           <p className="justify-self-end">{quiz.questions.length} Fragen</p>
         </div>
 
-        <a href={`/courses/${params.courseId}/quiz/${params.quizId}/question/`}>
-          <Button>Start Quiz</Button>
-        </a>
+        <StartQuizButtonComponent
+          courseId={params.courseId}
+          quizId={params.quizId}
+        />
         {
           //<QuizComponent quiz={quiz} />
+          //TODO: show started Attemps ?
         }
       </DataCard>
     </div>

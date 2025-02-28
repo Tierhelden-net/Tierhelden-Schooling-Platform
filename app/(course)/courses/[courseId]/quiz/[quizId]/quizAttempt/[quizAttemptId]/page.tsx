@@ -1,7 +1,5 @@
 //Game Page: renders questions + answers
 
-//wohin mit dem Style??
-
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
@@ -14,7 +12,7 @@ import QuestionComponent from "./_components/question";
 const QuestionPage = async ({
   params,
 }: {
-  params: { courseId: string; quizId: string };
+  params: { courseId: string; quizId: string; quizAttemptId: string };
 }) => {
   const { userId } = auth();
 
