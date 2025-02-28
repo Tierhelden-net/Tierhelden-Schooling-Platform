@@ -2,13 +2,10 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 import { DataCard } from "@/app/(dashboard)/(routes)/teacher/analytics/_components/data-card";
-import Quiz from "react-quiz-component";
 import React from "react";
 
 import { getQuiz } from "@/actions/get-quiz";
 import { Banner } from "@/components/banner";
-import { Separator } from "@/components/ui/separator";
-import { QuizComponent } from "./_components/quiz";
 import { StartQuizButtonComponent } from "./_components/start-quiz-button";
 
 const QuizIdPage = async ({
@@ -24,16 +21,14 @@ const QuizIdPage = async ({
 
   //Start-Page Quiz
 
-  const {
-    quiz,
-    course,
-    muxData,
-    //quizAttemps + userAnswers
-  } = await getQuiz({
-    userId,
-    quizId: params.quizId,
-    courseId: params.courseId,
-  });
+  //TODO: delete quiz attempts manually + that are older than 1 month ?
+
+  const { quiz, course, notCompletedQuizAttempts, completedQuizAttempts } =
+    await getQuiz({
+      userId,
+      quizId: params.quizId,
+      courseId: params.courseId,
+    });
 
   if (!quiz || !course) {
     return redirect("/");
@@ -57,11 +52,28 @@ const QuizIdPage = async ({
           courseId={params.courseId}
           quizId={params.quizId}
         />
-        {
-          //<QuizComponent quiz={quiz} />
-          //TODO: show started Attemps ?
-        }
       </DataCard>
+      {notCompletedQuizAttempts.length > 0 && (
+        <div className="mt-4">
+          <DataCard label={"Beende deinen letzten Versuch: "}>
+            {notCompletedQuizAttempts.map((quizAttempt) => (
+              <a
+                href={`/courses/${params.courseId}/quiz/${params.quizId}/quizAttempt/${quizAttempt.quiz_attempt_id}`}
+              >
+                <p>{quizAttempt.attempt_at.toLocaleString("de-DE")}</p>
+              </a>
+            ))}
+          </DataCard>
+        </div>
+      )}
+      {completedQuizAttempts.length > 0 && (
+        <div className="mt-4">
+          <DataCard
+            label={"deine Ergebnisse: "}
+            url={`/courses/${params.courseId}/quiz/${params.quizId}/result`}
+          ></DataCard>
+        </div>
+      )}
     </div>
   );
 };

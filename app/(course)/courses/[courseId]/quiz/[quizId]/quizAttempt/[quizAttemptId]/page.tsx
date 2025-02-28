@@ -23,20 +23,24 @@ const QuestionPage = async ({
   const {
     quiz,
     course,
-    muxData,
-    //quizAttemps + userAnswers
+    //muxData,
+    notCompletedQuizAttempts,
   } = await getQuiz({
     userId,
     quizId: params.quizId,
     courseId: params.courseId,
   });
 
-  if (!quiz || !course) {
+  if (!quiz || !course || !notCompletedQuizAttempts) {
     return redirect("/");
   }
 
-  let questions = quiz.questions;
+  const quizAttempt = notCompletedQuizAttempts.find(
+    (quizAttempt) =>
+      quizAttempt.quiz_attempt_id === parseInt(params.quizAttemptId)
+  )!;
 
+  let questions = quiz.questions;
   //shuffle questions
   if (quiz.random_questions) {
     questions = quiz.questions.sort(() => Math.random() - 0.5);
@@ -48,6 +52,7 @@ const QuestionPage = async ({
       questions={questions}
       quizAttemptId={params.quizAttemptId}
       courseId={params.courseId}
+      quizAttempt={quizAttempt}
     />
   );
 };

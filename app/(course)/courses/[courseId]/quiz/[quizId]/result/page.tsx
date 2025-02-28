@@ -24,8 +24,8 @@ const QuizResultPage = async ({
   const {
     quiz,
     course,
-    muxData,
-    //quizAttemps + userAnswers
+    //muxData,
+    completedQuizAttempts,
   } = await getQuiz({
     userId,
     quizId: params.quizId,

@@ -17,7 +17,13 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
-import { Answer, Question, Quiz } from "@prisma/client";
+import {
+  Answer,
+  Question,
+  Quiz,
+  QuizAttempt,
+  UserAnswer,
+} from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -30,6 +36,7 @@ interface QuestionComponentProps {
   })[];
   quizAttemptId: string;
   courseId: string;
+  quizAttempt: QuizAttempt & { userAnswers: UserAnswer[] };
 }
 
 const formSchema = z.object({
@@ -42,11 +49,20 @@ export const QuestionComponent = ({
   questions,
   quizAttemptId,
   courseId,
+  quizAttempt,
 }: QuestionComponentProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
+
+  //filter out the questions that have been answered
+  const [answeredQuestions, setAnsweredQuestions] = React.useState<number[]>(
+    quizAttempt.userAnswers?.map((ua) => ua.question_id)
+  );
+  if (answeredQuestions.includes(currentQuestion.question_id)) {
+    setCurrentQuestionIndex((prev) => prev + 1);
+  }
 
   //shuffle answers
   const [answers, setAnswers] = React.useState<Answer[]>(

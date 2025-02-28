@@ -55,12 +55,44 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
             },
           },
         },
-        //TODO: quizAttemps + userAnswers
       },
     });
 
     if (!quiz || !course) {
       throw new Error("Chapter or course not found");
+    }
+
+    const quizAttempts = await db.quizAttempt.findMany({
+      where: {
+        quiz_id: quiz_id,
+        user_id: userId,
+      },
+      orderBy: {
+        attempt_at: "desc",
+      },
+      include: {
+        userAnswers: true,
+      },
+    });
+
+    //find completed quiz attempts
+    let completedQuizAttempts = [];
+    let notCompletedQuizAttempts = [];
+    for (let quizAttempt of quizAttempts) {
+      const answeredQuestions = quizAttempt.userAnswers.map(
+        (userAnswer) => userAnswer.question_id
+      );
+      let completed = true;
+      for (let question of quiz.questions) {
+        if (!answeredQuestions.includes(question.question_id)) {
+          notCompletedQuizAttempts.push(quizAttempt);
+          completed = false;
+          break;
+        }
+      }
+      if (completed) {
+        completedQuizAttempts.push(quizAttempt);
+      }
     }
 
     let muxData = null;
@@ -87,7 +119,8 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
       quiz,
       course,
       muxData,
-      //quizAttemps + userAnswers
+      completedQuizAttempts,
+      notCompletedQuizAttempts,
     };
   } catch (error) {
     console.log("[GET_QUIZ]", error);
@@ -95,7 +128,7 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
       quiz: null,
       course: null,
       muxData: null,
-      //quizAttemps + userAnswers
+      quizAttemps: null,
     };
   }
 };
