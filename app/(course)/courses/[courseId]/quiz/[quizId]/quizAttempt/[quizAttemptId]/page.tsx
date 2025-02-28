@@ -35,7 +35,13 @@ const QuestionPage = async ({
     return redirect("/");
   }
 
-  return <QuestionComponent quiz={quiz} />;
+  return (
+    <QuestionComponent
+      quiz={quiz}
+      quizAttemptId={params.quizAttemptId}
+      courseId={params.courseId}
+    />
+  );
 };
 
 export default QuestionPage;

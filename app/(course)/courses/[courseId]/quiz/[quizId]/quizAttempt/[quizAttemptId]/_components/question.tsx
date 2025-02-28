@@ -30,6 +30,8 @@ import { Checkbox } from "@radix-ui/react-checkbox";
 import { Answer, Question, Quiz } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface QuestionComponentProps {
   quiz: Quiz & {
@@ -37,34 +39,69 @@ interface QuestionComponentProps {
       answers: Answer[];
     })[];
   };
+  quizAttemptId: string;
+  courseId: string;
 }
 
 const formSchema = z.object({
+  question_id: z.number(),
   answers: z.string().array().nonempty(),
 });
 
-export const QuestionComponent = ({ quiz }: QuestionComponentProps) => {
+export const QuestionComponent = ({
+  quiz,
+  quizAttemptId,
+  courseId,
+}: QuestionComponentProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
   const currentQuestion = quiz.questions[currentQuestionIndex];
 
   const lastQuestion = currentQuestionIndex === quiz.questions.length - 1;
 
-  const handleNext = () => {
-    if (!lastQuestion) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    }
-  };
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       answers: [],
+      question_id: currentQuestion.question_id,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("Checked answers:", data.answers);
+    try {
+      await axios.post(
+        `/api/quizzes/${quiz.quiz_id}/quizAttempt/${quizAttemptId}/userAnswer`,
+        data
+      );
+
+      if (!lastQuestion) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Error while submitting your answers");
+    }
+
+    if (lastQuestion) {
+      try {
+        await axios.patch(
+          `/api/quizzes/${quiz.quiz_id}/quizAttempt/${quizAttemptId}`
+        );
+        router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
+      } catch (e) {
+        console.error(e);
+        toast.error("Error while submitting your quiz results");
+      }
+    }
   };
+
+  React.useEffect(() => {
+    form.reset({
+      question_id: currentQuestion.question_id,
+      answers: [],
+    });
+  }, [currentQuestionIndex]);
 
   return (
     <div className="p-6">
@@ -156,10 +193,7 @@ export const QuestionComponent = ({ quiz }: QuestionComponentProps) => {
               <Button
                 className="m-4"
                 disabled={form.getValues("answers").length === 0}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNext();
-                }}
+                type="submit"
               >
                 {lastQuestion ? "Finish" : "Next"}
               </Button>
