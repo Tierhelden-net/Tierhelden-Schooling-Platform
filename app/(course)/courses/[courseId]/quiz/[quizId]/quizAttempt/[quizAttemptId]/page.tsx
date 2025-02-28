@@ -35,9 +35,17 @@ const QuestionPage = async ({
     return redirect("/");
   }
 
+  let questions = quiz.questions;
+
+  //shuffle questions
+  if (quiz.random_questions) {
+    questions = quiz.questions.sort(() => Math.random() - 0.5);
+  }
+
   return (
     <QuestionComponent
       quiz={quiz}
+      questions={questions}
       quizAttemptId={params.quizAttemptId}
       courseId={params.courseId}
     />

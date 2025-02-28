@@ -1,32 +1,22 @@
-//TODO: pagination of the questions, how many are answered, how many are left? -> index?
-//TODO: randomize questions? put them in a new order?
-// speichere UserAnswers + QuizAttempts
-// ? wie in die DB?
-
-// ? Frieder fragen oder recherchieren: wie funktioniert react-hook-form??
-
 // ? pic/video
 // ? prev button
-// ?progressbar oder kleine Fahne "2/3 Fragen" ...
 
 "use client";
 import { DataCard } from "@/app/(dashboard)/(routes)/teacher/analytics/_components/data-card";
-import React from "react";
+import React, { use, useEffect } from "react";
 import * as z from "zod";
 
 import { Banner } from "@/components/banner";
 import { Separator } from "@/components/ui/separator";
 import { Preview } from "@/components/preview";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Controller, Form, useForm, FormProvider } from "react-hook-form";
+import { Controller, useForm, FormProvider } from "react-hook-form";
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
 } from "@/components/ui/form";
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { Answer, Question, Quiz } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -34,11 +24,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 interface QuestionComponentProps {
-  quiz: Quiz & {
-    questions: (Question & {
-      answers: Answer[];
-    })[];
-  };
+  quiz: Quiz;
+  questions: (Question & {
+    answers: Answer[];
+  })[];
   quizAttemptId: string;
   courseId: string;
 }
@@ -50,13 +39,28 @@ const formSchema = z.object({
 
 export const QuestionComponent = ({
   quiz,
+  questions,
   quizAttemptId,
   courseId,
 }: QuestionComponentProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-  const currentQuestion = quiz.questions[currentQuestionIndex];
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const lastQuestion = currentQuestionIndex === quiz.questions.length - 1;
+  const currentQuestion = questions[currentQuestionIndex];
+
+  //shuffle answers
+  const [answers, setAnswers] = React.useState<Answer[]>(
+    currentQuestion.answers
+  );
+  useEffect(() => {
+    if (currentQuestion.random_answers) {
+      setAnswers(currentQuestion.answers.sort(() => Math.random() - 0.5));
+    } else {
+      setAnswers(currentQuestion.answers);
+    }
+  }, [currentQuestionIndex]);
+
+  const lastQuestion = currentQuestionIndex === questions.length - 1;
 
   const router = useRouter();
 
@@ -69,6 +73,7 @@ export const QuestionComponent = ({
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     try {
       await axios.post(
         `/api/quizzes/${quiz.quiz_id}/quizAttempt/${quizAttemptId}/userAnswer`,
@@ -81,8 +86,10 @@ export const QuestionComponent = ({
     } catch (e) {
       console.error(e);
       toast.error("Error while submitting your answers");
+    } finally {
+      setIsLoading(false);
     }
-
+    //calculate the result and push it into the db:
     if (lastQuestion) {
       try {
         await axios.patch(
@@ -92,10 +99,13 @@ export const QuestionComponent = ({
       } catch (e) {
         console.error(e);
         toast.error("Error while submitting your quiz results");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
+  //after the question is answered, reset the form
   React.useEffect(() => {
     form.reset({
       question_id: currentQuestion.question_id,
@@ -111,13 +121,13 @@ export const QuestionComponent = ({
             className="w-6/12 h-4 bg-orange-400 bg-opacity-70 rounded-2xl "
             style={{
               width: `${
-                ((currentQuestionIndex + 1) / quiz.questions.length) * 100
+                ((currentQuestionIndex + 1) / questions.length) * 100
               }%`,
             }}
           ></div>
         </div>
         <p className="text-xs">
-          {currentQuestionIndex + 1 + " / " + quiz.questions.length}
+          {currentQuestionIndex + 1 + " / " + questions.length}
         </p>
       </div>
       <DataCard label={currentQuestion.question_title ?? "Question"}>
@@ -130,7 +140,7 @@ export const QuestionComponent = ({
               <div className="bg-slate-500/20 bg-opacity-30 rounded-2xl p-4">
                 <Preview value={currentQuestion.question_text!} />
                 <Separator className="bg-background" />
-                {currentQuestion.answers.map((answer) => (
+                {answers.map((answer) => (
                   <FormField
                     key={answer.answer_id}
                     control={form.control}
@@ -171,28 +181,10 @@ export const QuestionComponent = ({
                     )}
                   />
                 ))}
-
-                {/*}
-                {currentQuestion.answers.map((answer) => (
-                  <label
-                    className="flex items-center cursor-pointer gap-2 m-2"
-                    key={answer.answer_id}
-                  >
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 cursor-pointer accent-orange-400"
-                      name={currentQuestion.question_id.toString()}
-                      id={answer.answer_id.toString()}
-                      value={answer.answer_id.toString()}
-                    />
-                    <p>{answer.answer_text}</p>
-                  </label>
-                ))}
-                  */}
               </div>
               <Button
                 className="m-4"
-                disabled={form.getValues("answers").length === 0}
+                disabled={form.getValues("answers").length === 0 || isLoading}
                 type="submit"
               >
                 {lastQuestion ? "Finish" : "Next"}

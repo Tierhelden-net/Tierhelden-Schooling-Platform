@@ -45,6 +45,7 @@ export async function PATCH(
     //calculate quiz results:
     let totalpoints = 0;
     let passed = false;
+    let passedKnockout = true;
 
     const quiz = await db.quiz.findUnique({
       where: { quiz_id: quiz_id },
@@ -81,11 +82,19 @@ export async function PATCH(
       if (correct) {
         totalpoints = totalpoints + (question.points ?? 0);
       }
+      //if knockout question is answered wrong, the quiz is failed
+      else if (!correct && question.is_knockout) {
+        passedKnockout = false;
+      }
     }
 
     quiz.passing_points
       ? (passed = totalpoints >= quiz.passing_points)
       : (passed = true);
+
+    if (!passedKnockout) {
+      passed = false;
+    }
 
     // QuizAttempt aktualisieren
     const updatedQuizAttempt = await db.quizAttempt.update({

@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import React from "react";
 import toast from "react-hot-toast";
 
 interface StartQuizButtonProps {
@@ -13,9 +14,11 @@ export const StartQuizButtonComponent = ({
   courseId,
   quizId,
 }: StartQuizButtonProps) => {
+  const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
 
   const startAttempt = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.post(`/api/quizzes/${quizId}/quizAttempt`);
       router.push(
@@ -23,8 +26,13 @@ export const StartQuizButtonComponent = ({
       );
     } catch {
       toast.error("Something went wrong");
+      setIsLoading(false);
     }
   };
 
-  return <Button onClick={startAttempt}>Start Quiz</Button>;
+  return (
+    <Button onClick={startAttempt} disabled={isLoading}>
+      Start Quiz
+    </Button>
+  );
 };

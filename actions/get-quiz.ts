@@ -39,6 +39,7 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
         questions: {
           where: {
             quiz_id: quiz_id,
+            isPublished: true,
           },
           orderBy: {
             position: "asc",
