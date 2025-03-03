@@ -10,7 +10,7 @@ interface GetQuizProps {
 
 export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
   try {
-    const quiz_id = parseInt(quizId);
+    const quiz_id = quizId;
 
     const course = await db.course.findUnique({
       where: {
@@ -28,7 +28,7 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
 
     const quiz = await db.quiz.findUnique({
       where: {
-        quiz_id: parseInt(quizId),
+        quiz_id: quizId,
       },
       include: {
         courses: {
