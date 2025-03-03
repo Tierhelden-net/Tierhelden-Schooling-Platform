@@ -23,6 +23,7 @@ export const getQuiz = async ({ userId, courseId, quizId }: GetQuizProps) => {
             quiz_id: quiz_id,
           },
         },
+        courseCategory: true,
       },
     });
 

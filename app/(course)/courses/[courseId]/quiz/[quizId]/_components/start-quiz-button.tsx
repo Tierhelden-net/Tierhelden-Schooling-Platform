@@ -8,11 +8,13 @@ import toast from "react-hot-toast";
 interface StartQuizButtonProps {
   courseId: string;
   quizId: string;
+  isLocked: boolean;
 }
 
 export const StartQuizButtonComponent = ({
   courseId,
   quizId,
+  isLocked,
 }: StartQuizButtonProps) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
@@ -31,7 +33,7 @@ export const StartQuizButtonComponent = ({
   };
 
   return (
-    <Button onClick={startAttempt} disabled={isLoading}>
+    <Button onClick={startAttempt} disabled={isLoading || isLocked}>
       Start Quiz
     </Button>
   );

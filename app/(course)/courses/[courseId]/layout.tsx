@@ -45,6 +45,7 @@ const CourseLayout = async ({
           quiz: true,
         },
       },
+      courseCategory: true,
     },
   });
 

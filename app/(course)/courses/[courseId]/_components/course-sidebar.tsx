@@ -51,6 +51,17 @@ export const CourseSidebar = async ({
     },
   });
 
+  const quizPassed = await db.quizAttempt.findFirst({
+    where: {
+      user_id: userId,
+      quiz_id: quiz.quiz_id,
+      passed: true,
+    },
+    select: {
+      passed: true,
+    },
+  });
+
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-8 flex flex-col border-b">
@@ -77,7 +88,7 @@ export const CourseSidebar = async ({
             key={quiz.quiz_id}
             id={quiz.quiz_id.toString()}
             label={quiz.quiz_name ?? ""}
-            isCompleted={false}
+            isCompleted={quizPassed?.passed ?? false}
             courseId={course.id}
             isLocked={!quizLocked}
           />
