@@ -12,22 +12,20 @@ interface SearchPageProps {
   searchParams: {
     title: string;
     categoryId: string;
-  }
-};
+  };
+}
 
-const SearchPage = async ({
-  searchParams
-}: SearchPageProps) => {
+const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const { userId } = auth();
 
   if (!userId) {
     return redirect("/");
   }
 
-  const categories = await db.category.findMany({
+  const categories = await db.courseCategory.findMany({
     orderBy: {
-      name: "asc"
-    }
+      category: "asc",
+    },
   });
 
   const courses = await getCourses({
@@ -41,13 +39,11 @@ const SearchPage = async ({
         <SearchInput />
       </div>
       <div className="p-6 space-y-4">
-        <Categories
-          items={categories}
-        />
+        <Categories items={categories} />
         <CoursesList items={courses} />
       </div>
     </>
-   );
-}
- 
+  );
+};
+
 export default SearchPage;

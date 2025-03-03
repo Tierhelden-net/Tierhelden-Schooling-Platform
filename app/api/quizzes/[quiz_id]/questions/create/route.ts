@@ -23,11 +23,11 @@ export async function POST(
     });
 
     // Falls der User kein Admin ist, wird eine Fehlermeldung zurückgegeben
-    if (!user || user.user_role !== "ADMIN") {
+    if (!user || !user.user_role.includes("ADMIN")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const quiz_id = parseInt(params.quiz_id, 10);
+    const quiz_id = params.quiz_id;
 
     // Extrahiere den JSON-Body der Anfrage
     const body = await request.json();

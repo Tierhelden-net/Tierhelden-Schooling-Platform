@@ -39,7 +39,7 @@ const QuestionIdPage = async ({
 
   const question = await db.question.findUnique({
     where: {
-      question_id: parseInt(params.questionId),
+      question_id: params.questionId,
     },
     include: {
       answers: {

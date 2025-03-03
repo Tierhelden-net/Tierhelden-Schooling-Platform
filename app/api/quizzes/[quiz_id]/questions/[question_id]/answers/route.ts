@@ -15,8 +15,8 @@ export async function PATCH(
     }
 
     // quiz_id aus den Parametern als Integer extrahieren (wird als String übergeben)
-    const quizId = parseInt(params.quiz_id);
-    const questionId = parseInt(params.question_id);
+    const quizId = params.quiz_id;
+    const questionId = params.question_id;
 
     // Datenbankabfrage der Answer
     const answer = await db.answer.findUnique({

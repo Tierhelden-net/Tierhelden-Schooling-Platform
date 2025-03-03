@@ -26,10 +26,11 @@ export default async function Dashboard() {
   console.log(courses, "courses");
 
   const isTutorialCompleted = courses.find(
-    (item) => item.category?.name === "Tutorial" && item.progress === 100
+    (item) =>
+      item.courseCategory?.category === "Tutorial" && item.progress === 100
   );
   const tutorialCourse = courses.find(
-    (item) => item.category?.name === "Tutorial"
+    (item) => item.courseCategory?.category === "Tutorial"
   );
 
   return (

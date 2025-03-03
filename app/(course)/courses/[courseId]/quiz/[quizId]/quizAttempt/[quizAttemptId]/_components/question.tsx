@@ -40,7 +40,7 @@ interface QuestionComponentProps {
 }
 
 const formSchema = z.object({
-  question_id: z.number(),
+  question_id: z.string(),
   answers: z.string().array().nonempty(),
 });
 
@@ -57,7 +57,7 @@ export const QuestionComponent = ({
   const currentQuestion = questions[currentQuestionIndex];
 
   //filter out the questions that have been answered
-  const [answeredQuestions, setAnsweredQuestions] = React.useState<number[]>(
+  const [answeredQuestions, setAnsweredQuestions] = React.useState<string[]>(
     quizAttempt.userAnswers?.map((ua) => ua.question_id)
   );
   if (answeredQuestions.includes(currentQuestion.question_id)) {

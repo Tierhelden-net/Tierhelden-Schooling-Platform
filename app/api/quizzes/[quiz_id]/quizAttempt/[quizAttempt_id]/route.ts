@@ -18,8 +18,8 @@ export async function PATCH(
     }
 
     // quiz_id aus den Parametern als Integer extrahieren (wird als String übergeben)
-    const quiz_id = parseInt(params.quiz_id);
-    const quizAttempt_id = parseInt(params.quizAttempt_id);
+    const quiz_id = params.quiz_id;
+    const quizAttempt_id = params.quizAttempt_id;
 
     // Überprüfen, ob die quiz_id vorhanden ist
     if (!quiz_id || !quizAttempt_id) {

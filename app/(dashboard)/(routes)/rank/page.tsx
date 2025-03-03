@@ -20,7 +20,7 @@ async function Page() {
         <DataCard key={category} label={category}>
           <CoursesList
             items={rankCourses.filter(
-              (course) => course.category?.name === category
+              (course) => course.courseCategory?.category === category
             )}
           />
           <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-8">

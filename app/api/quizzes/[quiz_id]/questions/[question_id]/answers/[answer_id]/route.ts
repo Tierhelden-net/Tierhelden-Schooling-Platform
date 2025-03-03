@@ -16,9 +16,9 @@ export async function DELETE(
     }
 
     // Extrahiere und parse IDs
-    const quizId = parseInt(params.quiz_id, 10);
-    const questionId = parseInt(params.question_id, 10);
-    const answerId = parseInt(params.answer_id, 10);
+    const quizId = params.quiz_id;
+    const questionId = params.question_id;
+    const answerId = params.answer_id;
 
     // Validierung der IDs
     if (!quizId || !questionId) {

@@ -28,7 +28,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const quiz = await db.quiz.findUnique({
     where: {
-      quiz_id: parseInt(params.quizId),
+      quiz_id: params.quizId,
     },
     include: {
       questions: {
@@ -36,23 +36,15 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
           position: "asc",
         },
       },
+      quizCategory: true,
     },
   });
 
-  const categories = [
-    {
-      id: "1",
-      name: "course quiz",
+  const categories = await db.quizCategory.findMany({
+    orderBy: {
+      category: "asc",
     },
-    {
-      id: "2",
-      name: "test quiz",
-    },
-    {
-      id: "3",
-      name: "rang quiz",
-    },
-  ];
+  });
 
   if (!quiz) {
     return redirect("/");
@@ -71,11 +63,16 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
-  //TODO: vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
-  const assigned_to_course = false;
+  const assignedCourse = await db.courseQuiz.findFirst({
+    where: { quiz_id: params.quizId },
+  });
 
-  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden,
-  // wir haben dieses Feld nur noch nicht in der Datenbank
+  let assigned_to_course = false;
+
+  if (assignedCourse) {
+    assigned_to_course = true;
+  }
+
   return (
     <>
       {!assigned_to_course && (
@@ -107,7 +104,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
               initialData={quiz}
               quizId={quiz.quiz_id}
               options={categories.map((category) => ({
-                label: category.name,
+                label: category.category,
                 value: category.id,
               }))}
             />

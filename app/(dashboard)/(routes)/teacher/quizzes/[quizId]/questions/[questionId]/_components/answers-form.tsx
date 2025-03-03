@@ -130,7 +130,7 @@ export const AnswerForm = ({
     }
   };
 
-  const onReorder = async (updateData: { id: number; position: number }[]) => {
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
       await axios.put(

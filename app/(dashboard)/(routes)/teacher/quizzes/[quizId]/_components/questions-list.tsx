@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface QuestionsListProps {
   items: Question[];
-  onReorder: (updateData: { id: number; position: number }[]) => void;
+  onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
 }
 

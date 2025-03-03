@@ -49,9 +49,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     },
   });
 
-  const categories = await db.category.findMany({
+  const categories = await db.courseCategory.findMany({
     orderBy: {
-      name: "asc",
+      category: "asc",
     },
   });
 
@@ -69,7 +69,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.title,
     course.description,
     course.imageUrl,
-    course.categoryId,
+    course.courseCategoryId,
     course.chapters.some((chapter) => chapter.isPublished),
   ];
 
@@ -112,7 +112,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               initialData={course}
               courseId={course.id}
               options={categories.map((category) => ({
-                label: category.name,
+                label: category.category,
                 value: category.id,
               }))}
             />

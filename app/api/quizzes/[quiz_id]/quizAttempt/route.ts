@@ -9,7 +9,7 @@ export async function POST(
 ) {
   try {
     const { userId } = auth();
-    const quiz_id = parseInt(params.quiz_id);
+    const quiz_id = params.quiz_id;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });

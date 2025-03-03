@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 
 interface TitleFormProps {
   quiz_name: string;
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({

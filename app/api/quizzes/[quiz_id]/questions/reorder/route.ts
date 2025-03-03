@@ -15,7 +15,7 @@ export async function PUT(
     }
 
     // quiz_id aus den Parametern als Integer extrahieren (wird als String übergeben)
-    const quizId = parseInt(params.quiz_id, 10);
+    const quizId = params.quiz_id;
 
     // Überprüfen, ob die quiz_id vorhanden ist
     if (!quizId) {
@@ -25,15 +25,15 @@ export async function PUT(
       );
     }
 
-      // Quiz abrufen
-      const quiz = await db.quiz.findUnique({
-        where: { quiz_id: quizId },
-      });
-  
-      // Falls das Quiz nicht gefunden wird, wird eine Fehlermeldung zurückgegeben
-      if (!quiz) {
-        return NextResponse.json({ error: "Quiz not found." }, { status: 404 });
-      }
+    // Quiz abrufen
+    const quiz = await db.quiz.findUnique({
+      where: { quiz_id: quizId },
+    });
+
+    // Falls das Quiz nicht gefunden wird, wird eine Fehlermeldung zurückgegeben
+    if (!quiz) {
+      return NextResponse.json({ error: "Quiz not found." }, { status: 404 });
+    }
 
     const { list } = await req.json();
 

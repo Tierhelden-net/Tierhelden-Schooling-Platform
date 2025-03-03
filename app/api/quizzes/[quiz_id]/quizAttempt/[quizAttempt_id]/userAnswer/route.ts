@@ -9,8 +9,8 @@ export async function POST(
 ) {
   try {
     const { userId } = auth();
-    const quiz_id = parseInt(params.quiz_id);
-    const quizAttempt_id = parseInt(params.quizAttempt_id);
+    const quiz_id = params.quiz_id;
+    const quizAttempt_id = params.quizAttempt_id;
 
     if (!userId || !quiz_id || !quizAttempt_id) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -26,8 +26,8 @@ export async function POST(
           user_id: userId,
           quiz_id,
           quiz_attempt_id: quizAttempt_id,
-          question_id: parseInt(values.question_id),
-          answer_id: parseInt(answer),
+          question_id: values.question_id,
+          answer_id: answer,
         },
       });
     }

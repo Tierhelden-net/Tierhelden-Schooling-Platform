@@ -17,16 +17,13 @@ export async function GET() {
 
     // Datenbankabfrage des Benutzers
     const user = await db.user.findUnique({
-        where: { user_id: userId },
-        select: { user_role: true },
-        });
+      where: { user_id: userId },
+      select: { user_role: true },
+    });
 
     // Falls der User kein Admin ist, wird eine Fehlermeldung zurückgegeben
-    if (!user || user.user_role !== "ADMIN") {
-        return NextResponse.json(
-            { error: "Unauthorized" },
-            { status: 403 }
-        );
+    if (!user || !user.user_role.includes("ADMIN")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     // Alle Quizze aus der Datenbank abfragen

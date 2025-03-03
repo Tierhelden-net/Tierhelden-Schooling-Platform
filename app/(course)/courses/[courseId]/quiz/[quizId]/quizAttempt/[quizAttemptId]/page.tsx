@@ -36,8 +36,7 @@ const QuestionPage = async ({
   }
 
   const quizAttempt = notCompletedQuizAttempts.find(
-    (quizAttempt) =>
-      quizAttempt.quiz_attempt_id === parseInt(params.quizAttemptId)
+    (quizAttempt) => quizAttempt.quiz_attempt_id === params.quizAttemptId
   )!;
 
   let questions = quiz.questions;

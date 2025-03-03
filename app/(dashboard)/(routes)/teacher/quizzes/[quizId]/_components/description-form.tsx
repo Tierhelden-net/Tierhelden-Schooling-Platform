@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface DescriptionFormProps {
   initialData: Quiz;
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({

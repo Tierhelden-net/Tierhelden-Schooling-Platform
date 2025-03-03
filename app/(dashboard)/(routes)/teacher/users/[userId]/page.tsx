@@ -31,7 +31,10 @@ const UserIdPage = async ({ params }: { params: { someUserId: string } }) => {
             dabei seit {user.createdAt.toLocaleDateString("de-DE")}
           </span>
         </div>
-        <Actions userId={params.someUserId} user_role={user.user_role ?? ""} />
+        <Actions
+          userId={params.someUserId}
+          user_role={user.user_role.toLocaleString() ?? ""}
+        />
       </div>
     </div>
   );
