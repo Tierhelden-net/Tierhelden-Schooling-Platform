@@ -31,6 +31,45 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "last_signed_in",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          zuletzt online
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("last_signed_in"));
+      if (date) {
+        const formatted = date.toLocaleDateString("de-DE");
+
+        return <div>{formatted}</div>;
+      } else {
+        return <div></div>;
+      }
+    },
+  },
+  {
     accessorKey: "last_chapter_completed",
     header: ({ column }) => {
       return (
@@ -38,20 +77,21 @@ export const columns: ColumnDef<User>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          letztes Kapitel abgeschlossen
+          letzte Lektion
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
 
     cell: ({ row }) => {
-      const date = new Date(row.getValue("last_chapter_completed"));
-      if (date) {
+      const value: string = row.getValue("last_chapter_completed");
+      if (value) {
+        const date = new Date(value);
         const formatted = date.toLocaleDateString("de-DE");
 
         return <div>{formatted}</div>;
       } else {
-        return <div></div>;
+        return <div>-</div>;
       }
     },
   },
@@ -68,16 +108,21 @@ export const columns: ColumnDef<User>[] = [
         </Button>
       );
     },
-    /*
     cell: ({ row }) => {
-      const isPublished = row.getValue("isPublished") || false;
+      const user_role: [] = row.getValue("user_role");
 
       return (
-        <Badge className={cn("bg-slate-500", isPublished && "bg-primary")}>
-          {isPublished ? "Veröffentlicht" : "Entwurf"}
-        </Badge>
+        <>
+          {user_role.map((role) => (
+            <Badge
+              className={cn("bg-slate-500", role === "ADMIN" && "bg-primary")}
+            >
+              {role}
+            </Badge>
+          ))}
+        </>
       );
-    },*/
+    },
   },
   {
     id: "actions",

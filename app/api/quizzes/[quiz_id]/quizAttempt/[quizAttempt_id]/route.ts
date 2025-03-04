@@ -102,6 +102,18 @@ export async function PATCH(
       data: { total_score: totalpoints, passed: passed },
     });
 
+    //update last_chapter_completed for the user
+    if (passed) {
+      await db.user.update({
+        where: {
+          user_id: userId,
+        },
+        data: {
+          last_chapter_completed: new Date(),
+        },
+      });
+    }
+
     return NextResponse.json(
       {
         message: "Quiz Attempt completed successfully.",

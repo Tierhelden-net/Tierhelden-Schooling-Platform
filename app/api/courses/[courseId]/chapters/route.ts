@@ -15,6 +15,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    /*
     const courseOwner = await db.course.findUnique({
       where: {
         id: params.courseId,
@@ -24,7 +25,7 @@ export async function POST(
 
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
-    }
+    }*/
 
     const lastChapter = await db.chapter.findFirst({
       where: {
@@ -42,7 +43,7 @@ export async function POST(
         title,
         courseId: params.courseId,
         position: newPosition,
-      }
+      },
     });
 
     return NextResponse.json(chapter);
