@@ -39,10 +39,10 @@ const QuizIdPage = async ({
   }
 
   //if Tutorial more than twice failed, lock it
-  let isLocked = false;
+  let failed = false;
   const isTutorial = course.courseCategory?.category === "Tutorial";
   if (isTutorial && completedQuizAttempts.length > 2) {
-    //isLocked = true;
+    failed = true;
   }
 
   //count answered questions in unfinished quiz attempts
@@ -59,24 +59,33 @@ const QuizIdPage = async ({
 
   return (
     <div>
-      {isLocked && (
+      {failed && (
         <Banner
           variant="warning"
           label="Du hast die Grundschulung leider nicht bestanden und leider keine Versuche mehr übrig."
         />
       )}
-      {!isLocked && isTutorial && completedQuizAttempts.length < 1 && (
+      {!failed && isTutorial && completedQuizAttempts.length < 1 && (
         <Banner
           variant="success"
           label="Willkommen zu deinem ersten Quiz. Für die Grundschulung hast du maximal 2 Versuche."
         />
       )}
-      {!isLocked && isTutorial && completedQuizAttempts.length === 1 && (
+      {!failed && isTutorial && completedQuizAttempts.length === 1 && (
         <Banner
           variant="success"
           label="Für die Grundschulung hast du noch 1 Versuch."
         />
       )}
+      {!failed &&
+        completedQuizAttempts.some(
+          (attempt) => quiz.quiz_id === attempt.quiz_id && attempt.passed
+        ) && (
+          <Banner
+            variant="success"
+            label="Herzlichen Glückwunsch! Du hast das Quiz bestanden."
+          />
+        )}
       <div className="p-6">
         <DataCard label={quiz.quiz_name ?? "Quiz"}>
           <div className="flex justify-between">
@@ -93,10 +102,10 @@ const QuizIdPage = async ({
           <StartQuizButtonComponent
             courseId={params.courseId}
             quizId={params.quizId}
-            isLocked={isLocked}
+            isLocked={failed}
           />
         </DataCard>
-        {notCompletedQuizAttempts.length > 0 && !isLocked && (
+        {notCompletedQuizAttempts.length > 0 && !failed && (
           <div className="mt-4">
             <DataCard label={"Beende deinen letzten Versuch: "}>
               <div className="flex justify-between pt-2">

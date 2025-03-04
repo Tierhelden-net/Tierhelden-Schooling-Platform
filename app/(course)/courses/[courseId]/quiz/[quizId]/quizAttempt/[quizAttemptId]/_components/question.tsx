@@ -51,17 +51,24 @@ export const QuestionComponent = ({
   courseId,
   quizAttempt,
 }: QuestionComponentProps) => {
+  const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  if (!quizAttempt) {
+    router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}`);
+  }
+
   //filter out the questions that have been answered
   const [answeredQuestions, setAnsweredQuestions] = React.useState<string[]>(
-    quizAttempt.userAnswers?.map((ua) => ua.question_id)
+    quizAttempt.userAnswers?.map((ua) => ua.question_id ?? null)
   );
   if (answeredQuestions.includes(currentQuestion.question_id)) {
     setCurrentQuestionIndex((prev) => prev + 1);
+  } else if (currentQuestionIndex >= questions.length) {
+    router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
   }
 
   //shuffle answers
@@ -77,8 +84,6 @@ export const QuestionComponent = ({
   }, [currentQuestionIndex]);
 
   const lastQuestion = currentQuestionIndex === questions.length - 1;
-
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

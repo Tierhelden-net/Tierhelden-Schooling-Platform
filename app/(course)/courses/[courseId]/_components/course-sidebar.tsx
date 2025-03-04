@@ -90,7 +90,7 @@ export const CourseSidebar = async ({
             label={quiz.quiz_name ?? ""}
             isCompleted={quizPassed?.passed ?? false}
             courseId={course.id}
-            isLocked={!quizLocked}
+            isLocked={quizLocked}
           />
         )}
       </div>
