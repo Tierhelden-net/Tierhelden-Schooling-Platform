@@ -8,10 +8,15 @@ import {
   Trophy,
   BookOpenCheck,
   Users,
+  PawPrint,
+  HeartHandshake,
+  Footprints,
+  Sparkles,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { SidebarItem } from "./sidebar-item";
+import { User } from "@prisma/client";
 
 const guestRoutes = [
   {
@@ -19,11 +24,11 @@ const guestRoutes = [
     label: "Dashboard",
     href: "/",
   },
-  {
-    icon: Trophy,
-    label: "Ränge",
-    href: "/rank",
-  },
+  //{
+  //  icon: Trophy,
+  //  label: "Ränge",
+  //  href: "/rank",
+  //},
   // {
   //   icon: Compass,
   //   label: "Browse",
@@ -54,10 +59,56 @@ const teacherRoutes = [
   },
 ];
 
-export const SidebarRoutes = () => {
+interface SidebarRouteProbs {
+  user: User | null;
+}
+
+export const SidebarRoutes = ({ user }: SidebarRouteProbs) => {
   const pathname = usePathname();
 
   const isTeacherPage = pathname?.includes("/teacher");
+
+  const userRole = user?.user_role;
+
+  const guestRouteLabels = guestRoutes.map((route) => route.label);
+
+  if (
+    userRole?.includes("BETREUER") &&
+    !guestRouteLabels.includes("Betreuer")
+  ) {
+    guestRoutes.push({
+      icon: PawPrint,
+      label: "Betreuer",
+      href: "/betreuer",
+    });
+  }
+  if (userRole?.includes("BERATER") && !guestRouteLabels.includes("Berater")) {
+    guestRoutes.push({
+      icon: HeartHandshake,
+      label: "Berater",
+      href: "/berater",
+    });
+  }
+  if (
+    userRole?.includes("EVENTLEITER") &&
+    !guestRouteLabels.includes("Eventleiter")
+  ) {
+    guestRoutes.push({
+      icon: Footprints,
+      label: "Eventleiter",
+      href: "/eventleiter",
+    });
+  }
+  if (
+    userRole?.includes("AFFILIATE") &&
+    !guestRouteLabels.includes("Affiliate")
+  ) {
+    guestRoutes.push({
+      icon: Sparkles,
+      label: "Affiliate",
+      href: "/affiliate",
+    });
+  }
 
   const routes = isTeacherPage ? teacherRoutes : guestRoutes;
 

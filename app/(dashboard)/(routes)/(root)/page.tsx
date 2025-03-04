@@ -63,8 +63,6 @@ export default async function Dashboard() {
     (course) => (course.progress ?? 0) < 100
   );
 
-  console.log(courses, "courses");
-
   const isTutorialCompleted = courses.find(
     (item) =>
       item.courseCategory?.category === "Tutorial" && item.progress === 100

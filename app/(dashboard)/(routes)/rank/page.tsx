@@ -4,7 +4,6 @@ import { RANK_CATEGORIES, getRankCourses } from "@/actions/get-rank-courses";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { CoursesList } from "@/components/courses-list";
-import QuizComponent from "@/components/quiz";
 import { QuizCard } from "@/components/quiz-card";
 
 async function Page() {

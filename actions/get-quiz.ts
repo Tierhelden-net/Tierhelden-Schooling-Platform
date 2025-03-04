@@ -1,7 +1,4 @@
-import { quiz } from "@/components/quiz";
 import { db } from "@/lib/db";
-import { Attachment, Chapter } from "@prisma/client";
-
 interface GetQuizProps {
   userId: string;
   courseId: string;
