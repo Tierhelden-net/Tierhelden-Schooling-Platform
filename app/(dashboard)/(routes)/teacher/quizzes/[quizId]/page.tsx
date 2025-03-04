@@ -5,6 +5,7 @@ import {
   Target,
   LayoutDashboard,
   ListChecks,
+  ArrowLeft,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -18,6 +19,7 @@ import { PointsForm } from "./_components/points-form";
 import { QuestionsForm } from "./_components/questions-form";
 import { Actions } from "./_components/actions";
 import { RandomQForm } from "./_components/randomq-form";
+import Link from "next/link";
 
 const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const { userId } = auth();
@@ -80,17 +82,28 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
       )}
       <div className="p-6">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">Quiz erstellen</h1>
-            <span className="text-sm text-slate-700">
-              Vervollständige alle Felder {completionText}
-            </span>
+          <div className="w-full">
+            <Link
+              href={`/teacher/quizzes`}
+              className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Zurück zur Quizübersicht
+            </Link>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col gap-y-2">
+                <h1 className="text-2xl font-medium">Quiz erstellen</h1>
+                <span className="text-sm text-slate-700">
+                  Vervollständige alle Felder {completionText}
+                </span>
+              </div>
+              <Actions
+                disabled={!isComplete}
+                quizId={params.quizId}
+                assigned_to_course={assigned_to_course}
+              />
+            </div>
           </div>
-          <Actions
-            disabled={!isComplete}
-            quizId={params.quizId}
-            assigned_to_course={assigned_to_course}
-          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
           <div>

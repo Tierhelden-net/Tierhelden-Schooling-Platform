@@ -2,7 +2,7 @@
 
 import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, UserCog } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -140,8 +140,8 @@ export const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <Link href={`/teacher/users/${id}`}>
               <DropdownMenuItem>
-                <Pencil className="h-4 w-4 mr-2" />
-                Bearbeiten
+                <UserCog className="h-4 w-4 mr-2" />
+                Details
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
