@@ -45,6 +45,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Thumbnail
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Abbrechen</>}
           {!isEditing && !initialData.imageUrl && (

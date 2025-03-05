@@ -91,6 +91,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
       )}
       <div className="font-medium flex items-center justify-between">
         Quiz-Fragen
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating ? (
             <>Cancel</>

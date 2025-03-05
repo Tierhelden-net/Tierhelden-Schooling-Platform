@@ -67,6 +67,7 @@ export const ChapterTitleForm = ({
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Chapter title
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>

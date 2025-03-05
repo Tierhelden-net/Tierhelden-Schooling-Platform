@@ -174,6 +174,7 @@ export const AnswerForm = ({
       )}
       <div className="font-medium flex items-center justify-between">
         Answers
+        <span className="text-xs text-inactive italic">required</span>
         <Button
           onClick={() => {
             toggleCreating();

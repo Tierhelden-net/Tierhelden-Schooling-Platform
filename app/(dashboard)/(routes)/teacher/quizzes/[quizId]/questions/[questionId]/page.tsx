@@ -141,6 +141,7 @@ const QuestionIdPage = async ({
               questionId={params.questionId}
             />
           </div>
+          {/*
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Video} />
@@ -152,6 +153,7 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
             />
           </div>
+          */}
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={ListChecks} />
@@ -163,6 +165,7 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
             />
           </div>
+
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Target} />
@@ -175,7 +178,7 @@ const QuestionIdPage = async ({
             />
           </div>
 
-          <div className="md:col-span-2">
+          <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={MessageSquare} />
               <h2 className="text-xl">Add message for answers</h2>

@@ -70,6 +70,7 @@ export const QuestionDescriptionForm = ({
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Question description
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>

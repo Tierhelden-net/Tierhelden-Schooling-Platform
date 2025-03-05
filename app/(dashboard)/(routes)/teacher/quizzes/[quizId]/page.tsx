@@ -113,6 +113,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
             </div>
             <TitleForm quiz_name={quiz.quiz_name ?? ""} quizId={quiz.quiz_id} />
             <DescriptionForm initialData={quiz} quizId={quiz.quiz_id} />
+            {/*
             <CategoryForm
               initialData={quiz}
               quizId={quiz.quiz_id}
@@ -121,6 +122,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
                 value: category.id,
               }))}
             />
+            */}
             <RandomQForm initialData={quiz} quizId={quiz.quiz_id} />
           </div>
           <div className="space-y-6">

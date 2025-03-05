@@ -29,7 +29,7 @@ interface CategoryFormProps {
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  courseCategoryId: z.string().min(1),
 });
 
 export const CategoryForm = ({
@@ -46,7 +46,7 @@ export const CategoryForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.courseCategoryId || "",
+      courseCategoryId: initialData?.courseCategoryId || "",
     },
   });
 
@@ -71,6 +71,7 @@ export const CategoryForm = ({
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Kategorie
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -100,7 +101,7 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="courseCategoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
