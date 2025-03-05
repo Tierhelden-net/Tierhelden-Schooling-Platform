@@ -29,7 +29,7 @@ interface CategoryFormProps {
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  courseCategoryId: z.string().min(1),
 });
 
 export const CategoryForm = ({
@@ -46,7 +46,7 @@ export const CategoryForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || "",
+      courseCategoryId: initialData?.courseCategoryId || "",
     },
   });
 
@@ -64,13 +64,14 @@ export const CategoryForm = ({
   };
 
   const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
+    (option) => option.value === initialData.courseCategoryId
   );
 
   return (
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Kategorie
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -86,7 +87,7 @@ export const CategoryForm = ({
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.categoryId && "text-slate-500 italic"
+            !initialData.courseCategoryId && "text-slate-500 italic"
           )}
         >
           {selectedOption?.label || "No category"}
@@ -100,11 +101,15 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="courseCategoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox options={...options} {...field} />
+                    <Combobox
+                      options={options}
+                      {...field}
+                      onChange={() => null}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,11 +1,11 @@
-import { Category, Course } from "@prisma/client";
+import { CourseCategory, Course } from "@prisma/client";
 
 import { getProgress } from "@/actions/get-progress";
 import { db } from "@/lib/db";
 import { RANK_CATEGORIES } from "./get-rank-courses";
 
 type CourseWithProgressWithCategory = Course & {
-  category: Category | null;
+  courseCategory: CourseCategory | null;
   chapters: { id: string }[];
   progress: number | null;
 };
@@ -28,15 +28,11 @@ export const getCourses = async ({
         title: {
           contains: title,
         },
-        categoryId,
-        category: {
-          name: {
-            notIn: RANK_CATEGORIES,
-          },
-        },
+        courseCategoryId: categoryId,
+        //category: {name: { notIn: RANK_CATEGORIES },},
       },
       include: {
-        category: true,
+        courseCategory: true,
         chapters: {
           where: {
             isPublished: true,

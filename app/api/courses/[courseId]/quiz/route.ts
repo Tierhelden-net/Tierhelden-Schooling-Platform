@@ -35,7 +35,7 @@ export async function POST(
 
     const quizToCourse = await db.courseQuiz.create({
       data: {
-        quiz_id: parseInt(quizId),
+        quiz_id: quizId,
         course_id: params.courseId,
       },
     });

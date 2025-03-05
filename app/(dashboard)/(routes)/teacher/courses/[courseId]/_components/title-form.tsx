@@ -61,6 +61,7 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Kurs Titel
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Abbrechen</>

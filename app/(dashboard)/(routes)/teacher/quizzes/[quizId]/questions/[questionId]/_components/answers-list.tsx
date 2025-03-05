@@ -16,7 +16,7 @@ import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 interface AnswersListProps {
   items: Answer[];
-  onReorder: (updateData: { id: number; position: number }[]) => void;
+  onReorder: (updateData: { id: string; position: number }[]) => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }

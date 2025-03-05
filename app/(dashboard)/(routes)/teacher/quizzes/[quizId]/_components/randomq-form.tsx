@@ -25,7 +25,7 @@ interface RandomQFormProps {
   initialData: {
     random_questions: boolean;
   };
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({

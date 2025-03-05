@@ -1,11 +1,13 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import {
+  ArrowLeft,
   CircleDollarSign,
   File,
+  GraduationCap,
   LayoutDashboard,
   ListChecks,
-  ListChecksIcon,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -49,9 +51,9 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     },
   });
 
-  const categories = await db.category.findMany({
+  const categories = await db.courseCategory.findMany({
     orderBy: {
-      name: "asc",
+      category: "asc",
     },
   });
 
@@ -69,7 +71,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
     course.title,
     course.description,
     course.imageUrl,
-    course.categoryId,
+    course.courseCategoryId,
     course.chapters.some((chapter) => chapter.isPublished),
   ];
 
@@ -87,17 +89,28 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
       )}
       <div className="p-6">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">Kurs erstellen</h1>
-            <span className="text-sm text-slate-700">
-              Vervollständige alle Felder {completionText}
-            </span>
+          <div className="w-full">
+            <Link
+              href={`/teacher/courses/`}
+              className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Zurück zu den Kursen
+            </Link>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col gap-y-2">
+                <h1 className="text-2xl font-medium">Kurs erstellen</h1>
+                <span className="text-sm text-slate-700">
+                  Vervollständige alle Felder {completionText}
+                </span>
+              </div>
+              <Actions
+                disabled={!isComplete}
+                courseId={params.courseId}
+                isPublished={course.isPublished}
+              />
+            </div>
           </div>
-          <Actions
-            disabled={!isComplete}
-            courseId={params.courseId}
-            isPublished={course.isPublished}
-          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
           <div>
@@ -107,15 +120,15 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             </div>
             <TitleForm initialData={course} courseId={course.id} />
             <DescriptionForm initialData={course} courseId={course.id} />
-            <ImageForm initialData={course} courseId={course.id} />
             <CategoryForm
               initialData={course}
               courseId={course.id}
               options={categories.map((category) => ({
-                label: category.name,
+                label: category.category,
                 value: category.id,
               }))}
             />
+            <ImageForm initialData={course} courseId={course.id} />
           </div>
           <div className="space-y-6">
             <div>
@@ -127,7 +140,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             </div>
             <div>
               <div className="flex items-center gap-x-2">
-                <IconBadge icon={ListChecks} />
+                <IconBadge icon={GraduationCap} />
                 <h2 className="text-xl">Quiz</h2>
               </div>
               <QuizForm

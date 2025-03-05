@@ -17,7 +17,7 @@ export async function PATCH(
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId,
+        //userId,
       },
     });
 
@@ -28,16 +28,16 @@ export async function PATCH(
     const unpublishedCourse = await db.course.update({
       where: {
         id: params.courseId,
-        userId,
+        //userId,
       },
       data: {
         isPublished: false,
-      }
+      },
     });
 
     return NextResponse.json(unpublishedCourse);
   } catch (error) {
     console.log("[COURSE_ID_UNPUBLISH]", error);
     return new NextResponse("Internal Error", { status: 500 });
-  } 
+  }
 }

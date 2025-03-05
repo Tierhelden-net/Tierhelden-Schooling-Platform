@@ -25,13 +25,13 @@ export async function POST(
     });
 
     // Falls der User kein Admin ist, wird eine Fehlermeldung zurückgegeben
-    if (!user || user.user_role !== "ADMIN") {
+    if (!user || !user.user_role.includes("ADMIN")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     // quiz_id aus den Parametern als Integer extrahieren (wird als String übergeben)
-    const quizId = parseInt(params.quiz_id);
-    const questionId = parseInt(params.question_id);
+    const quizId = params.quiz_id;
+    const questionId = params.question_id;
 
     // Parse den Request-Body als JSON
     const body = await request.json();
@@ -87,6 +87,19 @@ export async function POST(
       },
     });
 
+    //correct answers in question
+    if (is_correct) {
+      await db.question.update({
+        where: {
+          question_id: questionId,
+        },
+        data: {
+          correct_answers: question.correct_answers
+            ? question.correct_answers + 1
+            : 1,
+        },
+      });
+    }
     // Erfolgreiche Antwort zurückgeben
     return NextResponse.json(
       { message: "Answer created successfully.", answer },

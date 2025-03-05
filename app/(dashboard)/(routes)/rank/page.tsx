@@ -4,7 +4,6 @@ import { RANK_CATEGORIES, getRankCourses } from "@/actions/get-rank-courses";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { CoursesList } from "@/components/courses-list";
-import QuizComponent from "@/components/quiz";
 import { QuizCard } from "@/components/quiz-card";
 
 async function Page() {
@@ -20,7 +19,7 @@ async function Page() {
         <DataCard key={category} label={category}>
           <CoursesList
             items={rankCourses.filter(
-              (course) => course.category?.name === category
+              (course) => course.courseCategory?.category === category
             )}
           />
           <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-8">

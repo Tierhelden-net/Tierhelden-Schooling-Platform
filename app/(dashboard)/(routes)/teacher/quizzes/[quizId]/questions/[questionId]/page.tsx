@@ -39,7 +39,7 @@ const QuestionIdPage = async ({
 
   const question = await db.question.findUnique({
     where: {
-      question_id: parseInt(params.questionId),
+      question_id: params.questionId,
     },
     include: {
       answers: {
@@ -74,6 +74,12 @@ const QuestionIdPage = async ({
         <Banner
           variant="warning"
           label="Diese Frage ist nicht veröffentlicht und wird im Quiz nicht angezeigt."
+        />
+      )}
+      {question.correct_answers === 0 && (
+        <Banner
+          variant="warning"
+          label="Deine Frage braucht mindestens 1 richtige Antwort."
         />
       )}
       {!!(!isComplete && question.isPublished) && (
@@ -135,6 +141,7 @@ const QuestionIdPage = async ({
               questionId={params.questionId}
             />
           </div>
+          {/*
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Video} />
@@ -146,6 +153,7 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
             />
           </div>
+          */}
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={ListChecks} />
@@ -157,6 +165,7 @@ const QuestionIdPage = async ({
               quizId={params.quizId}
             />
           </div>
+
           <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={Target} />
@@ -169,7 +178,7 @@ const QuestionIdPage = async ({
             />
           </div>
 
-          <div className="md:col-span-2">
+          <div>
             <div className="flex items-center gap-x-2">
               <IconBadge icon={MessageSquare} />
               <h2 className="text-xl">Add message for answers</h2>

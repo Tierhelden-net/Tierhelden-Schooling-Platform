@@ -91,6 +91,7 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       )}
       <div className="font-medium flex items-center justify-between">
         Kurs-Inhalte
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating ? (
             <>Cancel</>

@@ -4,11 +4,11 @@ const { withUt } = require("uploadthing/tw");
 module.exports = withUt({
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -51,6 +51,16 @@ module.exports = withUt({
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        active: {
+          DEFAULT: "hsl(var(--active))",
+        },
+        inactive: {
+          DEFAULT: "hsl(var(--inactive))",
+          hover: "hsl(var(--inactive-hover))",
+        },
+        disabled: {
+          DEFAULT: "hsl(var(--disabled))",
         },
       },
       borderRadius: {

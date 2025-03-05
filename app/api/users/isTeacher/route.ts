@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    if (user.user_role === "ADMIN") {
+    if (user.user_role?.includes("ADMIN")) {
       return NextResponse.json(true);
     }
 

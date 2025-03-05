@@ -10,7 +10,7 @@ export async function DELETE(
     // userId aus Clerk auth() extrahieren
     const { userId } = auth();
 
-    const quizId = parseInt(params.quiz_id, 10);
+    const quizId = params.quiz_id;
 
     if (!quizId) {
       return NextResponse.json(

@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 
 const { Video } = new Mux(
   process.env.MUX_TOKEN_ID!,
-  process.env.MUX_TOKEN_SECRET!,
+  process.env.MUX_TOKEN_SECRET!
 );
 
 export async function DELETE(
@@ -23,15 +23,15 @@ export async function DELETE(
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId: userId,
+        //userId: userId,
       },
       include: {
         chapters: {
           include: {
             muxData: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!course) {
@@ -73,11 +73,11 @@ export async function PATCH(
     const course = await db.course.update({
       where: {
         id: courseId,
-        userId
+        //userId,
       },
       data: {
         ...values,
-      }
+      },
     });
 
     return NextResponse.json(course);
