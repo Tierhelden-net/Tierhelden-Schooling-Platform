@@ -102,7 +102,7 @@ const QuizIdPage = async ({
           <StartQuizButtonComponent
             courseId={params.courseId}
             quizId={params.quizId}
-            isLocked={failed}
+            isLocked={failed || completedQuizAttempts.length > 1}
           />
         </DataCard>
         {notCompletedQuizAttempts.length > 0 && !failed && (

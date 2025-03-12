@@ -52,44 +52,94 @@ export const QuestionComponent = ({
   quizAttempt,
 }: QuestionComponentProps) => {
   const router = useRouter();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const currentQuestion = questions[currentQuestionIndex];
 
   if (!quizAttempt) {
     router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}`);
   }
 
   //filter out the questions that have been answered
+  //filter identical questions:
+  const calcQuestions = (answers: string[]) => {
+    return answers.filter(
+      (item: string, index: number) => answers.indexOf(item) === index
+    );
+  };
   const [answeredQuestions, setAnsweredQuestions] = React.useState<string[]>(
-    quizAttempt.userAnswers?.map((ua) => ua.question_id ?? null)
+    calcQuestions(quizAttempt.userAnswers?.map((ua) => ua.question_id)) || []
   );
-  if (answeredQuestions.includes(currentQuestion.question_id)) {
-    setCurrentQuestionIndex((prev) => prev + 1);
-  } else if (currentQuestionIndex >= questions.length) {
-    router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
-  }
+
+  //Axios call to get the answered questions in UserAnswer
+  React.useEffect(() => {
+    const fetchAnsweredQuestions = async () => {
+      try {
+        const response = await axios.get(
+          `/api/quizzes/${quiz.quiz_id}/quizAttempt/${quizAttemptId}/answeredQuestions?quiz_id=${quiz.quiz_id}&quizAttempt_id=${quizAttemptId}`
+        );
+        const answers = response.data.map((ua: UserAnswer) => ua.question_id);
+        setAnsweredQuestions(calcQuestions(answers));
+      } catch (error) {
+        toast.error("Error fetching answered questions");
+      }
+    };
+
+    fetchAnsweredQuestions();
+  }, [quiz.quiz_id, quizAttemptId]);
+
+  //how many questions have been answered
+  const [numberAnsweredQuestions, setNumberAnsweredQuestions] = React.useState(
+    answeredQuestions.length
+  );
+
+  const lastQuestion = numberAnsweredQuestions === questions.length - 1;
+
+  React.useEffect(() => {
+    setNumberAnsweredQuestions(answeredQuestions.length);
+    if (numberAnsweredQuestions === questions.length) {
+      router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
+    }
+  }, [answeredQuestions, questions]);
+
+  //get the current question to be answered
+  const [currentQuestion, setCurrentQuestion] = React.useState<
+    | (Question & {
+        answers: Answer[];
+      })
+    | null
+  >(
+    questions.find(
+      (q) => answeredQuestions.includes(q.question_id) === false
+    ) || null
+  );
+  React.useEffect(() => {
+    setCurrentQuestion(
+      questions.find(
+        (q) => answeredQuestions.includes(q.question_id) === false
+      ) || null
+    );
+    if (!currentQuestion) {
+      router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
+    }
+  }, [answeredQuestions]);
 
   //shuffle answers
-  const [answers, setAnswers] = React.useState<Answer[]>(
-    currentQuestion.answers
-  );
-  useEffect(() => {
-    if (currentQuestion.random_answers) {
-      setAnswers(currentQuestion.answers.sort(() => Math.random() - 0.5));
-    } else {
-      setAnswers(currentQuestion.answers);
-    }
-  }, [currentQuestionIndex]);
+  const [answers, setAnswers] = React.useState<Answer[]>([]);
 
-  const lastQuestion = currentQuestionIndex === questions.length - 1;
+  useEffect(() => {
+    if (currentQuestion) {
+      if (currentQuestion.random_answers) {
+        setAnswers(currentQuestion.answers.sort(() => Math.random() - 0.5));
+      } else {
+        setAnswers(currentQuestion.answers);
+      }
+    }
+  }, [numberAnsweredQuestions, currentQuestion]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       answers: [],
-      question_id: currentQuestion.question_id,
+      question_id: currentQuestion?.question_id || "",
     },
   });
 
@@ -102,10 +152,12 @@ export const QuestionComponent = ({
       );
 
       if (!lastQuestion) {
-        setCurrentQuestionIndex((prev) => prev + 1);
+        setAnsweredQuestions([
+          ...answeredQuestions,
+          currentQuestion?.question_id ?? "",
+        ]);
       }
     } catch (e) {
-      console.error(e);
       toast.error("Error while submitting your answers");
     } finally {
       setIsLoading(false);
@@ -116,11 +168,10 @@ export const QuestionComponent = ({
         await axios.patch(
           `/api/quizzes/${quiz.quiz_id}/quizAttempt/${quizAttemptId}`
         );
+        router.refresh();
         router.push(`/courses/${courseId}/quiz/${quiz.quiz_id}/result`);
       } catch (e) {
-        console.error(e);
         toast.error("Error while submitting your quiz results");
-      } finally {
         setIsLoading(false);
       }
     }
@@ -129,10 +180,10 @@ export const QuestionComponent = ({
   //after the question is answered, reset the form
   React.useEffect(() => {
     form.reset({
-      question_id: currentQuestion.question_id,
+      question_id: currentQuestion?.question_id || "",
       answers: [],
     });
-  }, [currentQuestionIndex]);
+  }, [numberAnsweredQuestions]);
 
   return (
     <div className="p-6">
@@ -142,16 +193,16 @@ export const QuestionComponent = ({
             className="w-6/12 h-4 bg-orange-400 bg-opacity-70 rounded-2xl "
             style={{
               width: `${
-                ((currentQuestionIndex + 1) / questions.length) * 100
+                ((numberAnsweredQuestions + 1) / questions.length) * 100
               }%`,
             }}
           ></div>
         </div>
         <p className="text-xs">
-          {currentQuestionIndex + 1 + " / " + questions.length}
+          {numberAnsweredQuestions + 1 + " / " + questions.length}
         </p>
       </div>
-      <DataCard label={currentQuestion.question_title ?? "Question"}>
+      <DataCard label={currentQuestion?.question_title ?? "Question"}>
         <FormProvider {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -159,7 +210,7 @@ export const QuestionComponent = ({
           >
             <div className="form-container">
               <div className="bg-slate-500/20 bg-opacity-30 rounded-2xl p-4">
-                <Preview value={currentQuestion.question_text!} />
+                <Preview value={currentQuestion?.question_text!} />
                 <Separator className="bg-background" />
                 {answers.map((answer) => (
                   <FormField

@@ -79,6 +79,12 @@ export async function PATCH(
           break;
         }
       }
+      for (let answer of userAnswer) {
+        if (!correctAnswers.map((a) => a.answer_id).includes(answer!)) {
+          correct = false;
+          break;
+        }
+      }
       if (correct) {
         totalpoints = totalpoints + (question.points ?? 0);
       }
@@ -86,6 +92,8 @@ export async function PATCH(
       else if (!correct && question.is_knockout) {
         passedKnockout = false;
       }
+      console.log(question.question_title, " ", correct, " ", question.points);
+      console.log("totalpoints: ", totalpoints);
     }
 
     quiz.passing_points

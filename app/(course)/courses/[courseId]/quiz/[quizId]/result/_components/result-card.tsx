@@ -92,7 +92,17 @@ export const ResultCard = ({
                           )
                           .map((ua) => ua.answer_id)
                           .includes(answer_id)
-                      ) && "bg-green-500/20",
+                      ) &&
+                      quizAttempt.userAnswers
+                        .filter((ua) => ua.question_id === question.question_id)
+                        .map((answer) => answer.answer_id)
+                        .every((answer_id) =>
+                          question.answers
+                            .filter((correctAnswer) => correctAnswer.is_correct)
+                            .map((ca) => ca.answer_id)
+                            .includes(answer_id!)
+                        ) &&
+                      "bg-green-500/20",
                     question.answers
                       .filter((answer) => answer.is_correct)
                       .map((answer) => answer.answer_id)
@@ -104,7 +114,19 @@ export const ResultCard = ({
                             )
                             .map((ua) => ua.answer_id)
                             .includes(answer_id)
-                      ) && "bg-red-500/20"
+                      ) &&
+                      quizAttempt.userAnswers
+                        .filter((ua) => ua.question_id === question.question_id)
+                        .map((answer) => answer.answer_id)
+                        .some((answer_id) =>
+                          question.answers
+                            .filter(
+                              (correctAnswer) => !correctAnswer.is_correct
+                            )
+                            .map((ca) => ca.answer_id)
+                            .includes(answer_id!)
+                        ) &&
+                      "bg-red-500/20"
                   )}
                   key={question.question_id}
                 >
