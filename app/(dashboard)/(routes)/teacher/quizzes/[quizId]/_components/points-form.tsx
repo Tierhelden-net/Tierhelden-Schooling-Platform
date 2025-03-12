@@ -31,7 +31,7 @@ import { Input } from "@/components/ui/input";
 
 interface PointsFormProps {
   initialData: Quiz;
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({

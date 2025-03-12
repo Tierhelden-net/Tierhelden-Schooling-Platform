@@ -25,7 +25,7 @@ import { QuestionsList } from "./questions-list";
 
 interface QuestionsFormProps {
   initialData: Quiz & { questions: Question[] };
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({
@@ -62,7 +62,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
     }
   };
 
-  const onReorder = async (updateData: { id: number; position: number }[]) => {
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
 
@@ -91,6 +91,7 @@ export const QuestionsForm = ({ initialData, quizId }: QuestionsFormProps) => {
       )}
       <div className="font-medium flex items-center justify-between">
         Quiz-Fragen
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleCreating} variant="ghost">
           {isCreating ? (
             <>Cancel</>

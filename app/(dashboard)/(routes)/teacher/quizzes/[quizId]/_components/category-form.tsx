@@ -23,12 +23,12 @@ import { Combobox } from "@/components/ui/combobox";
 
 interface CategoryFormProps {
   initialData: Quiz;
-  quizId: number;
+  quizId: string;
   options: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
-  quit_category: z.string().min(1),
+  quizCategoryId: z.string().min(1),
 });
 
 export const CategoryForm = ({
@@ -45,7 +45,7 @@ export const CategoryForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      quit_category: initialData?.quit_category || "",
+      quizCategoryId: initialData?.quizCategoryId || "",
     },
   });
 
@@ -53,7 +53,7 @@ export const CategoryForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${quizId}`, values);
+      await axios.patch(`/api/quizzes/${quizId}/actions`, values);
       toast.success("Course updated");
       toggleEdit();
       router.refresh();
@@ -63,7 +63,7 @@ export const CategoryForm = ({
   };
 
   const selectedOption = options.find(
-    (option) => option.value === initialData.quit_category
+    (option) => option.value === initialData.quizCategoryId
   );
 
   return (
@@ -85,7 +85,7 @@ export const CategoryForm = ({
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.quit_category && "text-slate-500 italic"
+            !initialData.quizCategoryId && "text-slate-500 italic"
           )}
         >
           {selectedOption?.label || "No category"}
@@ -99,7 +99,7 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="quit_category"
+              name="quizCategoryId"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

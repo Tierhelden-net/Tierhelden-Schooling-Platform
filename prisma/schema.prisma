@@ -10,69 +10,84 @@ generator client {
 }
 
 model Course {
-  id          String    @id @default(uuid())
-  userId      String
-  title       String    @db.Text
-  description String?   @db.Text
-  imageUrl    String?   @db.Text
-  price       Float?
-  isPublished Boolean   @default(false)
+  id              String    @id @default(uuid())
+  userId          String
+  title           String    @db.Text
+  description     String?   @db.Text
+  imageUrl        String?   @db.Text
+  price           Float?
+  isPublished     Boolean   @default(false)
 
-  categoryId String?
-  category   Category?  @relation(fields: [categoryId], references: [id])
+  courseCategoryId String?
+  courseCategory   CourseCategory? @relation(fields: [courseCategoryId], references: [id], onDelete: SetNull)
 
-  chapters    Chapter[]
-  attachments Attachment[]
-  purchases   Purchase[]
-  quizzes     CourseQuiz[]    @relation("CourseToCourseQuiz")
+  chapters         Chapter[]
+  attachments      Attachment[]
+  purchases        Purchase[]
+  quizzes          CourseQuiz[]    @relation("CourseToCourseQuiz")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // @@fulltext([title])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  @@index([categoryId])
+  @@index([courseCategoryId])
+  //@@fulltext([title])
 }
 
-model Category {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  courses Course[]
+model CourseCategory {
+  id       String   @id @default(uuid())
+  category String   @unique
+  courses  Course[]
 }
 
 model Attachment {
-  id   String @id @default(uuid())
-  name String
-  url  String @db.Text
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @db.Text
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
 }
 
+
 model Chapter {
-  id          String  @id @default(uuid())
-  title       String
-  description String? @db.Text
-  videoUrl    String? @db.Text
-  position    Int
-  isPublished Boolean @default(false)
-  isFree      Boolean @default(false)
-
-  muxData MuxData?
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  userProgress UserProgress[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(uuid())
+  title             String
+  description       String?  @db.Text
+  videoUrl          String?  @db.Text
+  position          Int
+  isPublished       Boolean  @default(false)
+  isFree            Boolean  @default(false)
+  courseId          String
+  
+  course            Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  muxData           MuxData?
+  chapterCategories ChapterChapterCategory[]
+  userProgress      UserProgress[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([courseId])
+}
+
+model ChapterCategory {
+  id       String   @id @default(uuid())
+  category String   @unique
+  chapters ChapterChapterCategory[]
+}
+
+model ChapterChapterCategory {
+  chapterId  String
+  categoryId String
+  
+  chapter    Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  category   ChapterCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([chapterId, categoryId])
+  @@index([categoryId])
 }
 
 model MuxData {
@@ -85,28 +100,27 @@ model MuxData {
 }
 
 model UserProgress {
-  id     String @id @default(uuid())
-  userId String
-
-  chapterId String
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-  isCompleted Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  userId      String
+  chapterId   String
+  isCompleted Boolean  @default(false)
+  
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([userId, chapterId])
   @@index([chapterId])
 }
 
 model Purchase {
-  id     String @id @default(uuid())
-  userId String
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
@@ -115,185 +129,207 @@ model Purchase {
 }
 
 model StripeCustomer {
-  id               String @id @default(uuid())
-  userId           String @unique
-  stripeCustomerId String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model User {
-  user_id       String         @id 
-  email         String?        @unique 
-  name          String?        
-  user_role     UserRole? 
-  last_signed_in   DateTime?
-  last_chapter_completed  DateTime?
-  last_live_training    DateTime?
-  last_online_training  DateTime?
-
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  user_id                String         @id 
+  email                  String?        @unique 
+  name                   String?        
+  user_role              UserRole[]
+  last_signed_in         DateTime?
+  last_chapter_completed DateTime?
+  last_live_training     DateTime?
+  last_online_training   DateTime?
   
-  userAnswers   UserAnswer[]
-  quizAttempts  QuizAttempt[]
-
-  liveTrainingAsTeacher   LiveTraining[]          @relation("TeacherRelation")
-  liveTrainingAsCoTeacher LiveTraining[]          @relation("CoTeacherRelation")
-  liveTrainingSignUp    LiveTrainingSignUp[] 
+  userAnswers            UserAnswer[]
+  quizAttempts           QuizAttempt[]
+  liveTrainingAsTeacher  LiveTraining[] @relation("TeacherRelation")
+  liveTrainingAsCoTeacher LiveTraining[] @relation("CoTeacherRelation")
+  liveTrainingSignUp     LiveTrainingSignUp[] 
+  
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
 }
 
 model Quiz {
-  quiz_id         Int        @id @default(autoincrement())
+  quiz_id         String      @id @default(uuid())
   quiz_name       String?
   quiz_synopsis   String?
-  quit_category   QuizCategory?
-  max_points      Int? @default(0)
-  passing_points  Int? @default(0)
-  question_number Int? //amount asked questions 
-  random_questions Boolean @default(false)
-
+  max_points      Int?        @default(0)
+  passing_points  Int?        @default(0)
+  question_number Int?        // amount asked questions 
+  random_questions Boolean     @default(false)
+  createdBy       String? 
+  
+  quizCategoryId  String?
+  quizCategory    QuizCategory? @relation(fields: [quizCategoryId], references: [id], onDelete: SetNull)
+  
   questions       Question[]
   answers         Answer[]
   quizAttempts    QuizAttempt[]
   userAnswers     UserAnswer[]
-  courses         CourseQuiz[]    @relation("QuizToCourseQuiz")
+  courses         CourseQuiz[] @relation("QuizToCourseQuiz")
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  createdBy  String? 
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  @@index([quizCategoryId])
 }
 
+model QuizCategory {
+  id       String   @id @default(uuid())
+  category String   @unique
+  quizzes  Quiz[] 
+}
+
+
 model CourseQuiz {
-  id        Int    @id @default(autoincrement())
-  quiz_id   Int
+  id        String   @id @default(uuid())
+  quiz_id   String
   course_id String
-
-  quiz      Quiz   @relation("QuizToCourseQuiz", fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
-  course    Course @relation("CourseToCourseQuiz", fields: [course_id], references: [id], onDelete: Cascade)
-
+  
+  quiz      Quiz     @relation("QuizToCourseQuiz", fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
+  course    Course   @relation("CourseToCourseQuiz", fields: [course_id], references: [id], onDelete: Cascade)
+  
   createdAt DateTime @default(now())
 
   @@unique([quiz_id, course_id])
+  @@index([quiz_id])
+  @@index([course_id])
 }
 
 model Question {
-  question_id                   Int       @id @default(autoincrement())
-  question_title                String?
-  question_text                 String?
-  question_type                 QuestionType?
-  question_pic                  String?
-  question_video                String?
-  answer_selection_type         AnswerSelectionType?
-  correct_answers               Int?
-  message_for_correct_answer    String?
-  message_for_incorrect_answer  String?
-  explanation                   String?
-  is_knockout                   Boolean? @default(false)
-  points                        Float? @default(0) 
-  isPublished                   Boolean? @default(true)
-  position                      Int?
-  random_answers                Boolean? @default(false)
-
-  quiz_id       Int
-  quiz          Quiz      @relation(fields: [quiz_id], references: [quiz_id])
-
-  answers       Answer[]
-  userAnswers   UserAnswer[]
-
-  createdBy     String 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  question_id                  String     @id @default(uuid())
+  question_title               String?
+  question_text                String?
+  question_type                QuestionType?
+  question_pic                 String?
+  question_video               String?
+  answer_selection_type        AnswerSelectionType?
+  correct_answers              Int?
+  message_for_correct_answer   String?
+  message_for_incorrect_answer String?
+  explanation                  String?
+  is_knockout                  Boolean?   @default(false)
+  points                       Float?     @default(0) 
+  isPublished                  Boolean?   @default(true)
+  position                     Int?
+  random_answers               Boolean?   @default(false)
+  createdBy                    String 
+  
+  quiz_id                      String
+  quiz                         Quiz       @relation(fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
+  
+  answers                      Answer[]
+  userAnswers                  UserAnswer[]
+  
+  createdAt                    DateTime   @default(now())
+  updatedAt                    DateTime   @updatedAt
 
   @@index([quiz_id])
 }
 
 model UserAnswer {
-  user_answer_id  Int         @id @default(autoincrement())
+  user_answer_id  String    @id @default(uuid())
   user_id         String
-  quiz_attempt_id Int         
-  quiz_id         Int
-  question_id     Int
-  answer_id       Int?
+  quiz_attempt_id String         
+  quiz_id         String
+  question_id     String
+  answer_id       String?
   selected_order  Int?        
-  answered_at     DateTime    @default(now())
+  answered_at     DateTime  @default(now())
   
-  user      User       @relation(fields: [user_id], references: [user_id])
-  quiz      Quiz       @relation(fields: [quiz_id], references: [quiz_id])
-  quizAttempt QuizAttempt @relation(fields: [quiz_attempt_id], references: [quiz_attempt_id])
-  question  Question   @relation(fields: [question_id], references: [question_id])
-  answer    Answer?    @relation(fields: [answer_id], references: [answer_id])
+  user            User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  quiz            Quiz      @relation(fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
+  quizAttempt     QuizAttempt @relation(fields: [quiz_attempt_id], references: [quiz_attempt_id], onDelete: Cascade)
+  question        Question  @relation(fields: [question_id], references: [question_id], onDelete: Cascade)
+  answer          Answer?   @relation(fields: [answer_id], references: [answer_id], onDelete: SetNull)
   
+  @@index([user_id])
+  @@index([quiz_id])
+  @@index([question_id])
+  @@index([answer_id])
   @@index([quiz_attempt_id])
 }
 
 model Answer {
-  answer_id    Int      @id @default(autoincrement())
-  answer_text  String?
-  answer_pic   String?
+  answer_id   String     @id @default(uuid())
+  answer_text String?
+  answer_pic  String?
   answer_video String?
-  is_correct   Boolean
-  position     Int?
+  is_correct  Boolean
+  position    Int?
+  createdBy   String?
   
-  quiz_id  Int?
-  quiz     Quiz? @relation(fields: [quiz_id], references: [quiz_id])
-
-  question_id  Int
-  question     Question @relation(fields: [question_id], references: [question_id])
-
-  userAnswers  UserAnswer[]
+  quiz_id     String
+  quiz        Quiz       @relation(fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
   
-  createdBy    String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  question_id String
+  question    Question   @relation(fields: [question_id], references: [question_id], onDelete: Cascade)
+  
+  userAnswers UserAnswer[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
+  @@index([quiz_id])
   @@index([question_id])
 }
 
 model QuizAttempt {
-  quiz_attempt_id    Int          @id @default(autoincrement())
-  user_id       String
-  quiz_id       Int
-  total_score   Int
-  passed        Boolean
-  attempt_at    DateTime     @default(now())
-  userAnswers   UserAnswer[]
+  quiz_attempt_id String      @id @default(uuid())
+  user_id         String
+  quiz_id         String
+  total_score     Int
+  passed          Boolean
+  attempt_at      DateTime    @default(now())
   
-  user          User         @relation(fields: [user_id], references: [user_id])
-  quiz          Quiz         @relation(fields: [quiz_id], references: [quiz_id])
+  user            User        @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  quiz            Quiz        @relation(fields: [quiz_id], references: [quiz_id], onDelete: Cascade)
+  userAnswers     UserAnswer[]
+
+  @@index([user_id])
+  @@index([quiz_id])
 }
 
 model LiveTraining {
-  id        Int         @id @default(autoincrement())
-  date      DateTime
-  location  String?
-  online    Boolean     @default(true)
-  link      String? 
-  picture   String?
-  is_published    Boolean @default(false)
+  id              String     @id @default(uuid())
+  date            DateTime
+  location        String?
+  online          Boolean    @default(true)
+  link            String? 
+  picture         String?
+  is_published    Boolean    @default(false)
   publishing_time DateTime? 
   
-  teacher_id   String?
-  coteacher_id String?
+  teacher_id      String?
+  coteacher_id    String?
+  
+  teacher         User?      @relation("TeacherRelation", fields: [teacher_id], references: [user_id], onDelete: SetNull)
+  coteacher       User?      @relation("CoTeacherRelation", fields: [coteacher_id], references: [user_id], onDelete: SetNull)
+  
+  SignUp          LiveTrainingSignUp[]
 
-  teacher      User?    @relation("TeacherRelation", fields: [teacher_id], references: [user_id])
-  coteacher    User?    @relation("CoTeacherRelation", fields: [coteacher_id], references: [user_id])
-
-  SignUp    LiveTrainingSignUp[]
+  @@index([teacher_id])
+  @@index([coteacher_id])
 }
 
 model LiveTrainingSignUp {
-  liveTraining_id Int
-  user_id  String
-
-  signed_up   Boolean   @default(true)
-  showed_up   Boolean? 
-
-  liveTraining   LiveTraining @relation(fields: [liveTraining_id], references: [id])
-  user           User         @relation(fields: [user_id], references: [user_id])
+  liveTraining_id String
+  user_id         String
+  signed_up       Boolean    @default(true)
+  showed_up       Boolean? 
+  
+  liveTraining    LiveTraining @relation(fields: [liveTraining_id], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@id([liveTraining_id, user_id])
+  @@index([user_id])
 }
 
 enum QuestionType {
@@ -308,11 +344,9 @@ enum AnswerSelectionType {
 
 enum UserRole {
   BETREUER
-  BERATERUNDBETREUER
   BERATER
   ADMIN
-}
-
-enum QuizCategory {
-  EXAM
+  EVENTLEITER
+  AFFILIATE
+  SUBADMIN
 }

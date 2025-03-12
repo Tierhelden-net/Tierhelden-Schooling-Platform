@@ -5,6 +5,7 @@ import {
   Target,
   LayoutDashboard,
   ListChecks,
+  ArrowLeft,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -18,6 +19,7 @@ import { PointsForm } from "./_components/points-form";
 import { QuestionsForm } from "./_components/questions-form";
 import { Actions } from "./_components/actions";
 import { RandomQForm } from "./_components/randomq-form";
+import Link from "next/link";
 
 const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
   const { userId } = auth();
@@ -28,7 +30,7 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const quiz = await db.quiz.findUnique({
     where: {
-      quiz_id: parseInt(params.quizId),
+      quiz_id: params.quizId,
     },
     include: {
       questions: {
@@ -36,23 +38,15 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
           position: "asc",
         },
       },
+      quizCategory: true,
     },
   });
 
-  const categories = [
-    {
-      id: "1",
-      name: "course quiz",
+  const categories = await db.quizCategory.findMany({
+    orderBy: {
+      category: "asc",
     },
-    {
-      id: "2",
-      name: "test quiz",
-    },
-    {
-      id: "3",
-      name: "rang quiz",
-    },
-  ];
+  });
 
   if (!quiz) {
     return redirect("/");
@@ -71,11 +65,16 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
 
   const isComplete = requiredFields.every(Boolean);
 
-  //TODO: vorerst auf false gesetzt, da wir dieses Feld noch nicht in der Datenbank haben
-  const assigned_to_course = false;
+  const assignedCourse = await db.courseQuiz.findFirst({
+    where: { quiz_id: params.quizId },
+  });
 
-  // assigned_to_course muss wieder zu quiz.assigned_to_course geändert werden,
-  // wir haben dieses Feld nur noch nicht in der Datenbank
+  let assigned_to_course = false;
+
+  if (assignedCourse) {
+    assigned_to_course = true;
+  }
+
   return (
     <>
       {!assigned_to_course && (
@@ -83,17 +82,28 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
       )}
       <div className="p-6">
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">Quiz erstellen</h1>
-            <span className="text-sm text-slate-700">
-              Vervollständige alle Felder {completionText}
-            </span>
+          <div className="w-full">
+            <Link
+              href={`/teacher/quizzes`}
+              className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Zurück zur Quizübersicht
+            </Link>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col gap-y-2">
+                <h1 className="text-2xl font-medium">Quiz erstellen</h1>
+                <span className="text-sm text-slate-700">
+                  Vervollständige alle Felder {completionText}
+                </span>
+              </div>
+              <Actions
+                disabled={!isComplete}
+                quizId={params.quizId}
+                assigned_to_course={assigned_to_course}
+              />
+            </div>
           </div>
-          <Actions
-            disabled={!isComplete}
-            quizId={params.quizId}
-            assigned_to_course={assigned_to_course}
-          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
           <div>
@@ -103,14 +113,16 @@ const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
             </div>
             <TitleForm quiz_name={quiz.quiz_name ?? ""} quizId={quiz.quiz_id} />
             <DescriptionForm initialData={quiz} quizId={quiz.quiz_id} />
+            {/*
             <CategoryForm
               initialData={quiz}
               quizId={quiz.quiz_id}
               options={categories.map((category) => ({
-                label: category.name,
+                label: category.category,
                 value: category.id,
               }))}
             />
+            */}
             <RandomQForm initialData={quiz} quizId={quiz.quiz_id} />
           </div>
           <div className="space-y-6">

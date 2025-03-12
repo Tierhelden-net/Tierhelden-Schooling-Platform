@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 
 interface TitleFormProps {
   quiz_name: string;
-  quizId: number;
+  quizId: string;
 }
 
 const formSchema = z.object({
@@ -59,6 +59,7 @@ export const TitleForm = ({ quiz_name, quizId }: TitleFormProps) => {
     <div className="form-container">
       <div className="font-medium flex items-center justify-between">
         Quiz Titel
+        <span className="text-xs text-inactive italic">required</span>
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Abbrechen</>

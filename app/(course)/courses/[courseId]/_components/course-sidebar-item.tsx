@@ -34,12 +34,14 @@ export const CourseSidebarItem = ({
     <button
       onClick={onClick}
       type="button"
+      disabled={isLocked}
       className={cn(
-        "flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
+        "flex items-center gap-x-2 text-inactive text-sm font-[500] pl-6 transition-all hover:text-inactive-hover hover:bg-slate-300/20",
         isActive &&
-          "text-slate-700 bg-slate-500/20 hover:bg-slate-200/20 hover:text-slate-700",
+          "text-active bg-slate-500/20 hover:bg-slate-200/20 hover:text-active",
         isCompleted && "text-emerald-700 hover:text-emerald-700",
-        isCompleted && isActive && "bg-emerald-200/20"
+        isCompleted && isActive && "bg-emerald-200/20",
+        isLocked && "hover:text-disabled hover:bg-transparent text-disabled"
       )}
     >
       <div className="flex items-center gap-x-2 py-4">
@@ -47,8 +49,9 @@ export const CourseSidebarItem = ({
           size={22}
           className={cn(
             "text-slate-500",
-            isActive && "text-slate-700",
-            isCompleted && "text-emerald-700"
+            isActive && "text-active",
+            isCompleted && "text-emerald-700",
+            isLocked && "text-disabled"
           )}
         />
         {label}

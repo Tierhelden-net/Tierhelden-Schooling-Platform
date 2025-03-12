@@ -10,7 +10,7 @@ export async function DELETE(
   try {
     const { userId } = auth();
 
-    const relationId = parseInt(params.relationId);
+    const relationId = params.relationId;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -68,7 +68,7 @@ export async function PATCH(
     const { userId } = auth();
     const { quizId } = await req.json();
 
-    const relationId = parseInt(params.relationId);
+    const relationId = params.relationId;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -109,7 +109,7 @@ export async function PATCH(
         id: relationId,
       },
       data: {
-        quiz_id: parseInt(quizId),
+        quiz_id: quizId,
       },
     });
 

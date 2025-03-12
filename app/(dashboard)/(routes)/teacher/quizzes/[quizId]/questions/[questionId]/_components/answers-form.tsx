@@ -130,7 +130,7 @@ export const AnswerForm = ({
     }
   };
 
-  const onReorder = async (updateData: { id: number; position: number }[]) => {
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
       await axios.put(
@@ -174,6 +174,7 @@ export const AnswerForm = ({
       )}
       <div className="font-medium flex items-center justify-between">
         Answers
+        <span className="text-xs text-inactive italic">required</span>
         <Button
           onClick={() => {
             toggleCreating();

@@ -40,8 +40,7 @@ export const QuizForm = ({ initialData, courseId, options }: QuizFormProps) => {
 
   //find a quizId, that is assigned to the course
   const [relationItem, setRelationItem] = useState<CourseQuiz>(
-    initialData.quizzes.find((el) => el.course_id === courseId) ||
-      initialData.quizzes[0]
+    initialData.quizzes[0]
   );
   const [selectedQuizId, setSelectedQuizId] = useState(
     relationItem?.quiz_id.toString() || ""
@@ -49,8 +48,9 @@ export const QuizForm = ({ initialData, courseId, options }: QuizFormProps) => {
 
   useEffect(() => {
     setRelationItem(
-      initialData.quizzes.find((el) => el.course_id === courseId) ||
-        initialData.quizzes[0]
+      //nicht: initialData.quizzes.find((el) => el.course_id === courseId) ||
+      //gibt nur passende Elemente aus
+      initialData.quizzes[0]
     );
     setSelectedQuizId(relationItem?.quiz_id.toString() || "");
   });

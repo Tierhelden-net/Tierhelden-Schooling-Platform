@@ -9,6 +9,7 @@ const ThemeContext = createContext({
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   // Check for saved theme in localStorage or system preference
+  if (typeof window === "undefined") return null;
   const [isDarkMode, setIsDarkMode] = useState(
     !!(window.localStorage.getItem("theme") === "dark") ||
       window.matchMedia("(prefers-color-scheme: dark)").matches

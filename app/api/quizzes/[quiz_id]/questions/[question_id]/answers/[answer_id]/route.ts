@@ -16,9 +16,9 @@ export async function DELETE(
     }
 
     // Extrahiere und parse IDs
-    const quizId = parseInt(params.quiz_id, 10);
-    const questionId = parseInt(params.question_id, 10);
-    const answerId = parseInt(params.answer_id, 10);
+    const quizId = params.quiz_id;
+    const questionId = params.question_id;
+    const answerId = params.answer_id;
 
     // Validierung der IDs
     if (!quizId || !questionId) {
@@ -49,6 +49,20 @@ export async function DELETE(
         { error: "Quiz or question or answer not found." },
         { status: 404 }
       );
+    }
+
+    //changed is_correct?
+    if (answer.is_correct) {
+      const correctAnswers = answer.question.correct_answers ?? 1;
+      //correct answers in question
+      await db.question.update({
+        where: {
+          question_id: questionId,
+        },
+        data: {
+          correct_answers: correctAnswers - 1,
+        },
+      });
     }
 
     const deletedAnswer = await db.answer.delete({

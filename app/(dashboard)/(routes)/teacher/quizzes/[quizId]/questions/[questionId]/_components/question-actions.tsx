@@ -69,6 +69,7 @@ export const QuestionActions = ({
 
   return (
     <div className="flex items-center gap-x-2">
+      {/*
       <Button
         onClick={onClick}
         disabled={disabled || isLoading}
@@ -76,7 +77,7 @@ export const QuestionActions = ({
         size="sm"
       >
         {isPublished ? "Veröffentlichung aufheben" : "Veröffentlichen"}
-      </Button>
+      </Button>*/}
       <ConfirmModal onConfirm={onDelete}>
         <Button size="sm" disabled={isLoading}>
           <Trash className="h-4 w-4" />

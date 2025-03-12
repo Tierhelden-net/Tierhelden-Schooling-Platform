@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { quiz } from "@/components/quiz";
 
 const formSchema = z.object({
   quizName: z.string().min(1, {

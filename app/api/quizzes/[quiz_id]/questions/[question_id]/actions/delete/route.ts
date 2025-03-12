@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db'; // Prisma-Instanz importieren
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db"; // Prisma-Instanz importieren
 import { auth } from "@clerk/nextjs";
 
 export async function DELETE(
@@ -25,21 +25,18 @@ export async function DELETE(
     });
 
     // Falls der Benutzer kein Admin ist, wird eine Fehlermeldung zurückgegeben
-    if (!user || user.user_role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      );
+    if (!user || !user.user_role.includes("ADMIN")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     // Extrahiere und parse IDs
-    const quizId = parseInt(params.quiz_id, 10);
-    const questionId = parseInt(params.question_id, 10);
+    const quizId = params.quiz_id;
+    const questionId = params.question_id;
 
     // Validierung der IDs
     if (!quizId || !questionId) {
       return NextResponse.json(
-        { error: 'Invalid quiz_id or question_id.' },
+        { error: "Invalid quiz_id or question_id." },
         { status: 400 }
       );
     }
@@ -52,15 +49,17 @@ export async function DELETE(
     // Überprüfen, ob die Frage vorhanden ist und zum Quiz gehört
     if (!question || question.quiz_id !== quizId) {
       return NextResponse.json(
-        { error: 'Question not found or does not belong to the specified quiz.' },
+        {
+          error: "Question not found or does not belong to the specified quiz.",
+        },
         { status: 404 }
       );
     }
 
     // Alle Antworten zur Frage löschen
     await db.answer.deleteMany({
-        where: { question_id: questionId },
-      });
+      where: { question_id: questionId },
+    });
 
     // Frage löschen
     await db.question.delete({
@@ -68,13 +67,13 @@ export async function DELETE(
     });
 
     return NextResponse.json(
-      { message: 'Question deleted successfully.' },
+      { message: "Question deleted successfully." },
       { status: 200 }
     );
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred.' },
+      { error: "An unexpected error occurred." },
       { status: 500 }
     );
   }
