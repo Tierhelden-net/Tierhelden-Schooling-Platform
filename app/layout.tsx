@@ -21,12 +21,6 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <Head>
-        <script
-          src="https://cloud.ccm19.de/app.js?apiKey=5aafada9ca3be898712d75b70c286efa217c18a8cdec6102&amp;domain=67c8705f5c350797fb07dc02"
-          referrerPolicy="origin"
-        ></script>
-      </Head>
       <html lang="en">
         <body className={inter.className}>
           <ThemeProvider>
