@@ -28,13 +28,13 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
 
   if (!userId) {
+    console.log("No user found ("+userId+"), redirect from teacher/courses/{id} to /")
     return redirect("/");
   }
 
   const course = await db.course.findUnique({
     where: {
-      id: params.courseId,
-      userId,
+      id: params.courseId
     },
     include: {
       chapters: {
@@ -64,6 +64,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   });
 
   if (!course) {
+    console.log("No course found ("+course+"), redirect from teacher/courses/{id} to /")
     return redirect("/");
   }
 
