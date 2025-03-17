@@ -10,6 +10,7 @@ const CoursesPage = async () => {
   const { userId } = auth();
 
   if (!userId) {
+    console.log("No user found ("+userId+"), redirect from teacher/courses to /")
     return redirect("/");
   }
 
