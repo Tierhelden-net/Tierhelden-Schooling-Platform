@@ -1,4 +1,4 @@
-import { auth, clerkClient } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CheckCircle, Clock } from "lucide-react";
 import { CoursesList } from "@/components/courses-list";
@@ -8,12 +8,17 @@ import { getCourses } from "@/actions/get-courses";
 import { db } from "@/lib/db";
 
 export default async function Dashboard() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return redirect("/");
   }
 
-  const clerkUser = await clerkClient.users.getUser(userId);
+  let clerkUser = await currentUser()
+
+  if(!clerkUser) {
+    console.log('No clerk user')
+    return redirect("/");
+  }
 
   const user = await db.user.findUnique({
     where: {

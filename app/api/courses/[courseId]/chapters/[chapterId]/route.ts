@@ -1,5 +1,5 @@
 import Mux from "@mux/mux-node";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
@@ -15,7 +15,7 @@ export async function DELETE(
 ) {
   const params = await props.params
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -97,7 +97,7 @@ export async function PATCH(
 ) {
   const params = await props.params
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const { isPublished, ...values } = await req.json();
 
     if (!userId) {

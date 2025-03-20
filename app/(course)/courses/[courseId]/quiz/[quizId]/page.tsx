@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { DataCard } from "@/app/(dashboard)/(routes)/teacher/analytics/_components/data-card";
@@ -13,7 +13,7 @@ const QuizIdPage = async (props: {
   params: Promise<{ courseId: string; quizId: string }>
 }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");

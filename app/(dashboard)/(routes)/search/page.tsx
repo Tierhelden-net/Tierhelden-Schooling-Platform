@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -17,7 +17,7 @@ interface SearchPageProps {
 
 const SearchPage = async (props: { searchParams: Promise<SearchPageProps> }) => {
   const searchParams = await props.searchParams
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");
