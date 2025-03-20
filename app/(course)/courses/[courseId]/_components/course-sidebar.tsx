@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import {
   Chapter,
   Course,
@@ -30,7 +30,7 @@ export const CourseSidebar = async ({
   course,
   progressCount,
 }: CourseSidebarProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   const quiz = course.quizzes?.[0]?.quiz ?? null;
   let quizPassed:{ passed: boolean } | null  = null

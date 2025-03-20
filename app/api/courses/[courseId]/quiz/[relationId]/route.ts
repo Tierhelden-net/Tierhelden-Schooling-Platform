@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
@@ -9,7 +9,7 @@ export async function DELETE(
 ) {
   const params = await props.params
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     const relationId = params.relationId;
 
@@ -67,7 +67,7 @@ export async function PATCH(
 ) {
   const params = await props.params
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const { quizId } = await req.json();
 
     const relationId = params.relationId;

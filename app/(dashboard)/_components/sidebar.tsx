@@ -1,11 +1,11 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { Logo } from "./logo";
 import { SidebarRoutes } from "./sidebar-routes";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export const Sidebar = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return redirect("/");
   }

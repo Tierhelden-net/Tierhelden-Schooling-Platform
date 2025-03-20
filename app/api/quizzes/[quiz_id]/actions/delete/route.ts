@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function DELETE(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function DELETE(
   const params = await props.params
   try {
     // userId aus Clerk auth() extrahieren
-    const { userId } = auth();
+    const { userId } = await auth();
 
     const quizId = params.quiz_id;
 
