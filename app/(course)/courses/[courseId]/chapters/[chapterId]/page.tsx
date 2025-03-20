@@ -11,11 +11,10 @@ import { VideoPlayer } from "./_components/video-player";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { CourseProgressButton } from "./_components/course-progress-button";
 
-const ChapterIdPage = async ({
-  params,
-}: {
-  params: { courseId: string; chapterId: string };
+const ChapterIdPage = async (props: {
+  params: Promise<{ courseId: string; chapterId: string }>
 }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {
@@ -72,7 +71,7 @@ const ChapterIdPage = async ({
         <div>
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
-            {purchase ? (
+            {(purchase || chapter.isFree) ? (
               <CourseProgressButton
                 chapterId={params.chapterId}
                 courseId={params.courseId}

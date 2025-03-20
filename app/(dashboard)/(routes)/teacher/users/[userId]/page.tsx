@@ -10,7 +10,8 @@ import { IconBadge } from "@/components/icon-badge";
 import { DataCard } from "../../analytics/_components/data-card";
 import { UserroleForm } from "./_components/userrole-form";
 
-const UserIdPage = async ({ params }: { params: { userId: string } }) => {
+const UserIdPage = async (props: { params: Promise<{ userId: string }> }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {

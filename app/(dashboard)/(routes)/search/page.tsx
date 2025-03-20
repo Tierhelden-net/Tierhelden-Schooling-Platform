@@ -15,7 +15,8 @@ interface SearchPageProps {
   };
 }
 
-const SearchPage = async ({ searchParams }: SearchPageProps) => {
+const SearchPage = async (props: { searchParams: Promise<SearchPageProps> }) => {
+  const searchParams = await props.searchParams
   const { userId } = auth();
 
   if (!userId) {

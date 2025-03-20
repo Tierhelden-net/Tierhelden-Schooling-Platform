@@ -5,8 +5,9 @@ import { db } from "@/lib/db";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string } }
+  props: { params: Promise<{ courseId: string }> }
 ) {
+  const params = await props.params
   try {
     const { userId } = auth();
 

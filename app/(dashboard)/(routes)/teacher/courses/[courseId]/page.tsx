@@ -24,7 +24,8 @@ import { ChaptersForm } from "./_components/chapters-form";
 import { Actions } from "./_components/actions";
 import { QuizForm } from "./_components/quiz-form";
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
+const CourseIdPage = async (props: { params: Promise<{ courseId: string }> }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {

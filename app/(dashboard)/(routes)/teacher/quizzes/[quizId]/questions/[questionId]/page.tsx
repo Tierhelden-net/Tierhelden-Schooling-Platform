@@ -18,19 +18,16 @@ import { Banner } from "@/components/banner";
 import { QuestionTitleForm } from "./_components/question-title-form";
 import { QuestionDescriptionForm } from "./_components/question-description-form";
 import { AnswerForm } from "./_components/answers-form";
-import { QuestionVideoForm } from "./_components/question-video-form";
 import { QuestionActions } from "./_components/question-actions";
-import { Description } from "@radix-ui/react-dialog";
 import { PointsForm } from "./_components/points-form";
 import { QuestionAnswerMessageForm } from "./_components/question-answer-message-form copy";
 import { QuestionKnockoutForm } from "./_components/question-knockout-form";
 import { RandomAForm } from "./_components/randoma-form";
 
-const QuestionIdPage = async ({
-  params,
-}: {
-  params: { quizId: string; questionId: string };
+const QuestionIdPage = async (props: {
+  params: Promise<{ quizId: string; questionId: string }>
 }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {
