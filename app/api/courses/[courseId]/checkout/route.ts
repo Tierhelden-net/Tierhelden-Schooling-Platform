@@ -7,8 +7,9 @@ import { stripe } from "@/lib/stripe";
 
 export async function POST(
   req: Request,
-  { params }: { params: { courseId: string } }
+  props: { params: Promise<{ courseId: string }> }
 ) {
+  const params = await props.params
   try {
     const user = await currentUser();
 

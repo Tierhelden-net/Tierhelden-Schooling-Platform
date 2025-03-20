@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import {
-  CircleDollarSign,
   Target,
   LayoutDashboard,
   ListChecks,
@@ -14,14 +13,14 @@ import { Banner } from "@/components/banner";
 
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
-import { CategoryForm } from "./_components/category-form";
 import { PointsForm } from "./_components/points-form";
 import { QuestionsForm } from "./_components/questions-form";
 import { Actions } from "./_components/actions";
 import { RandomQForm } from "./_components/randomq-form";
 import Link from "next/link";
 
-const QuizIdPage = async ({ params }: { params: { quizId: string } }) => {
+const QuizIdPage = async (props: { params: Promise<{ quizId: string }> }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {

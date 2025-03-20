@@ -9,11 +9,10 @@ import { getQuiz } from "@/actions/get-quiz";
 
 import QuestionComponent from "./_components/question";
 
-const QuestionPage = async ({
-  params,
-}: {
-  params: { courseId: string; quizId: string; quizAttemptId: string };
+const QuestionPage = async (props: {
+  params: Promise<{ courseId: string; quizId: string; quizAttemptId: string }>
 }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {
