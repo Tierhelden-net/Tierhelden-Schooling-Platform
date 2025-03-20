@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CoursesList } from "@/components/courses-list";
 
@@ -6,7 +6,7 @@ import { getCourses } from "@/actions/get-courses";
 import { db } from "@/lib/db";
 
 export default async function AffiliatePage() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return redirect("/");
   }

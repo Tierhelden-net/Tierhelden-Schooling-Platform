@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -26,7 +26,7 @@ import { QuizForm } from "./_components/quiz-form";
 
 const CourseIdPage = async (props: { params: Promise<{ courseId: string }> }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     console.log("No user found ("+userId+"), redirect from teacher/courses/{id} to /")

@@ -15,7 +15,7 @@
     "pull_prisma_lastchanges": "npx prisma migrate dev"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.31.7",
+    "@clerk/nextjs": "^6.12.6",
     "@hello-pangea/dnd": "^16.6.0",
     "@hookform/resolvers": "^3.10.0",
     "@mux/mux-node": "^7.3.5",

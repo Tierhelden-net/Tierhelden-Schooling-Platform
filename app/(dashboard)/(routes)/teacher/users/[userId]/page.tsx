@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -12,7 +12,7 @@ import { UserroleForm } from "./_components/userrole-form";
 
 const UserIdPage = async (props: { params: Promise<{ userId: string }> }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");

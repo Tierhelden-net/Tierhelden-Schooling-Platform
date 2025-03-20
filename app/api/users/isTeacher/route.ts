@@ -1,13 +1,13 @@
 // Test: http://localhost:3000/api/users/isTeacher?userId=user_2qRFohM2BAVLUMOj7YYF6TsgIv7
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET(request: NextRequest) {
   try {
     // const { searchParams } = new URL(request.url);
     // const userId = searchParams.get('userId');
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json(

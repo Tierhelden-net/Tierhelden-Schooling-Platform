@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
   Target,
@@ -21,7 +21,7 @@ import Link from "next/link";
 
 const QuizIdPage = async (props: { params: Promise<{ quizId: string }> }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");

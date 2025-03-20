@@ -1,6 +1,6 @@
 //Game Page: renders questions + answers
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import React from "react";
@@ -13,7 +13,7 @@ const QuestionPage = async (props: {
   params: Promise<{ courseId: string; quizId: string; quizAttemptId: string }>
 }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");

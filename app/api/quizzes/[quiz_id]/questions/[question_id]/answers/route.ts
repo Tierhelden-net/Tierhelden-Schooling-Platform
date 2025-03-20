@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db"; // Importiere die Prisma-Instanz
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function PATCH(
   req: Request,
@@ -8,7 +8,7 @@ export async function PATCH(
 ) {
   const params = await props.params
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     const { ...values } = await req.json();
 
     if (!userId) {

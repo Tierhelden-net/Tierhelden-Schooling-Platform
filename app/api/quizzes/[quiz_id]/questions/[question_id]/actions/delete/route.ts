@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db"; // Prisma-Instanz importieren
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function DELETE(
   request: NextRequest,
@@ -9,7 +9,7 @@ export async function DELETE(
   const params = await props.params
   try {
     // Benutzer-Authentifizierung
-    const { userId } = auth();
+    const { userId } = await auth();
 
     // Falls der Benutzer nicht angemeldet ist, wird eine Fehlermeldung zurückgegeben
     if (!userId) {

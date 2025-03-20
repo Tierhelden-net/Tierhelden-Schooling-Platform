@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
   try {
     // userId aus Clerk auth() extrahieren
-    const { userId } = auth();
+    const { userId } = await auth();
 
     // Falls der Benutzer nicht angemeldet ist, wird eine Fehlermeldung zurückgegeben
     if (!userId) {

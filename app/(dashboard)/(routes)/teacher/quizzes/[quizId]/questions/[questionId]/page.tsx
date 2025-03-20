@@ -1,14 +1,12 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Eye,
   LayoutDashboard,
   ListChecks,
   MessageSquare,
   Target,
-  Video,
 } from "lucide-react";
 
 import { db } from "@/lib/db";
@@ -28,7 +26,7 @@ const QuestionIdPage = async (props: {
   params: Promise<{ quizId: string; questionId: string }>
 }) => {
   const params = await props.params
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return redirect("/");

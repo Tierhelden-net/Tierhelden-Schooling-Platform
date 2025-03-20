@@ -1,13 +1,13 @@
 import React from "react";
 import { DataCard } from "../teacher/analytics/_components/data-card";
 import { RANK_CATEGORIES, getRankCourses } from "@/actions/get-rank-courses";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CoursesList } from "@/components/courses-list";
 import { QuizCard } from "@/components/quiz-card";
 
 async function Page() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return redirect("/");
   }
