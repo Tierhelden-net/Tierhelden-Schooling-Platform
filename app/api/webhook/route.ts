@@ -7,7 +7,10 @@ import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const signature = headers().get("Stripe-Signature") as string;
+  let signature: string | Buffer | string[] = '';
+  headers().then(res => {
+    signature = res.get("Stripe-Signature") as string;
+  })
 
   let event: Stripe.Event;
 

@@ -4,8 +4,9 @@ import { auth } from "@clerk/nextjs";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params
   try {
     const { userId } = auth();
     const body = await req.json();

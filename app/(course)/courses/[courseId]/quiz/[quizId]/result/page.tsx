@@ -12,11 +12,10 @@ import { getQuiz } from "@/actions/get-quiz";
 import { ResultCard } from "./_components/result-card";
 import { DataCard } from "@/app/(dashboard)/(routes)/teacher/analytics/_components/data-card";
 
-const QuizResultPage = async ({
-  params,
-}: {
-  params: { courseId: string; quizId: string; quizAttemptId: string };
+const QuizResultPage = async (props: {
+  params: Promise<{ courseId: string; quizId: string; quizAttemptId: string }>
 }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {

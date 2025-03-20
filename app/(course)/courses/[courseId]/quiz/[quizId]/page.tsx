@@ -7,16 +7,12 @@ import React from "react";
 import { getQuiz } from "@/actions/get-quiz";
 import { Banner } from "@/components/banner";
 import { StartQuizButtonComponent } from "./_components/start-quiz-button";
-import { QuizAttempt, UserAnswer } from "@prisma/client";
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
-import toast from "react-hot-toast";
+import { UserAnswer } from "@prisma/client";
 
-const QuizIdPage = async ({
-  params,
-}: {
-  params: { courseId: string; quizId: string };
+const QuizIdPage = async (props: {
+  params: Promise<{ courseId: string; quizId: string }>
 }) => {
+  const params = await props.params
   const { userId } = auth();
 
   if (!userId) {

@@ -5,8 +5,9 @@ import { db } from "@/lib/db";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { courseId: string; chapterId: string } }
+  props: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
+  const params = await props.params
   try {
     const { userId } = auth();
     const { isCompleted } = await req.json();

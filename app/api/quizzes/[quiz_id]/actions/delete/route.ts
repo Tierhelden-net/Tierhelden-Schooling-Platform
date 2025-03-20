@@ -4,8 +4,9 @@ import { auth } from "@clerk/nextjs";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { quiz_id: string } }
+  props: { params: Promise<{ quiz_id: string }> }
 ) {
+  const params = await props.params
   try {
     // userId aus Clerk auth() extrahieren
     const { userId } = auth();

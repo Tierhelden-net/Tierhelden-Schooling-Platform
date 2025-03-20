@@ -33,6 +33,7 @@ export const CourseSidebar = async ({
   const { userId } = auth();
 
   const quiz = course.quizzes?.[0]?.quiz ?? null;
+  let quizPassed:{ passed: boolean } | null  = null
 
   const quizLocked = !course.chapters.every(
     (chapter) => chapter.userProgress?.[0]?.isCompleted
@@ -51,16 +52,18 @@ export const CourseSidebar = async ({
     },
   });
 
-  const quizPassed = await db.quizAttempt.findFirst({
-    where: {
-      user_id: userId,
-      quiz_id: quiz.quiz_id,
-      passed: true,
-    },
-    select: {
-      passed: true,
-    },
-  });
+  if (quiz) {
+    quizPassed = await db.quizAttempt.findFirst({
+      where: {
+        user_id: userId,
+        quiz_id: quiz.quiz_id,
+        passed: true,
+      },
+      select: {
+        passed: true,
+      },
+    })
+  }
 
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
