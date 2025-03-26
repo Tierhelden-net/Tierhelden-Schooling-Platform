@@ -98,7 +98,7 @@ const ChapterIdPage = async (props: {
                     href={attachment.url}
                     target="_blank"
                     key={attachment.id}
-                    className="link hover:dark:bg-orange-900/10 hover:underline"
+                    className="link dark:hover:bg-orange-900/10 hover:underline"
                   >
                     <File />
                     <p className="line-clamp-1">{attachment.name}</p>

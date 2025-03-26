@@ -110,7 +110,7 @@ export const RandomAForm = ({
                     >
                       randomize:
                       <Switch
-                        className="relative mx-3 h-[25px] w-[42px] cursor-default rounded-full bg-foreground shadow-[0_2px_10px] shadow-foreground outline-none focus:shadow-[0_0_0_2px] focus:shadow-foreground data-[state=checked]:bg-foreground"
+                        className="relative mx-3 h-[25px] w-[42px] cursor-default rounded-full bg-foreground shadow-[0_2px_10px] shadow-foreground outline-hidden focus:shadow-[0_0_0_2px] focus:shadow-foreground data-[state=checked]:bg-foreground"
                         id="random_questions"
                         disabled={isSubmitting}
                         checked={randomAnswers}

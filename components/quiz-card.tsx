@@ -20,7 +20,7 @@ export const QuizCard = ({
 }: QuizCardProps) => {
   return (
     <Link href={`/quiz/${id}`}>
-      <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
+      <div className="group hover:shadow-xs transition overflow-hidden border rounded-lg p-3 h-full">
         <div className="flex flex-col pt-2">
           <div className="text-lg md:text-base font-medium group-hover:text-orange-300 transition line-clamp-2">
             {title}
